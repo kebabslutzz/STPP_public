@@ -1,0 +1,33 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="add_discussion_id_to_comments" author="kebabslutzz">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="discussion_comments" columnName="discussion_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="discussion_comments">
+            <column name="discussion_id" type="BIGINT"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="discussion_comments" columnName="discussion_id"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="add_foreign_key_to_comments" author="kebabslutzz">
+        <addForeignKeyConstraint baseTableName="discussion_comments"
+                                 baseColumnNames="discussion_id"
+                                 constraintName="fk_discussion_comments_discussion_id"
+                                 referencedTableName="movie_discussions"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="discussion_comments"
+                                      constraintName="fk_discussion_comments_discussion_id"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
