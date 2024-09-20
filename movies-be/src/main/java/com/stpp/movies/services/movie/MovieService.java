@@ -1,9 +1,10 @@
 package com.stpp.movies.services.movie;
 
-import com.stpp.movies.dto.MovieEditRequestDto;
-import com.stpp.movies.dto.MovieRequestDto;
-import com.stpp.movies.dto.MovieResponseDto;
+import com.stpp.movies.dto.movie.MovieEditRequestDto;
+import com.stpp.movies.dto.movie.MovieRequestDto;
+import com.stpp.movies.dto.movie.MovieResponseDto;
 import com.stpp.movies.entities.Movie;
+import com.stpp.movies.exceptions.NotFoundException;
 import com.stpp.movies.repositories.MovieRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -49,11 +49,14 @@ public class MovieService {
 
     @Transactional
     public MovieResponseDto editMovie(@Valid MovieEditRequestDto movieEditRequestDto) {
-        Movie movie = movieRepository.findById(movieEditRequestDto.getId())
-                .orElseThrow(() -> new NoSuchElementException("Movie with ID " + movieEditRequestDto.getId() + " not found"));
-        if (checkIfMovieEditRequestIsValid(movieEditRequestDto)) {
-            movie = MAPPER.editRequestDtoToMovie(movieEditRequestDto);
+        if (!movieRepository.existsById(movieEditRequestDto.getId())) {
+            throw new NotFoundException("Movie with ID " + movieEditRequestDto.getId() + " not found");
         }
+//        Movie movie = movieRepository.findById(movieEditRequestDto.getId())
+//                .orElseThrow(() -> new NoSuchElementException("Movie with ID " + movieEditRequestDto.getId() + " not found"));
+        Movie movie = movieRepository.findById(movieEditRequestDto.getId()).get();
+
+        MAPPER.movieEditRequestDtoToMovie(movieEditRequestDto, movie);
 
         movie = movieRepository.save(movie);
         return MAPPER.movieToResponseDto(movie);
@@ -65,26 +68,8 @@ public class MovieService {
                 .ifPresentOrElse(
                         movie -> movieRepository.deleteById(id),
                         () -> {
-                            throw new NoSuchElementException("Movie with ID " + id + " not found");
+                            throw new NotFoundException("Movie with ID " + id + " not found");
                         }
                 );
-    }
-
-    private static boolean checkIfMovieEditRequestIsValid(MovieEditRequestDto movieEditRequestDto) {
-        return movieEditRequestDto.getId() != null
-                && movieEditRequestDto.getTitle() != null
-                && movieEditRequestDto.getReleaseDate() != null
-                && movieEditRequestDto.getRating() != null
-                && movieEditRequestDto.getGenre() != null
-                && movieEditRequestDto.getDirector() != null
-                && movieEditRequestDto.getDescription() != null
-                && !movieEditRequestDto.getTitle().isEmpty()
-                && !movieEditRequestDto.getGenre().isEmpty()
-                && !movieEditRequestDto.getDirector().isEmpty()
-                && !movieEditRequestDto.getDescription().isEmpty()
-                && movieEditRequestDto.getRating() >= 1
-                && movieEditRequestDto.getRating() <= 10
-                && movieEditRequestDto.getTitle().length() <= 256
-                && movieEditRequestDto.getDescription().length() <= 1024;
     }
 }

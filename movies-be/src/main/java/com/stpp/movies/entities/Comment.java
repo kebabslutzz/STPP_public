@@ -47,6 +47,10 @@ public class Comment {
     @JoinColumn(name = "discussion_id", nullable = false, updatable = false)
     private Discussion discussion;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    private User user;
+
     @PrePersist
     public void prePersist() {
         this.setDateCreated(OffsetDateTime.now());

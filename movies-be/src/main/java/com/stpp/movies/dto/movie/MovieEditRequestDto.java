@@ -1,4 +1,4 @@
-package com.stpp.movies.dto;
+package com.stpp.movies.dto.movie;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @SuperBuilder(toBuilder = true)
 @Data
 public class MovieEditRequestDto {
-    @NotNull(message = "Id should not be null")
+    @NotBlank(message = "Id should not be blank")
     @NotNull(message = "Id should not be null")
     private Long id;
 
@@ -46,10 +46,10 @@ public class MovieEditRequestDto {
     @Size(min = 1, max = 256, message = "Genre must be between {min} and {max} characters")
     private String genre;
 
-    @NotNull
+    @NotNull(message = "Rating should not be null")
     @Min(value = 1, message = "Rating should be between 1 and 10")
     @Max(value = 10, message = "Rating should be between 1 and 10")
-    private Float rating;
+    private Double rating;
 
     @NotNull(message = "Release date should not be null")
     private LocalDate releaseDate;

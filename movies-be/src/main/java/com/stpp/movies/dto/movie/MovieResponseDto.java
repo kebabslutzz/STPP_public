@@ -1,13 +1,6 @@
-package com.stpp.movies.dto;
+package com.stpp.movies.dto.movie;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.stpp.movies.configurations.LocalDateDeserializer;
 import com.stpp.movies.entities.Movie;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -16,15 +9,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -62,7 +50,7 @@ public class MovieResponseDto {
     @NotNull(message = "Rating should not be null")
     @Min(value = 1, message = "Rating should be between 1 and 10")
     @Max(value = 10, message = "Rating should be between 1 and 10")
-    private Float rating;
+    private Double rating;
 
     @NotNull(message = "Release date should not be null")
     private LocalDate releaseDate;

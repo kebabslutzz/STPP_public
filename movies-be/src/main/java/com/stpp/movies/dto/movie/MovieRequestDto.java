@@ -1,4 +1,4 @@
-package com.stpp.movies.dto;
+package com.stpp.movies.dto.movie;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.stpp.movies.configurations.LocalDateDeserializer;
@@ -47,7 +47,7 @@ public class MovieRequestDto {
     @NotNull(message = "Rating should not be null")
     @Min(value = 1, message = "Rating should be between 1 and 10")
     @Max(value = 10, message = "Rating should be between 1 and 10")
-    private Float rating;
+    private Double rating;
 
     @NotNull(message = "Release date should not be null")
     private LocalDate releaseDate;

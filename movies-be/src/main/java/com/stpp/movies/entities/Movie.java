@@ -54,7 +54,7 @@ public class Movie {
 
     @Min(1)
     @Max(10)
-    private Float rating;
+    private Double rating;
 
     @Column(nullable = false)
     private LocalDate releaseDate;

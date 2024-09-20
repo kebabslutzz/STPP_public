@@ -18,6 +18,7 @@ public class SecurityConfig {
             .authorizeRequests(authorizeRequests -> authorizeRequests
                 .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/**").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/api/v1/**").permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/api/v1/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/**").permitAll()
                 .anyRequest().authenticated())
