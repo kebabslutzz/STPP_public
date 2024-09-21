@@ -24,7 +24,6 @@ public interface MovieMapper {
     @Mapping(target = "dateModified", ignore = true)
     Movie editRequestDtoToMovie(MovieEditRequestDto movieEditRequestDto);
 
-//    @Mapping(target = "id", source = "id")
     @Mapping(target = "title", source = "title")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "director", source = "director")

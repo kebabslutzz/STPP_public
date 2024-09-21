@@ -52,8 +52,6 @@ public class MovieService {
         if (!movieRepository.existsById(movieEditRequestDto.getId())) {
             throw new NotFoundException("Movie with ID " + movieEditRequestDto.getId() + " not found");
         }
-//        Movie movie = movieRepository.findById(movieEditRequestDto.getId())
-//                .orElseThrow(() -> new NoSuchElementException("Movie with ID " + movieEditRequestDto.getId() + " not found"));
         Movie movie = movieRepository.findById(movieEditRequestDto.getId()).get();
 
         MAPPER.movieEditRequestDtoToMovie(movieEditRequestDto, movie);
@@ -64,12 +62,9 @@ public class MovieService {
 
     @Transactional
     public void deleteMovieById(@Valid Long id) {
-        movieRepository.findById(id)
-                .ifPresentOrElse(
-                        movie -> movieRepository.deleteById(id),
-                        () -> {
-                            throw new NotFoundException("Movie with ID " + id + " not found");
-                        }
-                );
+        if (!movieRepository.existsById(id)) {
+            throw new NotFoundException("Movie with ID " + id + " not found");
+        }
+        movieRepository.deleteById(id);
     }
 }

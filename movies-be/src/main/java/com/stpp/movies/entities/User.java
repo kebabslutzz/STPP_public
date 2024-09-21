@@ -1,8 +1,12 @@
 package com.stpp.movies.entities;
 
+import com.stpp.movies.enumerators.Role;
+import com.stpp.movies.enumerators.Status;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,7 +33,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private Long id;
 
     @Column(nullable = false)
@@ -42,11 +46,13 @@ public class User {
     @Column(nullable = false)
     private String email;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
-    private String role;
+    private Role role;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
-    private Integer status;
+    private Status status;
 
     @Column(nullable = false, updatable = false)
     private OffsetDateTime dateCreated;

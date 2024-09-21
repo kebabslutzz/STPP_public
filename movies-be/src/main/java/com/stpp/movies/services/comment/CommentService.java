@@ -1,6 +1,7 @@
 package com.stpp.movies.services.comment;
 
 import com.stpp.movies.dto.comment.CommentEditRequestDto;
+import com.stpp.movies.dto.comment.CommentRequestDto;
 import com.stpp.movies.dto.comment.CommentResponseDto;
 import com.stpp.movies.entities.Comment;
 import com.stpp.movies.exceptions.NotFoundException;
@@ -49,4 +50,19 @@ public class CommentService {
         MAPPER.commentEditRequestDtoToComment(content, comment);
         return MAPPER.commentToResponseDto(comment);
     }
+
+    @Transactional
+    public void deleteComment(@Valid Long id){
+        if (!commentRepository.existsById(id)) {
+            throw new NotFoundException("Comment with ID " + id + " not found");
+        }
+        commentRepository.deleteById(id);
+    }
+
+//    @Transactional
+//    public CommentResponseDto createComment(@Valid String content){
+//        Comment comment = MAPPER.requestDtoToComment(content);
+//        comment = commentRepository.save(comment);
+//        return MAPPER.commentToResponseDto(comment);
+//    }
 }

@@ -1,6 +1,7 @@
 package com.stpp.movies.services.comment;
 
 import com.stpp.movies.dto.comment.CommentEditRequestDto;
+import com.stpp.movies.dto.comment.CommentRequestDto;
 import com.stpp.movies.dto.comment.CommentResponseDto;
 import com.stpp.movies.entities.Comment;
 import org.mapstruct.Mapper;
@@ -18,7 +19,9 @@ public interface CommentMapper {
     @Mapping(source = "user.id", target = "user_id")
     CommentResponseDto commentToResponseDto(Comment comment);
 
-
     @Mapping(target = "content", source = "content")
     Comment commentEditRequestDtoToComment(String content, @MappingTarget Comment comment);
+
+//    @Mapping(target = "content", source = "content")
+//    Comment requestDtoToComment(String content);
 }
