@@ -4,15 +4,20 @@ import com.stpp.movies.dto.user.UserEditRequestDto;
 import com.stpp.movies.dto.user.UserRequestDto;
 import com.stpp.movies.dto.user.UserResponseDto;
 import com.stpp.movies.entities.User;
+import com.stpp.movies.services.comment.CommentMapper;
+import com.stpp.movies.services.discussion.DiscussionMapper;
+import com.stpp.movies.services.movie.MovieMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(uses = {DiscussionMapper.class, CommentMapper.class, MovieMapper.class})
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
+    @Named("userToResponseDto")
     @Mapping(target = "id", source = "id")
     @Mapping(target = "username", source = "username")
     @Mapping(target = "email", source = "email")
@@ -21,6 +26,7 @@ public interface UserMapper {
     @Mapping(target = "status", source = "status")
     UserResponseDto userToResponseDto(User user);
 
+    @Named("requestDtoToUser")
     @Mapping(target = "username", source = "username")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "password", source = "password")
@@ -28,6 +34,7 @@ public interface UserMapper {
     @Mapping(target = "status", source = "status")
     User requestDtoToUser(UserRequestDto userRequestDto);
 
+    @Named("userEditRequestDtoToUser")
     @Mapping(target = "username", source = "username")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "password", source = "password")

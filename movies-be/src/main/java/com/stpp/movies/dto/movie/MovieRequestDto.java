@@ -2,6 +2,7 @@ package com.stpp.movies.dto.movie;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.stpp.movies.configurations.LocalDateDeserializer;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -52,5 +53,6 @@ public class MovieRequestDto {
     @NotNull(message = "Release date should not be null")
     private LocalDate releaseDate;
 
+    @Nullable
     private byte[] poster;
 }

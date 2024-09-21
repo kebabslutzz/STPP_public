@@ -1,8 +1,11 @@
 package com.stpp.movies.controllers;
 
+import com.stpp.movies.dto.discussion.DiscussionResponseDto;
 import com.stpp.movies.dto.movie.MovieEditRequestDto;
 import com.stpp.movies.dto.movie.MovieRequestDto;
 import com.stpp.movies.dto.movie.MovieResponseDto;
+import com.stpp.movies.entities.Discussion;
+import com.stpp.movies.services.discussion.DiscussionService;
 import com.stpp.movies.services.movie.MovieService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ import java.util.List;
 public class MovieController {
 
     private final MovieService movieService;
+    private final DiscussionService discussionService;
 
     @GetMapping("/{id}")
     public ResponseEntity<MovieResponseDto> getMovieById(@PathVariable Long id){
@@ -64,6 +68,12 @@ public class MovieController {
     public ResponseEntity<Void> deleteMovieById(@PathVariable Long id){
         movieService.deleteMovieById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/discussions")
+    public ResponseEntity<List<DiscussionResponseDto>> getAllDiscussionsByMovieId(@PathVariable @Valid Long id){
+        List<DiscussionResponseDto> discussions = discussionService.getAllDiscussionsByMovieId(id);
+        return ResponseEntity.ok(discussions);
     }
 
 }
