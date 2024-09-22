@@ -30,11 +30,9 @@ public class CommentRequestDto {
     @Size(min = 1, max = 1024, message = "Content must be between {min} and {max} characters")
     private String content;
 
-    @NotBlank(message = "Discussion id should not be blank")
-    @NotNull(message = "Discussion id should not be null")
-    private Long discussion_id;
+//    @NotNull(message = "Discussion id should not be null")
+//    private Long discussionId;
 
-    @NotBlank(message = "User id should not be blank")
     @NotNull(message = "User id should not be null")
-    private Long user_id;
+    private Long userId;
 }

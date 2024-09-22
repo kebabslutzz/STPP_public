@@ -28,6 +28,12 @@ public interface CommentMapper {
     @Mapping(target = "content", source = "content")
     Comment commentEditRequestDtoToComment(String content, @MappingTarget Comment comment);
 
+    @Named("requestDtoToComment")
+    @Mapping(target = "discussion.id", source = "discussionId")
+    @Mapping(target = "content", source = "commentRequestDto.content")
+    @Mapping(target = "user.id", source = "commentRequestDto.userId")
+    Comment requestDtoToComment(CommentRequestDto commentRequestDto, Long discussionId);
+
 //    @Mapping(target = "content", source = "content")
 //    Comment requestDtoToComment(String content);
 }

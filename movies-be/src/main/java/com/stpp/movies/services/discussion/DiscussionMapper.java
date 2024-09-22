@@ -1,5 +1,7 @@
 package com.stpp.movies.services.discussion;
 
+import com.stpp.movies.dto.discussion.DiscussionEditRequestDto;
+import com.stpp.movies.dto.discussion.DiscussionRequestDto;
 import com.stpp.movies.dto.discussion.DiscussionResponseDto;
 import com.stpp.movies.entities.Discussion;
 import com.stpp.movies.services.comment.CommentMapper;
@@ -7,6 +9,8 @@ import com.stpp.movies.services.movie.MovieMapper;
 import com.stpp.movies.services.user.UserMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(uses = {UserMapper.class, MovieMapper.class, CommentMapper.class})
@@ -15,8 +19,17 @@ public interface DiscussionMapper {
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "title", source = "title")
-    @Mapping(target = "comments", source = "comments")
     @Mapping(target = "movieId", source = "movie.id")
     @Mapping(target = "userId", source = "user.id")
     DiscussionResponseDto discussionToResponseDto(Discussion discussion);
+
+    @Named("discussionEditRequestDtoToDiscussion")
+    @Mapping(target = "title", source = "title")
+    Discussion discussionEditRequestDtoToDiscussion(String title, @MappingTarget Discussion discussion);
+
+    @Named("discussionRequestDtoToDiscussion")
+    @Mapping(target = "title", source = "discussionRequestDto.title")
+    @Mapping(target = "movie.id", source = "discussionRequestDto.movieId")
+    @Mapping(target = "user.id", source = "discussionRequestDto.userId")
+    Discussion discussionRequestDtoToDiscussion(DiscussionRequestDto discussionRequestDto);
 }

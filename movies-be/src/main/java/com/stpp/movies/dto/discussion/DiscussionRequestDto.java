@@ -27,15 +27,13 @@ public class DiscussionRequestDto {
     @Size(min = 1, max = 256, message = "Title must be between {min} and {max} characters")
     private String title;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @Nullable
-    private List<Comment> comments;
+//    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+//    @Nullable
+//    private List<Comment> comments;
 
     @NotNull(message = "Movie should not be null")
-    @NotBlank(message = "Movie should not be blank")
-    private Movie movie;
+    private Long movieId;
 
     @NotNull(message = "User should not be null")
-    @NotNull(message = "User should not be blank")
-    private User user;
+    private Long userId;
 }

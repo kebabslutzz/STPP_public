@@ -49,9 +49,4 @@ public class CommentController {
         commentService.deleteComment(id);
         return ResponseEntity.noContent().build();
     }
-
-//    @PostMapping
-//    public ResponseEntity<CommentResponseDto> createComment(@Valid @RequestBody String content){
-//        CommentResponseDto createdComment = commentService.createComment(content);
-//    }
 }

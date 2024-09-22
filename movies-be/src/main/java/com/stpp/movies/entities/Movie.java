@@ -69,8 +69,8 @@ public class Movie {
     @LastModifiedDate
     private OffsetDateTime dateModified;
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Discussion> discussions;
+//    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Discussion> discussions;
 
     @PrePersist
     public void prePersist() {

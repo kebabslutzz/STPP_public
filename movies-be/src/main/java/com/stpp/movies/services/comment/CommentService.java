@@ -6,6 +6,9 @@ import com.stpp.movies.dto.comment.CommentResponseDto;
 import com.stpp.movies.entities.Comment;
 import com.stpp.movies.exceptions.NotFoundException;
 import com.stpp.movies.repositories.CommentRepository;
+import com.stpp.movies.repositories.DiscussionRepository;
+import com.stpp.movies.repositories.MovieRepository;
+import com.stpp.movies.repositories.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,9 @@ import java.util.Optional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final MovieRepository movieRepository;
+    private final UserRepository userRepository;
+    private final DiscussionRepository discussionRepository;
 
     private static final CommentMapper MAPPER = CommentMapper.INSTANCE;
 
@@ -59,10 +65,28 @@ public class CommentService {
         commentRepository.deleteById(id);
     }
 
-//    @Transactional
-//    public CommentResponseDto createComment(@Valid String content){
-//        Comment comment = MAPPER.requestDtoToComment(content);
-//        comment = commentRepository.save(comment);
-//        return MAPPER.commentToResponseDto(comment);
-//    }
+    public List<CommentResponseDto> getAllByDiscussionId(Long id) {
+        return commentRepository
+                .findAllByDiscussionId(id)
+                .stream()
+                .map(MAPPER::commentToResponseDto)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Transactional
+    public CommentResponseDto createComment(Long movieId, Long discussionId, CommentRequestDto content) {
+        if (!movieRepository.existsById(movieId)) {
+            throw new NotFoundException("Movie with ID " + movieId + " not found");
+        }
+        if (!discussionRepository.existsById(discussionId)) {
+            throw new NotFoundException("Discussion with ID " + discussionId + " not found");
+        }
+        if (!userRepository.existsById(content.getUserId())) {
+            throw new NotFoundException("User with ID " + content.getUserId() + " not found");
+        }
+
+        Comment comment = MAPPER.requestDtoToComment(content, discussionId);
+        comment = commentRepository.save(comment);
+        return MAPPER.commentToResponseDto(comment);
+    }
 }

@@ -1,10 +1,14 @@
 package com.stpp.movies.controllers;
 
+import com.stpp.movies.dto.comment.CommentRequestDto;
+import com.stpp.movies.dto.comment.CommentResponseDto;
+import com.stpp.movies.dto.discussion.DiscussionRequestDto;
 import com.stpp.movies.dto.discussion.DiscussionResponseDto;
 import com.stpp.movies.dto.movie.MovieEditRequestDto;
 import com.stpp.movies.dto.movie.MovieRequestDto;
 import com.stpp.movies.dto.movie.MovieResponseDto;
 import com.stpp.movies.entities.Discussion;
+import com.stpp.movies.services.comment.CommentService;
 import com.stpp.movies.services.discussion.DiscussionService;
 import com.stpp.movies.services.movie.MovieService;
 import jakarta.validation.Valid;
@@ -32,6 +36,7 @@ public class MovieController {
 
     private final MovieService movieService;
     private final DiscussionService discussionService;
+    private final CommentService commentService;
 
     @GetMapping("/{id}")
     public ResponseEntity<MovieResponseDto> getMovieById(@PathVariable Long id){
@@ -74,6 +79,23 @@ public class MovieController {
     public ResponseEntity<List<DiscussionResponseDto>> getAllDiscussionsByMovieId(@PathVariable @Valid Long id){
         List<DiscussionResponseDto> discussions = discussionService.getAllDiscussionsByMovieId(id);
         return ResponseEntity.ok(discussions);
+    }
+
+    @PostMapping("/{id}/discussions")
+    public ResponseEntity<DiscussionResponseDto> createDiscussion(@PathVariable Long id, @Valid @RequestBody DiscussionRequestDto discussionRequestDto){
+        DiscussionResponseDto createdDiscussion = discussionService.createDiscussion(id, discussionRequestDto);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdDiscussion.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(createdDiscussion);
+    }
+
+    @PostMapping("/{movieId}/discussions/{discussionId}/comments")
+    public ResponseEntity<CommentResponseDto> createComment(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @RequestBody CommentRequestDto commentRequestDto) {
+        CommentResponseDto createdComment = commentService.createComment(movieId, discussionId, commentRequestDto);
+        return ResponseEntity.ok(createdComment);
     }
 
 }

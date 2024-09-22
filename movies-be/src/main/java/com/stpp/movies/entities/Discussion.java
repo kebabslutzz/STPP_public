@@ -44,8 +44,8 @@ public class Discussion {
     @LastModifiedDate
     private OffsetDateTime dateModified;
 
-    @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
+//    @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Comment> comments;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "movie_id", nullable = false, updatable = false)

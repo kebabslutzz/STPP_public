@@ -10,4 +10,6 @@ import java.util.List;
 public interface DiscussionRepository extends JpaRepository<Discussion, Long> {
 
     List<Discussion> findAllByMovieId(Long movieId);
+
+    List<Discussion> findAllByOrderByMovieAsc();
 }
