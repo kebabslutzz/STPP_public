@@ -1,6 +1,7 @@
 package com.stpp.movies.dto.movie;
 
 import com.stpp.movies.entities.Movie;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -19,7 +21,6 @@ import java.time.LocalDate;
 @Data
 @SuperBuilder(toBuilder = true)
 public class MovieResponseDto {
-    @NotBlank(message = "Id should not be blank")
     @NotNull(message = "Id should not be null")
     private Long id;
 
@@ -55,18 +56,21 @@ public class MovieResponseDto {
     @NotNull(message = "Release date should not be null")
     private LocalDate releaseDate;
 
-    private byte[] poster;
+//    private byte[] poster;
+    @Nullable
+    private Long posterId;
+//    private String poster;
 
-    public static MovieResponseDto of(Movie movie) {
-        return MovieResponseDto.builder()
-                .id(movie.getId())
-                .title(movie.getTitle())
-                .description(movie.getDescription())
-                .director(movie.getDirector())
-                .genre(movie.getGenre())
-                .rating(movie.getRating())
-                .releaseDate(movie.getReleaseDate())
-                .poster(movie.getPoster())
-                .build();
-    }
+//    public static MovieResponseDto of(Movie movie) {
+//        return MovieResponseDto.builder()
+//                .id(movie.getId())
+//                .title(movie.getTitle())
+//                .description(movie.getDescription())
+//                .director(movie.getDirector())
+//                .genre(movie.getGenre())
+//                .rating(movie.getRating())
+//                .releaseDate(movie.getReleaseDate())
+//                .poster(movie.getPoster())
+//                .build();
+//    }
 }

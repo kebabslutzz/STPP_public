@@ -1,6 +1,5 @@
 package com.stpp.movies.services.comment;
 
-import com.stpp.movies.dto.comment.CommentEditRequestDto;
 import com.stpp.movies.dto.comment.CommentRequestDto;
 import com.stpp.movies.dto.comment.CommentResponseDto;
 import com.stpp.movies.entities.Comment;
@@ -11,7 +10,6 @@ import com.stpp.movies.repositories.MovieRepository;
 import com.stpp.movies.repositories.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -88,5 +86,15 @@ public class CommentService {
         Comment comment = MAPPER.requestDtoToComment(content, discussionId);
         comment = commentRepository.save(comment);
         return MAPPER.commentToResponseDto(comment);
+    }
+
+    public List<CommentResponseDto> getAllCommentsByDiscussionId(Long movieId, Long discussionId) {
+        if (!movieRepository.existsById(movieId)) {
+            throw new NotFoundException("Movie with ID " + movieId + " not found");
+        }
+        if (!discussionRepository.existsById(discussionId)) {
+            throw new NotFoundException("Discussion with ID " + discussionId + " not found");
+        }
+        return getAllByDiscussionId(discussionId);
     }
 }

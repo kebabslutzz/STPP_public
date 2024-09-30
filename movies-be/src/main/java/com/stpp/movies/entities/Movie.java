@@ -1,31 +1,29 @@
 package com.stpp.movies.entities;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.stpp.movies.configurations.LocalDateDeserializer;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Base64;
 import java.util.List;
 
 @NoArgsConstructor
@@ -59,8 +57,14 @@ public class Movie {
     @Column(nullable = false)
     private LocalDate releaseDate;
 
-    @Column(columnDefinition = "bytea")
-    private byte[] poster;
+//    @Column
+//    private String poster;
+//    @Column(columnDefinition = "bytea")
+//    private byte[] poster;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "poster_id", referencedColumnName = "id", unique = true)
+    private Poster poster;
 
     @Column(nullable = false, updatable = false)
     private OffsetDateTime dateCreated;
@@ -69,8 +73,8 @@ public class Movie {
     @LastModifiedDate
     private OffsetDateTime dateModified;
 
-//    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Discussion> discussions;
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Discussion> discussions;
 
     @PrePersist
     public void prePersist() {

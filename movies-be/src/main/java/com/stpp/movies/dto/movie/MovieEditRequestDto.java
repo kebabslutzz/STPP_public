@@ -1,5 +1,6 @@
 package com.stpp.movies.dto.movie;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -18,7 +20,6 @@ import java.time.LocalDate;
 @SuperBuilder(toBuilder = true)
 @Data
 public class MovieEditRequestDto {
-    @NotBlank(message = "Id should not be blank")
     @NotNull(message = "Id should not be null")
     private Long id;
 
@@ -54,5 +55,10 @@ public class MovieEditRequestDto {
     @NotNull(message = "Release date should not be null")
     private LocalDate releaseDate;
 
-    private byte[] poster;
+//    @Nullable
+//    private MultipartFile poster;
+
+    @Nullable
+//    private byte[] poster;
+    private Long posterId;
 }

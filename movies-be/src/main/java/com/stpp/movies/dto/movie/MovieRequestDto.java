@@ -1,7 +1,5 @@
 package com.stpp.movies.dto.movie;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.stpp.movies.configurations.LocalDateDeserializer;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -13,9 +11,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -54,5 +52,6 @@ public class MovieRequestDto {
     private LocalDate releaseDate;
 
     @Nullable
-    private byte[] poster;
+    private Long posterId;
+//    private byte[] poster;
 }

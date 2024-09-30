@@ -1,6 +1,5 @@
 package com.stpp.movies.services.discussion;
 
-import com.stpp.movies.dto.discussion.DiscussionEditRequestDto;
 import com.stpp.movies.dto.discussion.DiscussionRequestDto;
 import com.stpp.movies.dto.discussion.DiscussionResponseDto;
 import com.stpp.movies.entities.Discussion;

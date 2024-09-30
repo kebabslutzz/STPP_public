@@ -1,0 +1,74 @@
+.MovieCard {
+	width: 200px;
+	height: 300px;
+	perspective: 1000px;
+	cursor: pointer;
+	margin: 10px;
+	/* display: flex; */
+	/* flex-direction: column; */
+	align-items: center;
+	margin-bottom: 60px;
+	border-radius: 10px;
+}
+
+.MovieCardInner {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	transition: transform 0.75s;
+	transform-style: preserve-3d;
+	border-radius: 10px;
+}
+
+.MovieCard:hover .MovieCardInner {
+	transform: rotateY(180deg);
+	border-radius: 10px;
+}
+
+.MovieCardFront,
+.MovieCardBack {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	backface-visibility: hidden;
+	border-radius: 10px;
+}
+
+.MovieCardFront {
+	border-radius: 10px;
+	background-color: #fff;
+}
+
+.MovieCardBack {
+	background-color: #008080;
+	/* background-color: #b1ddf1; */
+	/* color: black; */
+	color: #dddbcb;
+	/* color: #fffdd0; */
+	font-weight: bold;
+	border-radius: 10px;
+	transform: rotateY(180deg);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+.MoviePoster {
+	width: 100%;
+	height: 100%;
+	border-radius: 10px;
+	object-fit: cover;
+}
+
+.MovieTitle {
+	width: 200px;
+	height: 50px;
+	margin-top: 10px;
+	font-size: 1.2em;
+	border-radius: 10px;
+	text-align: center;
+}

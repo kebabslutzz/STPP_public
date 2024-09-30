@@ -1,0 +1,39 @@
+.MovieDetail {
+	display: flex;
+	align-items: flex-start;
+	padding: 20px;
+	background-color: var(--background-color);
+	color: var(--text-color);
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.MoviePosterContainer {
+	flex: 0 0 auto;
+	margin-right: 20px;
+}
+
+.MoviePosterDetails {
+	width: auto;
+	height: 420px;
+	border-radius: 8px;
+	object-fit: cover;
+}
+
+.MovieInfo {
+	flex: 1 1 auto;
+}
+
+.MovieInfo h1 {
+	margin-top: 0;
+	margin-bottom: 10px;
+	font-size: 2em;
+}
+
+.MovieInfo p {
+	margin: 5px 0;
+}
+
+.MovieInfo strong {
+	font-weight: bold;
+}

@@ -44,4 +44,12 @@ public class GlobalExceptionHandler {
         errorResponseDto.setStatus(HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponseDto> handleValidationException(ValidationException ex) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto();
+        errorResponseDto.setMessage(ex.getMessage());
+        errorResponseDto.setStatus(HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+    }
 }

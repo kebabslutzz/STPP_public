@@ -4,14 +4,19 @@ import com.stpp.movies.dto.movie.MovieEditRequestDto;
 import com.stpp.movies.dto.movie.MovieRequestDto;
 import com.stpp.movies.dto.movie.MovieResponseDto;
 import com.stpp.movies.entities.Movie;
+import com.stpp.movies.entities.Poster;
 import com.stpp.movies.exceptions.NotFoundException;
 import com.stpp.movies.repositories.MovieRepository;
+import com.stpp.movies.services.file.FileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +28,8 @@ import java.util.stream.Collectors;
 public class MovieService {
 
     private final MovieRepository movieRepository;
+    private final FileService fileService;
+
 
     private static final MovieMapper MAPPER = MovieMapper.INSTANCE;
 
@@ -34,6 +41,10 @@ public class MovieService {
     @Transactional
     public MovieResponseDto createMovie(@Valid MovieRequestDto movieRequestDto) {
         Movie movie = MAPPER.requestDtoToMovie(movieRequestDto);
+
+        Poster poster = fileService.getPoster(movieRequestDto.getPosterId());
+        movie.setPoster(poster);
+
         movie = movieRepository.save(movie);
         return MAPPER.movieToResponseDto(movie);
     }
@@ -52,7 +63,11 @@ public class MovieService {
         if (!movieRepository.existsById(movieEditRequestDto.getId())) {
             throw new NotFoundException("Movie with ID " + movieEditRequestDto.getId() + " not found");
         }
+
         Movie movie = movieRepository.findById(movieEditRequestDto.getId()).get();
+
+        Poster poster = fileService.getPoster(movieEditRequestDto.getPosterId());
+        movie.setPoster(poster);
 
         MAPPER.movieEditRequestDtoToMovie(movieEditRequestDto, movie);
 
@@ -66,5 +81,32 @@ public class MovieService {
             throw new NotFoundException("Movie with ID " + id + " not found");
         }
         movieRepository.deleteById(id);
+    }
+
+    public MovieResponseDto updateMoviePoster(Long id, byte[] bytes) {
+        if (!movieRepository.existsById(id)) {
+            throw new NotFoundException("Movie with ID " + id + " not found");
+        }
+
+        Movie movie = movieRepository.findById(id).get();
+//        movie.setPoster(bytes);
+        movie = movieRepository.save(movie);
+        return MAPPER.movieToResponseDto(movie);
+    }
+
+    @Transactional
+    public MovieResponseDto addPosterToMovie(Long id, Long posterId) {
+        if (!movieRepository.existsById(id)) {
+            throw new NotFoundException("Movie with ID " + id + " not found");
+        }
+        if (!fileService.existsById(posterId)) {
+            throw new NotFoundException("Poster with ID " + posterId + " not found");
+        }
+
+        Movie movie = movieRepository.findById(id).get();
+        Poster poster = fileService.getPoster(posterId);
+        movie.setPoster(poster);
+        movie = movieRepository.save(movie);
+        return MAPPER.movieToResponseDto(movie);
     }
 }
