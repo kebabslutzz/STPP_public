@@ -42,8 +42,12 @@ public class MovieService {
     public MovieResponseDto createMovie(@Valid MovieRequestDto movieRequestDto) {
         Movie movie = MAPPER.requestDtoToMovie(movieRequestDto);
 
-        Poster poster = fileService.getPoster(movieRequestDto.getPosterId());
-        movie.setPoster(poster);
+        if (movieRequestDto.getPosterId() != null) {
+            Poster poster = fileService.getPosterAsPoster(movieRequestDto.getPosterId());
+            movie.setPoster(poster);
+        }else {
+            movie.setPoster(null);
+        }
 
         movie = movieRepository.save(movie);
         return MAPPER.movieToResponseDto(movie);
@@ -66,7 +70,11 @@ public class MovieService {
 
         Movie movie = movieRepository.findById(movieEditRequestDto.getId()).get();
 
-        Poster poster = fileService.getPoster(movieEditRequestDto.getPosterId());
+        Poster poster = Poster.builder()
+                .id(movieEditRequestDto.getPosterId())
+                .poster(fileService.getPoster(movieEditRequestDto.getPosterId()).getPoster())
+                .build();
+
         movie.setPoster(poster);
 
         MAPPER.movieEditRequestDtoToMovie(movieEditRequestDto, movie);
@@ -104,7 +112,10 @@ public class MovieService {
         }
 
         Movie movie = movieRepository.findById(id).get();
-        Poster poster = fileService.getPoster(posterId);
+        Poster poster = Poster.builder()
+                .id(posterId)
+                .poster(fileService.getPoster(posterId).getPoster())
+                .build();
         movie.setPoster(poster);
         movie = movieRepository.save(movie);
         return MAPPER.movieToResponseDto(movie);

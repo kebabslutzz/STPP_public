@@ -7,6 +7,8 @@ import SendIcon from '@mui/icons-material/Send';
 import './MovieFormDialogBox.css';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormHelperText, TextField } from '@mui/material';
 import Poster from '../../../interfaces/Poster';
+import movieValidationSchema from '../../../validation/movieValidation';
+import * as yup from 'yup';
 
 interface MovieFormDialogBoxProps {
 	onClose: () => void;
@@ -25,18 +27,8 @@ const MovieFormDialogBox: React.FC<MovieFormDialogBoxProps> = ({ onClose, onSubm
 	const [errors, setErrors] = useState<{ [key: string]: string }>({});
 	const dialogRef = useRef<HTMLDivElement>(null);
 
-	const handleSubmit = async () => {
-		const newErrors: { [key: string]: string } = {};
-		if (!title) newErrors.title = 'Title is required';
-		if (!description) newErrors.description = 'Description is required';
-		if (!rating) newErrors.rating = 'Rating is required';
-		if (!director) newErrors.director = 'Director is required';
-		if (!genre) newErrors.genre = 'Genre is required';
-
-		if (Object.keys(newErrors).length > 0) {
-			setErrors(newErrors);
-			return;
-		}
+	const handleSubmit = async (event: React.FormEvent) => {
+		event.preventDefault(); // Prevent form submission
 
 		const newMovie: Movie = {
 			title,
@@ -47,8 +39,34 @@ const MovieFormDialogBox: React.FC<MovieFormDialogBoxProps> = ({ onClose, onSubm
 			releaseDate,
 		};
 
-		onSubmit(newMovie, poster as File);
-		onClose();
+		try {
+			await movieValidationSchema.validate(
+				{ title, description, director, genre, rating, releaseDate, poster },
+				{ abortEarly: false }
+			);
+			onSubmit(newMovie, poster!);
+			onClose();
+		} catch (validationErrors) {
+			const newErrors: { [key: string]: string } = {};
+			(validationErrors as yup.ValidationError).inner.forEach((error) => {
+				if (error.path) newErrors[error.path] = error.message;
+			});
+			setErrors(newErrors);
+		}
+		// const newErrors: { [key: string]: string } = {};
+		// if (!title) newErrors.title = 'Title is required';
+		// if (!description) newErrors.description = 'Description is required';
+		// if (!rating) newErrors.rating = 'Rating is required';
+		// if (!director) newErrors.director = 'Director is required';
+		// if (!genre) newErrors.genre = 'Genre is required';
+
+		// if (Object.keys(newErrors).length > 0) {
+		// 	setErrors(newErrors);
+		// 	return;
+		// }
+
+		// onSubmit(newMovie, poster as File);
+		// onClose();
 
 		// try {
 		// 	// Step 1: Create Poster
@@ -126,7 +144,7 @@ const MovieFormDialogBox: React.FC<MovieFormDialogBoxProps> = ({ onClose, onSubm
 	}, []);
 
 	return (
-		<Dialog open={open} onClose={onClose} aria-labelledby='form-dialog-title'>
+		<Dialog open={open} onClose={onClose} ref={dialogRef} aria-labelledby='form-dialog-title'>
 			<DialogTitle id='form-dialog-title'>Add Movie</DialogTitle>
 			<DialogContent>
 				{/* {errors.length > 0 && (
@@ -236,7 +254,7 @@ const MovieFormDialogBox: React.FC<MovieFormDialogBoxProps> = ({ onClose, onSubm
 					onChange={(e) => setPoster(e.target.files ? e.target.files[0] : null)}
 					style={{ marginTop: '10px' }}
 				/> */}
-				{errors.poster && <FormHelperText error>{errors.poster}</FormHelperText>}
+				{/* {errors.poster && <FormHelperText error>{errors.poster}</FormHelperText>} */}
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={onClose} color='primary'>

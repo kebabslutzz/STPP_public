@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import Discussion from '../../interfaces/Discussion';
 import ROUTE_PATHS from '../../constants/routePaths';
 import Movie from '../../interfaces/Movie';
+import { Box, Divider, List, ListItem, ListItemText, Typography } from '@mui/material';
+import './DiscussionListItem.css';
 
 interface DiscussionListItemProps {
 	discussion: Discussion;
@@ -17,9 +19,19 @@ const DiscussionListItem: React.FC<DiscussionListItemProps> = ({ discussion, mov
 	};
 
 	return (
-		<div onClick={handleItemClick} className='DiscussionListItem'>
-			<h3>{discussion.title}</h3>
-		</div>
+		<Box onClick={handleItemClick} className='DiscussionListItem'>
+			<Box className='left-side'>
+				<Typography variant='body1'>{`User ID: ${discussion.userId}`}</Typography>
+				<Divider orientation='vertical' flexItem className='separator' style={{ height: '24px' }} />
+				<Typography variant='body1'>{`Title: ${discussion.title}`}</Typography>
+			</Box>
+			<Box className='right-side'>
+				<Divider orientation='vertical' flexItem className='separator' style={{ height: '24px' }} />
+				<Typography variant='body1'>{`Comments: 1`}</Typography>
+				<Divider orientation='vertical' flexItem className='separator' style={{ height: '24px' }} />
+				<Typography variant='body1'>{`Date: 2000-01-01`}</Typography>
+			</Box>
+		</Box>
 	);
 };
 

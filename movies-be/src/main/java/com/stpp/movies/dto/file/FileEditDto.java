@@ -12,9 +12,5 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder(toBuilder = true)
 public class FileEditDto {
-    @Id
-    private Long id;
-
-    @Lob
     private byte[] poster;
 }

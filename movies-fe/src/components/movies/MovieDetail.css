@@ -2,6 +2,8 @@
 	display: flex;
 	align-items: flex-start;
 	padding: 20px;
+	color: #dddbcb !important;
+
 	background-color: var(--background-color);
 	color: var(--text-color);
 	border-radius: 8px;
@@ -36,4 +38,25 @@
 
 .MovieInfo strong {
 	font-weight: bold;
+}
+
+.MovieDetailContainer {
+	display: flex;
+	flex-direction: column;
+	max-width: 1475px; /* Adjust this value as needed */
+	margin: 0 auto;
+	padding: 20px;
+	color: #dddbcb;
+}
+
+.MovieTitle {
+	text-align: center;
+	font-size: 2.5em; /* Increase the font size */
+	margin-bottom: 20px; /* Add some space below the title */
+}
+
+.MovieDetail .MovieInfo h1 {
+	text-align: center;
+	font-size: 2.5em; /* Increase the font size */
+	margin-bottom: 20px; /* Add some space below the title */
 }

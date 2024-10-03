@@ -5,6 +5,7 @@ import ROUTE_PATHS from '../../constants/routePaths';
 import useQuery from '../../hooks/useQuery';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { HTTP_METHODS } from '../../constants/httpsMethods';
+import Poster from '../../interfaces/Poster';
 
 interface MovieCardProps {
 	id: number;
@@ -14,7 +15,7 @@ interface MovieCardProps {
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({ id, title, description, posterId }) => {
-	const [poster, setPoster] = React.useState<string | null>(null);
+	const [poster, setPoster] = React.useState<Poster | null>(null);
 	const navigate = useNavigate();
 
 	console.log('posterId:', posterId);
@@ -24,7 +25,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ id, title, description, posterId 
 		isLoading,
 		errors,
 		getData,
-	} = useQuery<string>({
+	} = useQuery<Poster>({
 		url: ENDPOINTS.POSTER.GET_POSTER(posterId ? posterId : 0),
 		httpMethod: HTTP_METHODS.GET,
 	});
@@ -47,7 +48,9 @@ const MovieCard: React.FC<MovieCardProps> = ({ id, title, description, posterId 
 
 	console.log('posterBytes:', posterBytes);
 
-	const base64String = posterBytes ? `data:image/jpeg;base64,${posterBytes}` : 'path/to/default/poster.jpg';
+	const base64String = posterBytes?.poster
+		? `data:image/jpeg;base64,${posterBytes.poster}`
+		: 'path/to/default/poster.jpg';
 
 	return (
 		<div className='MovieCard' onClick={handleCardClick}>

@@ -11,7 +11,9 @@ import MovieFormDialogBox from './component/MovieFormDialogBox';
 import { format } from 'path';
 import Poster from '../../interfaces/Poster';
 import { json } from 'stream/consumers';
-import { Button } from '@mui/material';
+import { Button, Container } from '@mui/material';
+import './MovieList.css';
+import AddIcon from '@mui/icons-material/Add';
 
 const MovieList: React.FC = () => {
 	const [movieList, setMovieList] = useState<Movie[]>([]);
@@ -81,8 +83,12 @@ const MovieList: React.FC = () => {
 				throw new Error('Failed to upload poster');
 			}
 
-			const posterData = await posterResponse.text();
-			const posterId: number = Number(posterData);
+			console.log('POSTER RESPONSE:', posterResponse);
+			const posterData = await posterResponse.json();
+			console.log('POSTER DATA:', posterData);
+			const posterId: number = Number(posterData.id);
+			console.log('CREATED POSTER ID:', posterId);
+			newMovie.posterId = posterId;
 
 			// Step 2: Create Movie
 			const movieWithPoster: Movie = {
@@ -173,11 +179,20 @@ const MovieList: React.FC = () => {
 	if (errors) return <div>{errors.join(', ')}</div>;
 
 	return (
-		<div className='PageContainer'>
-			<h1>Hello from movies!</h1>
-			<Button onClick={handleOpenDialog} variant='contained'>
-				Add Movie
-			</Button>
+		// <div className='PageContainer'>
+		<Container className='PageContainer' maxWidth={false}>
+			<div className='header-row'>
+				<h1>Top Trending Movies Right Now!</h1>
+				<Button
+					className='add-movie-button'
+					onClick={handleOpenDialog}
+					variant='text'
+					sx={{ color: '#dddbcb', backgroundColor: '#008080 !important' }}
+					endIcon={<AddIcon />}
+				>
+					Add Movie
+				</Button>
+			</div>
 			<div className='MovieList'>
 				{movieList.map((movie) => (
 					<MovieCard
@@ -193,7 +208,8 @@ const MovieList: React.FC = () => {
 				<MovieFormDialogBox open={isDialogOpen} onClose={handleCloseDialog} onSubmit={handleCreateSuccess} />
 			)}
 			<Outlet /> {/* This will render nested routes */}
-		</div>
+			{/* </div> */}
+		</Container>
 	);
 };
 

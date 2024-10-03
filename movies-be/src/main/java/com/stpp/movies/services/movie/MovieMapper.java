@@ -57,7 +57,7 @@ public interface MovieMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dateCreated", ignore = true)
     @Mapping(target = "dateModified", ignore = true)
-    @Mapping(source = "posterId", target = "poster.id")
+    @Mapping(source = "posterId", target = "poster.id", ignore = true)
 //    @Mapping(expression = "java(convertPosterToBase64(movie.getPoster()))", target = "movieRequestDto.poster")
     Movie requestDtoToMovie(MovieRequestDto movieRequestDto);
 

@@ -24,7 +24,7 @@ export const ENDPOINTS = {
 			`${BASE_URL}/movies/${movieId}/discussions/${id}/comments`,
 	},
 	POSTER: {
-		GET_POSTER: (id: number) => `${BASE_URL}/upload/${id}`,
-		CREATE_POSTER: `${BASE_URL}/upload`,
+		GET_POSTER: (id: number) => `${BASE_URL}/files/${id}`,
+		CREATE_POSTER: `${BASE_URL}/files`,
 	},
 };

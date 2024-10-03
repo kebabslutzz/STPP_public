@@ -6,8 +6,9 @@ import Discussion from '../../interfaces/Discussion';
 import useQuery from '../../hooks/useQuery';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { HTTP_METHODS } from '../../constants/httpsMethods';
-import { List } from '@mui/material';
+import { Container, List } from '@mui/material';
 import DiscussionListItem from '../discussions/DisccusionListItem';
+import Poster from '../../interfaces/Poster';
 // import DiscussionList from '../discussions/DiscussionList';
 
 interface MovieDetailProps {
@@ -46,7 +47,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movie }) => {
 		isLoading: isLoadingPoster,
 		errors: errorsPoster,
 		getData: getDataPoster,
-	} = useQuery<string>({
+	} = useQuery<Poster>({
 		url: ENDPOINTS.POSTER.GET_POSTER(movie.posterId ? movie.posterId : 0),
 		httpMethod: HTTP_METHODS.GET,
 	});
@@ -59,7 +60,10 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movie }) => {
 
 	useEffect(() => {
 		if (posterBytes) {
-			setImageUrl(`data:image/jpeg;base64,${posterBytes}`);
+			let base64String = posterBytes?.poster
+				? `data:image/jpeg;base64,${posterBytes.poster}`
+				: 'path/to/default/poster.jpg';
+			setImageUrl(base64String);
 		}
 	}, [posterBytes]);
 
@@ -67,7 +71,8 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movie }) => {
 	if (errorsMovie) return <div>{errorsMovie.join(', ')}</div>;
 
 	return (
-		<div>
+		<Container className='MovieDetailContainer' maxWidth={false}>
+			<h1 style={{ color: '#dddbcb', textAlign: 'center', fontSize: '2.5em', marginBottom: '20px' }}>{movie.title}</h1>
 			<div className='MovieDetail'>
 				{movie.posterId && (
 					<div className='MoviePosterContainer'>
@@ -75,8 +80,6 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movie }) => {
 					</div>
 				)}
 				<div className='MovieInfo'>
-					<h1>{movie.title}</h1>
-					<p>{movie.description}</p>
 					<p>
 						<strong>Director:</strong> {movie.director}
 					</p>
@@ -87,20 +90,24 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movie }) => {
 						<strong>Rating:</strong> {movie.rating}
 					</p>
 					<p>
-						<strong>Release Date:</strong> {movie.releaseDate.toDateString()}
+						<strong>Release Date:</strong> {new Date(movie.releaseDate).toDateString()}
 					</p>
+					<p>{movie.description}</p>
 				</div>
 			</div>
 			<List component='nav' aria-label='discussions'>
 				{!discussionList || discussionList.length === 0 ? (
 					<div>No discussions yet</div>
 				) : (
-					discussionList.map((discussion) => (
-						<DiscussionListItem key={discussion.id} discussion={discussion} movie={movie} />
-					))
+					<>
+						<div>Most recent discussions</div>
+						{discussionList.map((discussion) => (
+							<DiscussionListItem key={discussion.id} discussion={discussion} movie={movie} />
+						))}
+					</>
 				)}
 			</List>
-		</div>
+		</Container>
 	);
 };
 
