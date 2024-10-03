@@ -9,36 +9,40 @@ import MovieDetail from '../components/movies/MovieDetail';
 
 const MovieDetailPage: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
-	const [openMovie, setOpenMovie] = useState<Movie | null>(null);
-	const {
-		data: movie,
-		isLoading,
-		errors,
-		getData,
-	} = useQuery<Movie>({
-		url: ENDPOINTS.MOVIES.GET_MOVIE_BY_ID(Number(id)),
-		httpMethod: HTTP_METHODS.GET,
-	});
+	// const [openMovie, setOpenMovie] = useState<Movie | null>(null);
+	// const {
+	// 	data: movie,
+	// 	isLoading,
+	// 	errors,
+	// 	getData,
+	// } = useQuery<Movie>({
+	// 	url: ENDPOINTS.MOVIES.GET_MOVIE_BY_ID(Number(id)),
+	// 	httpMethod: HTTP_METHODS.GET,
+	// });
 
-	useEffect(() => {
-		if (!movie) {
-			getData();
-		}
-	}, [getData, movie]);
+	// useEffect(() => {
+	// 	if (!movie) {
+	// 		getData();
+	// 	}
+	// }, [getData, movie]);
 
-	useEffect(() => {
-		if (movie) {
-			setOpenMovie({
-				...movie,
-				releaseDate: new Date(movie.releaseDate),
-			});
-		}
-	}, [movie]);
+	// useEffect(() => {
+	// 	if (movie) {
+	// 		setOpenMovie({
+	// 			...movie,
+	// 			releaseDate: new Date(movie.releaseDate),
+	// 		});
+	// 	}
+	// }, [movie]);
 
-	if (isLoading) return <Loader />;
-	if (errors) return <div>{errors.join(', ')}</div>;
+	// if (isLoading) return <Loader />;
+	// if (errors) return <div>{errors.join(', ')}</div>;
 
-	return <div className='PageContainer'>{openMovie && <MovieDetail movie={openMovie} />}</div>;
+	return (
+		<div className='PageContainer'>
+			<MovieDetail movieId={Number(id)} />
+		</div>
+	);
 };
 
 export default MovieDetailPage;

@@ -13,14 +13,40 @@ import MovieFormDialogBox from './component/MovieFormDialogBox';
 // import DiscussionList from '../discussions/DiscussionList';
 
 interface MovieDetailProps {
-	movie: Movie;
+	movieId: number;
 }
 
-const MovieDetail: React.FC<MovieDetailProps> = ({ movie }) => {
+const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 	const [discussionList, setDiscussionList] = useState<Discussion[]>([]);
 	const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [listOfErrors, setListOfErrors] = useState<string[]>([]);
+
+	const [openMovie, setOpenMovie] = useState<Movie | null>(null);
+	const {
+		data: movie,
+		isLoading,
+		errors,
+		getData,
+	} = useQuery<Movie>({
+		url: ENDPOINTS.MOVIES.GET_MOVIE_BY_ID(movieId),
+		httpMethod: HTTP_METHODS.GET,
+	});
+
+	useEffect(() => {
+		if (!movie) {
+			getData();
+		}
+	}, [getData, movie]);
+
+	useEffect(() => {
+		if (movie) {
+			setOpenMovie({
+				...movie,
+				releaseDate: new Date(movie.releaseDate),
+			});
+		}
+	}, [movie]);
 
 	// console.log('Calling movies api');
 	const {
@@ -29,7 +55,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movie }) => {
 		errors: errorsMovie,
 		getData: getDataMovie,
 	} = useQuery<Discussion[]>({
-		url: ENDPOINTS.DISCUSSIONS.GET_ALL_DISCUSSIONS_BY_MOVIE_ID(movie.id ? movie.id : 0),
+		url: ENDPOINTS.DISCUSSIONS.GET_ALL_DISCUSSIONS_BY_MOVIE_ID(openMovie?.id ? openMovie.id : 0),
 		httpMethod: HTTP_METHODS.GET,
 	});
 
@@ -51,7 +77,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movie }) => {
 		errors: errorsPoster,
 		getData: getDataPoster,
 	} = useQuery<Poster>({
-		url: ENDPOINTS.POSTER.GET_POSTER(movie.posterId ? movie.posterId : 0),
+		url: ENDPOINTS.POSTER.GET_POSTER(openMovie?.posterId! ?? 0),
 		httpMethod: HTTP_METHODS.GET,
 	});
 
@@ -59,7 +85,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movie }) => {
 		if (!posterBytes) {
 			getDataPoster();
 		}
-	}, []);
+	}, [openMovie?.posterId, getDataPoster]);
 
 	useEffect(() => {
 		if (posterBytes) {
@@ -78,14 +104,14 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movie }) => {
 		setIsDialogOpen(false);
 	};
 	const onEditSuccess = () => {
-		getDataMovie();
-		getDataPoster();
+		// getDataMovie();
+		// getDataPoster();
 	};
 
 	const updateMovieCommand = useQuery({
 		url: ENDPOINTS.MOVIES.UPDATE_MOVIE,
 		httpMethod: HTTP_METHODS.PUT,
-		onSuccess: onEditSuccess,
+		// onSuccess: onEditSuccess,
 	});
 
 	const onEditSubmit = async (newMovie: Movie, poster: File) => {
@@ -100,9 +126,10 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movie }) => {
 				console.log('body:', formData);
 				let posterResponse: Response;
 
-				if (newMovie?.posterId) {
-					posterResponse = await fetch(ENDPOINTS.POSTER.UPDATE_POSTER(newMovie?.posterId!), {
-						method: HTTP_METHODS.PATCH,
+				if (newMovie.posterId) {
+					console.log(' ID YRA', newMovie?.posterId);
+					posterResponse = await fetch(ENDPOINTS.POSTER.UPDATE_POSTER(newMovie.posterId), {
+						method: HTTP_METHODS.PUT,
 						body: formData,
 					});
 
@@ -145,8 +172,12 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movie }) => {
 		}
 	};
 
+	const handleDelete = async () => {};
+
 	if (isLoadingMovie) return <Loader />;
 	if (errorsMovie) return <div>{errorsMovie.join(', ')}</div>;
+	if (isLoading) return <Loader />;
+	if (errors) return <div>{errors.join(', ')}</div>;
 
 	return (
 		<Container className='MovieDetailContainer' maxWidth={false}>
@@ -159,30 +190,45 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movie }) => {
 			>
 				Edit Movie
 			</Button>
-			<h1 style={{ color: '#dddbcb', textAlign: 'center', fontSize: '2.5em', marginBottom: '20px' }}>{movie.title}</h1>
+			{/* <Button
+				className='delete-movie-button'
+				onClick={handleDelete}
+				variant='text'
+				sx={{ color: '#dddbcb', backgroundColor: '#ff0000 !important' }}
+			>
+				Delete Movie
+			</Button> */}
+			<h1 style={{ color: '#dddbcb', textAlign: 'center', fontSize: '2.5em', marginBottom: '20px' }}>
+				{openMovie?.title}
+			</h1>
 			{isDialogOpen && (
-				<MovieFormDialogBox movie={movie} onClose={handleCloseDialog} onSubmit={onEditSubmit} open={isDialogOpen} />
+				<MovieFormDialogBox
+					movie={openMovie!}
+					onClose={handleCloseDialog}
+					onSubmit={onEditSubmit}
+					open={isDialogOpen}
+				/>
 			)}
 			<div className='MovieDetail'>
-				{movie.posterId && (
+				{openMovie?.posterId && (
 					<div className='MoviePosterContainer'>
-						<img src={imageUrl} alt={`${movie.title} poster`} className='MoviePosterDetails' />
+						<img src={imageUrl} alt={`${openMovie.title} poster`} className='MoviePosterDetails' />
 					</div>
 				)}
 				<div className='MovieInfo'>
 					<p>
-						<strong>Director:</strong> {movie.director}
+						<strong>Director:</strong> {openMovie?.director}
 					</p>
 					<p>
-						<strong>Genre:</strong> {movie.genre}
+						<strong>Genre:</strong> {openMovie?.genre}
 					</p>
 					<p>
-						<strong>Rating:</strong> {movie.rating}
+						<strong>Rating:</strong> {openMovie?.rating}
 					</p>
 					<p>
-						<strong>Release Date:</strong> {new Date(movie.releaseDate).toDateString()}
+						<strong>Release Date:</strong> {new Date(openMovie?.releaseDate!).toDateString()}
 					</p>
-					<p>{movie.description}</p>
+					<p>{openMovie?.description}</p>
 				</div>
 			</div>
 			<List component='nav' aria-label='discussions'>
@@ -192,7 +238,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movie }) => {
 					<>
 						<div>Most recent discussions</div>
 						{discussionList.map((discussion) => (
-							<DiscussionListItem key={discussion.id} discussion={discussion} movie={movie} />
+							<DiscussionListItem key={discussion.id} discussion={discussion} movie={openMovie!} />
 						))}
 					</>
 				)}

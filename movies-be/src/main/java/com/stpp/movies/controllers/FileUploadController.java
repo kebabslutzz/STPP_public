@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,7 +60,7 @@ public class FileUploadController {
 //        return new ResponseEntity<>(HttpStatus.OK);
 //    }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<FileResponseDto> updatePoster(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
         FileResponseDto fileResponseDto = fileService.updatePoster(id, file);
         return new ResponseEntity<>(fileResponseDto, HttpStatus.OK);
