@@ -70,12 +70,12 @@ public class MovieService {
 
         Movie movie = movieRepository.findById(movieEditRequestDto.getId()).get();
 
-        Poster poster = Poster.builder()
-                .id(movieEditRequestDto.getPosterId())
-                .poster(fileService.getPoster(movieEditRequestDto.getPosterId()).getPoster())
-                .build();
-
-        movie.setPoster(poster);
+        if (movieEditRequestDto.getPosterId() != null) {
+            Poster poster = fileService.getPosterAsPoster(movieEditRequestDto.getPosterId());
+            movie.setPoster(poster);
+        } else{
+            movie.setPoster(null);
+        }
 
         MAPPER.movieEditRequestDtoToMovie(movieEditRequestDto, movie);
 

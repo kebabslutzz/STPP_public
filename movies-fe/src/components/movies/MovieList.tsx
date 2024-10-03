@@ -69,37 +69,36 @@ const MovieList: React.FC = () => {
 
 	const handleCreateSuccess = async (newMovie: Movie, poster: File) => {
 		try {
-			const formData = new FormData();
-			formData.append('file', poster);
-			// const body = JSON.stringify(formData);
-			console.log('body:', formData);
+			let posterId: number | null = null;
 
-			const posterResponse = await fetch(ENDPOINTS.POSTER.CREATE_POSTER, {
-				method: HTTP_METHODS.POST,
-				body: formData,
-			});
+			if (poster) {
+				const formData = new FormData();
+				formData.append('file', poster);
+				console.log('body:', formData);
 
-			if (!posterResponse.ok) {
-				throw new Error('Failed to upload poster');
+				const posterResponse = await fetch(ENDPOINTS.POSTER.CREATE_POSTER, {
+					method: HTTP_METHODS.POST,
+					body: formData,
+				});
+
+				if (!posterResponse.ok) {
+					throw new Error('Failed to upload poster');
+				}
+
+				console.log('POSTER RESPONSE:', posterResponse);
+				const posterData = await posterResponse.json();
+				console.log('POSTER DATA:', posterData);
+				posterId = Number(posterData.id);
+				console.log('CREATED POSTER ID:', posterId);
 			}
-
-			console.log('POSTER RESPONSE:', posterResponse);
-			const posterData = await posterResponse.json();
-			console.log('POSTER DATA:', posterData);
-			const posterId: number = Number(posterData.id);
-			console.log('CREATED POSTER ID:', posterId);
-			newMovie.posterId = posterId;
 
 			// Step 2: Create Movie
 			const movieWithPoster: Movie = {
 				...newMovie,
-				posterId,
+				...(posterId && { posterId }), // Conditionally include posterId
 			};
 			console.log('movieWithPoster:', movieWithPoster);
 			const movieResponse = await createMovieCommand.sendData(movieWithPoster);
-			//  => {
-			// body: JSON.stringify(movieWithPoster),
-			// };
 
 			if (!movieResponse?.data.id) {
 				throw new Error('Failed to create movie');

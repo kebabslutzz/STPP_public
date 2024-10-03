@@ -13,7 +13,7 @@ export const ENDPOINTS = {
 		GET_MOVIE_BY_ID: (id: number) => `${BASE_URL}/movies/${id}`,
 		CREATE_MOVIE: `${BASE_URL}/movies`,
 		DELETE_MOVIE: (id: number) => `${BASE_URL}/movies/${id}`,
-		UPDATE_MOVIE: `${BASE_URL}/movies/`,
+		UPDATE_MOVIE: `${BASE_URL}/movies`,
 		ADD_POSTER: (id: number) => `${BASE_URL}/movies/${id}/poster`,
 	},
 	DISCUSSIONS: {
@@ -26,5 +26,6 @@ export const ENDPOINTS = {
 	POSTER: {
 		GET_POSTER: (id: number) => `${BASE_URL}/files/${id}`,
 		CREATE_POSTER: `${BASE_URL}/files`,
+		UPDATE_POSTER: (posterId: number) => `${BASE_URL}/files/${posterId}`,
 	},
 };

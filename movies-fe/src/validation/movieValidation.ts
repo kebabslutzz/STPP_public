@@ -29,7 +29,7 @@ const movieValidationSchema = yup.object().shape({
 		.min(1, 'Rating must be at least 1')
 		.max(10, 'Rating must be at most 10'),
 	releaseDate: yup.date().required('Release Date is required'),
-	poster: yup.mixed().required('Poster is required'),
+	// poster: yup.mixed().required('Poster is required'),
 });
 
 export default movieValidationSchema;
