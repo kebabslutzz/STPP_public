@@ -60,3 +60,46 @@
 	font-size: 2.5em; /* Increase the font size */
 	margin-bottom: 20px; /* Add some space below the title */
 }
+
+.add-movie-button {
+	padding: 10px 20px !important;
+	border-radius: 25px !important;
+	border: none !important;
+	border-radius: 25px !important;
+	background: #008080 !important;
+	color: #dddbcb !important;
+	cursor: pointer !important;
+	margin: 10 0px !important;
+	font-family: var(--font-family);
+}
+
+.delete-movie-button {
+	border-radius: 25px !important;
+	padding: 10px 20px !important;
+	margin: 0 10px !important;
+	border: 2px solid #008080 !important;
+	border-radius: 25px !important;
+	background: none !important;
+	color: #dddbcb !important;
+	cursor: pointer;
+	font-family: var(--font-family);
+}
+
+/* src/components/movies/MovieDetail.css */
+.movie-detail-header {
+	margin-bottom: 10px;
+}
+.discussion-header {
+	display: flex;
+	justify-content: space-between; /* Align items to the left and right */
+	align-items: center;
+}
+.create-discussion-button {
+	margin-left: auto; /* Push the button to the right */
+	color: #dddbcb !important;
+	background-color: #008080 !important;
+	border-radius: 25px !important;
+}
+.most-recent-discussions {
+	font-weight: bold;
+}

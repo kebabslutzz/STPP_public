@@ -84,7 +84,9 @@ const MovieFormDialogBox: React.FC<MovieFormDialogBoxProps> = ({ onClose, onSubm
 
 	return (
 		<Dialog open={open} onClose={onClose} ref={dialogRef} aria-labelledby='form-dialog-title'>
-			<DialogTitle id='form-dialog-title'>{movie ? 'Edit Movie' : 'Add Movie'}</DialogTitle>
+			<DialogTitle id='form-dialog-title' sx={{ color: '#008080' }}>
+				{movie ? 'Edit Movie' : 'Add Movie'}
+			</DialogTitle>
 			<DialogContent>
 				<TextField
 					autoFocus
