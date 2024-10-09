@@ -1,3 +1,11 @@
+.Movie-title {
+	color: #dddbcb;
+	text-align: center;
+	font-weight: bold !important;
+	font-size: 2.75rem !important;
+	font-family: var(--font-family);
+}
+
 .MovieDetail {
 	display: flex;
 	align-items: flex-start;
@@ -22,20 +30,6 @@
 	object-fit: cover;
 }
 
-.MovieInfo {
-	flex: 1 1 auto;
-}
-
-.MovieInfo h1 {
-	margin-top: 0;
-	margin-bottom: 10px;
-	font-size: 2em;
-}
-
-.MovieInfo p {
-	margin: 5px 0;
-}
-
 .MovieInfo strong {
 	font-weight: bold;
 }
@@ -45,14 +39,8 @@
 	flex-direction: column;
 	max-width: 1475px; /* Adjust this value as needed */
 	margin: 0 auto;
-	padding: 20px;
+	padding: 10px;
 	color: #dddbcb;
-}
-
-.MovieTitle {
-	text-align: center;
-	font-size: 2.5em; /* Increase the font size */
-	margin-bottom: 20px; /* Add some space below the title */
 }
 
 .MovieDetail .MovieInfo h1 {
@@ -61,34 +49,23 @@
 	margin-bottom: 20px; /* Add some space below the title */
 }
 
-.add-movie-button {
-	padding: 10px 20px !important;
+.Button {
 	border-radius: 25px !important;
-	border: none !important;
-	border-radius: 25px !important;
-	background: #008080 !important;
-	color: #dddbcb !important;
-	cursor: pointer !important;
-	margin: 10 0px !important;
+	cursor: pointer;
 	font-family: var(--font-family);
+	color: #dddbcb !important;
+}
+
+.add-movie-button {
+	background: #008080 !important;
 }
 
 .delete-movie-button {
-	border-radius: 25px !important;
-	padding: 10px 20px !important;
 	margin: 0 10px !important;
 	border: 2px solid #008080 !important;
-	border-radius: 25px !important;
 	background: none !important;
-	color: #dddbcb !important;
-	cursor: pointer;
-	font-family: var(--font-family);
 }
 
-/* src/components/movies/MovieDetail.css */
-.movie-detail-header {
-	margin-bottom: 10px;
-}
 .discussion-header {
 	display: flex;
 	justify-content: space-between; /* Align items to the left and right */
@@ -102,4 +79,15 @@
 }
 .most-recent-discussions {
 	font-weight: bold;
+}
+
+.divider {
+	width: 100%;
+	background-color: #dddbcb;
+	opacity: 0.25;
+}
+
+.starIcon {
+	color: #008080;
+	margin-bottom: -5px;
 }

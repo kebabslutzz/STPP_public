@@ -1,5 +1,6 @@
 package com.stpp.movies.services.discussion;
 
+import com.stpp.movies.dto.discussion.DiscussionEditRequestDto;
 import com.stpp.movies.dto.discussion.DiscussionRequestDto;
 import com.stpp.movies.dto.discussion.DiscussionResponseDto;
 import com.stpp.movies.entities.Discussion;
@@ -20,11 +21,12 @@ public interface DiscussionMapper {
     @Mapping(target = "title", source = "title")
     @Mapping(target = "movieId", source = "movie.id")
     @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "dateCreated", source = "dateCreated")
     DiscussionResponseDto discussionToResponseDto(Discussion discussion);
 
     @Named("discussionEditRequestDtoToDiscussion")
     @Mapping(target = "title", source = "title")
-    Discussion discussionEditRequestDtoToDiscussion(String title, @MappingTarget Discussion discussion);
+    Discussion discussionEditRequestDtoToDiscussion(DiscussionEditRequestDto title, @MappingTarget Discussion discussion);
 
     @Named("discussionRequestDtoToDiscussion")
     @Mapping(target = "title", source = "discussionRequestDto.title")

@@ -60,9 +60,9 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping
-    public ResponseEntity<?> editUser(@Valid @RequestBody UserEditRequestDto userRequestDto){
-        UserResponseDto updatedUser = userService.editUser(userRequestDto);
+    @PutMapping("/{userId}")
+    public ResponseEntity<?> editUser(@Valid @PathVariable Long userId, @Valid @RequestBody UserEditRequestDto userRequestDto){
+        UserResponseDto updatedUser = userService.editUser(userId, userRequestDto);
         return ResponseEntity.ok(updatedUser);
     }
 }

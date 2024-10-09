@@ -55,10 +55,7 @@ public class MovieEditRequestDto {
     @NotNull(message = "Release date should not be null")
     private LocalDate releaseDate;
 
-//    @Nullable
-//    private MultipartFile poster;
 
     @Nullable
-//    private byte[] poster;
     private Long posterId;
 }

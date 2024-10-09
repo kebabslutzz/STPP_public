@@ -6,14 +6,16 @@ import Discussion from '../../interfaces/Discussion';
 import useQuery from '../../hooks/useQuery';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { HTTP_METHODS } from '../../constants/httpsMethods';
-import { Button, Container, List } from '@mui/material';
+import { Button, Container, List, ListItem, ListItemText, Divider, Typography } from '@mui/material';
+import StarIcon from '@mui/icons-material/Star';
 import DiscussionListItem from '../discussions/DisccusionListItem';
 import Poster from '../../interfaces/Poster';
 import MovieFormDialogBox from './component/MovieFormDialogBox';
-// import DiscussionList from '../discussions/DiscussionList';
 import DeleteConfirmationDialog from '../dialog/DeleteConfirmationDialog';
 import { useNavigate } from 'react-router-dom';
 import DiscussionFormDialogBox from '../discussions/DiscussionFormDialogBox';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface MovieDetailProps {
 	movieId: number;
@@ -29,11 +31,39 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 	const [openMovie, setOpenMovie] = useState<Movie | null>(null);
 	const navigate = useNavigate();
 
+	const handleOpenDialog = () => {
+		setIsDialogOpen(true);
+	};
+
+	const handleCloseDialog = () => {
+		setIsDialogOpen(false);
+	};
+
+	const handleEditSuccess = async () => {
+		getDiscussionData();
+	};
+
+	const handleOpenDeleteDialog = () => {
+		setIsDeleteDialogOpen(true);
+	};
+
+	const handleCloseDeleteDialog = () => {
+		setIsDeleteDialogOpen(false);
+	};
+
+	const handleOpenDiscussionDialog = () => {
+		setIsDiscussionDialogOpen(true);
+	};
+
+	const handleCloseDiscussionDialog = () => {
+		setIsDiscussionDialogOpen(false);
+	};
+
 	const {
 		data: movie,
-		isLoading,
-		errors,
-		getData,
+		isLoading: isMovieLoading,
+		errors: movieErrors,
+		getData: getMovieData,
 	} = useQuery<Movie>({
 		url: ENDPOINTS.MOVIES.GET_MOVIE_BY_ID(movieId),
 		httpMethod: HTTP_METHODS.GET,
@@ -41,9 +71,9 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 
 	useEffect(() => {
 		if (!movie) {
-			getData();
+			getMovieData();
 		}
-	}, [getData, movie]);
+	}, [getMovieData, movie]);
 
 	useEffect(() => {
 		if (movie) {
@@ -54,12 +84,11 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 		}
 	}, [movie]);
 
-	// console.log('Calling movies api');
 	const {
 		data: discussions,
-		isLoading: isLoadingMovie,
-		errors: errorsMovie,
-		getData: getDataMovie,
+		isLoading: isDiscussionsLoading,
+		errors: errorsDiscussions,
+		getData: getDiscussionData,
 	} = useQuery<Discussion[]>({
 		url: ENDPOINTS.DISCUSSIONS.GET_ALL_DISCUSSIONS_BY_MOVIE_ID(movieId ?? 0),
 		httpMethod: HTTP_METHODS.GET,
@@ -67,7 +96,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 
 	useEffect(() => {
 		if (!discussions) {
-			getDataMovie();
+			getDiscussionData();
 		}
 	}, []);
 
@@ -102,38 +131,22 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 		}
 	}, [posterBytes]);
 
-	const handleOpenDialog = () => {
-		setIsDialogOpen(true);
-	};
-
-	const handleCloseDialog = () => {
-		setIsDialogOpen(false);
-	};
-	const onEditSuccess = () => {
-		// getDataMovie();
-		// getDataPoster();
-	};
-
 	const updateMovieCommand = useQuery({
 		url: ENDPOINTS.MOVIES.UPDATE_MOVIE,
 		httpMethod: HTTP_METHODS.PUT,
-		// onSuccess: onEditSuccess,
+		onSuccess: handleEditSuccess,
 	});
 
 	const onEditSubmit = async (newMovie: Movie, poster: File) => {
 		try {
 			let posterId: number | null = newMovie.posterId ? newMovie.posterId : null;
 
-			console.log('EDITING MOVIE WITH POSTER NOW!');
 			if (poster) {
-				console.log('UPDATING POSTER NOW!');
 				const formData = new FormData();
 				formData.append('file', poster);
-				console.log('body:', formData);
 				let posterResponse: Response;
 
 				if (newMovie.posterId) {
-					console.log(' ID YRA', newMovie?.posterId);
 					posterResponse = await fetch(ENDPOINTS.POSTER.UPDATE_POSTER(newMovie.posterId), {
 						method: HTTP_METHODS.PUT,
 						body: formData,
@@ -153,11 +166,8 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 					}
 				}
 
-				console.log('POSTER RESPONSE:', posterResponse);
 				const posterData = await posterResponse.json();
-				console.log('POSTER DATA:', posterData);
 				posterId = Number(posterData.id);
-				console.log('CREATED POSTER ID:', posterId);
 			}
 
 			// Step 2: Create Movie
@@ -165,10 +175,11 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 				...newMovie,
 				...(posterId ? { posterId } : {}),
 			};
-			console.log('EDITED MOVIE:', movieWithPoster);
 			const movieResponse = await updateMovieCommand.sendData(movieWithPoster);
+			if (movieResponse?.status === 200) {
+				setOpenMovie(movieWithPoster);
+			}
 
-			// if (!movieResponse?.data.id) {
 			// 	throw new Error('Failed to create movie');
 			// }
 
@@ -179,56 +190,44 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 	};
 
 	const {
-		isLoading: isDeleting,
-		errors: deleteErrors,
+		isLoading: isDeletingMovie,
+		errors: deleteMovieErrors,
 		sendData: deleteMovie,
 	} = useQuery<void>({
 		url: ENDPOINTS.MOVIES.DELETE_MOVIE(movieId),
 		httpMethod: HTTP_METHODS.DELETE,
 	});
 
-	const handleOpenDeleteDialog = () => {
-		setIsDeleteDialogOpen(true);
-	};
-
-	const handleCloseDeleteDialog = () => {
-		setIsDeleteDialogOpen(false);
-	};
-
 	const handleDelete = async () => {
 		await deleteMovie();
-		if (!deleteErrors) {
-			navigate('/movies'); // Redirect to the movies list page after deletion
+		if (!deleteMovieErrors) {
+			navigate('/movies');
 		}
-	};
-	const handleOpenDiscussionDialog = () => {
-		setIsDiscussionDialogOpen(true);
-	};
-
-	const handleCloseDiscussionDialog = () => {
-		setIsDiscussionDialogOpen(false);
 	};
 
 	const createDiscussionCommand = useQuery({
-		url: ENDPOINTS.DISCUSSIONS.GET_ALL_DISCUSSIONS_BY_MOVIE_ID(movieId),
-		httpMethod: HTTP_METHODS.GET,
-		// IMPLEMENT THIS
+		url: ENDPOINTS.MOVIES.CREATE_DISCUSSION(movieId),
+		httpMethod: HTTP_METHODS.POST,
 	});
 
 	const handleDiscussionSubmit = async (newDiscussion: Discussion) => {
+		newDiscussion.movieId = movieId;
+		newDiscussion.userId = 1; // Hardcoded user id for now
 		const discussionResponse = await createDiscussionCommand.sendData(newDiscussion);
+		if (discussionResponse?.status === 201) {
+			let createdDiscussion = discussionResponse?.data as Discussion;
+			setDiscussionList((prev) => [createdDiscussion, ...prev]);
+		}
 	};
 
-	if (isLoadingMovie) return <Loader />;
-	if (errorsMovie) return <div>{errorsMovie.join(', ')}</div>;
-	if (isLoading) return <Loader />;
-	if (errors) return <div>{errors.join(', ')}</div>;
+	if (isDiscussionsLoading) return <Loader />;
+	if (errorsDiscussions) return <div>{errorsDiscussions.join(', ')}</div>;
+	if (isMovieLoading) return <Loader />;
+	if (movieErrors) return <div>{movieErrors.join(', ')}</div>;
 
 	return (
 		<Container className='MovieDetailContainer' maxWidth={false}>
-			<h1 style={{ color: '#dddbcb', textAlign: 'center', fontSize: '2.5em', marginBottom: '20px' }}>
-				{openMovie?.title}
-			</h1>
+			<Typography className='Movie-title'>{openMovie?.title}</Typography>
 			{isDialogOpen && (
 				<MovieFormDialogBox
 					movie={openMovie!}
@@ -237,7 +236,12 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 					open={isDialogOpen}
 				/>
 			)}
-			<DeleteConfirmationDialog open={isDeleteDialogOpen} onClose={handleCloseDeleteDialog} onConfirm={handleDelete} />
+			<DeleteConfirmationDialog
+				open={isDeleteDialogOpen}
+				onClose={handleCloseDeleteDialog}
+				onConfirm={handleDelete}
+				text='Are you sure you want to delete this movie?'
+			/>
 			<DiscussionFormDialogBox
 				open={isDiscussionDialogOpen}
 				onClose={handleCloseDiscussionDialog}
@@ -250,41 +254,61 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 						<img src={imageUrl} alt={`${openMovie.title} poster`} className='MoviePosterDetails' />
 					</div>
 				)}
-				<div className='MovieInfo'>
-					<p>
-						<strong>Director:</strong> {openMovie?.director}
-					</p>
-					<p>
-						<strong>Genre:</strong> {openMovie?.genre}
-					</p>
-					<p>
-						<strong>Rating:</strong> {openMovie?.rating}
-					</p>
-					<p>
-						<strong>Release Date:</strong> {new Date(openMovie?.releaseDate!).toDateString()}
-					</p>
-					<p>{openMovie?.description}</p>
-					<Button
-						className='add-movie-button'
-						onClick={handleOpenDialog}
-						variant='text'
-						sx={{ color: '#dddbcb', backgroundColor: '#008080 !important' }}
-						// endIcon={<AddIcon />}
-					>
-						Edit Movie
-					</Button>
-					<Button
-						className='delete-movie-button'
-						onClick={handleOpenDeleteDialog}
-						variant='text'
-						// sx={{ color: '#dddbcb', backgroundColor: '#ff0000' }}
-					>
-						Delete Movie
-					</Button>
+				<div>
+					<List>
+						<ListItem>
+							<ListItemText>
+								<strong>Director:</strong> {openMovie?.director}
+							</ListItemText>
+						</ListItem>
+						<Divider variant='middle' component='li' className='divider' />
+						<ListItem>
+							<ListItemText>
+								<strong>Genre:</strong> {openMovie?.genre}
+							</ListItemText>
+						</ListItem>
+						<Divider variant='middle' component='li' className='divider' />
+						<ListItem>
+							<ListItemText>
+								<strong>Rating:</strong> {openMovie?.rating}/10
+								<StarIcon className='starIcon' />
+							</ListItemText>
+						</ListItem>
+						<Divider variant='middle' component='li' className='divider' />
+						<ListItem>
+							<ListItemText>
+								<strong>Release Date:</strong> {new Date(openMovie?.releaseDate!).toDateString()}
+							</ListItemText>
+						</ListItem>
+						<Divider variant='middle' component='li' className='divider' />
+
+						<ListItem>
+							<ListItemText>{openMovie?.description}</ListItemText>
+						</ListItem>
+						<Divider variant='middle' component='li' className='divider' />
+
+						<ListItem>
+							<Button
+								className='Button add-movie-button'
+								onClick={handleOpenDialog}
+								variant='text'
+								endIcon={<EditIcon />}
+							>
+								Edit Movie
+							</Button>
+							<Button
+								className='Button delete-movie-button'
+								onClick={handleOpenDeleteDialog}
+								variant='text'
+								endIcon={<DeleteIcon />}
+							>
+								Delete Movie
+							</Button>
+						</ListItem>
+					</List>
 				</div>
 			</div>
-			{/* <Container> */}
-			<div className='movie-detail-header'>
+			<div>
 				<div className='discussion-header'>
 					{!discussionList || discussionList.length === 0 ? (
 						<div>No discussions yet</div>
@@ -293,9 +317,9 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 					)}
 					<Button
 						onClick={handleOpenDiscussionDialog}
-						variant='contained'
-						color='primary'
-						className='create-discussion-button'
+						variant='text'
+						className='Button create-discussion-button'
+						endIcon={<EditIcon />}
 					>
 						Create Discussion
 					</Button>
@@ -310,7 +334,6 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 					</>
 				)}
 			</List>
-			{/* </Container> */}
 		</Container>
 	);
 };

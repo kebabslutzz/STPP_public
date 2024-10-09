@@ -55,11 +55,11 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto editUser(UserEditRequestDto userRequestDto) {
-        if (!userRepository.existsById(userRequestDto.getId())) {
-            throw new NotFoundException("User with ID " + userRequestDto.getId() + " not found");
+    public UserResponseDto editUser(Long userId, UserEditRequestDto userRequestDto) {
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("User with ID " + userId + " not found");
         }
-        User user = userRepository.findById(userRequestDto.getId()).get();
+        User user = userRepository.findById(userId).get();
         MAPPER.userEditRequestDtoToUser(userRequestDto, user);
         user = userRepository.save(user);
         return MAPPER.userToResponseDto(user);

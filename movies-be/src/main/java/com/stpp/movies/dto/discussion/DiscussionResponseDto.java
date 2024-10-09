@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.OffsetDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -31,4 +33,9 @@ public class DiscussionResponseDto {
     @NotNull(message = "User should not be null")
     @NotNull(message = "User should not be blank")
     private Long userId;
+
+    @NotNull(message = "Created at should not be null")
+    private OffsetDateTime dateCreated;
+
+    private int commentCount;
 }

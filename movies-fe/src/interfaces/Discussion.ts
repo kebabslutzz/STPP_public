@@ -3,6 +3,8 @@ interface Discussion {
 	title: string;
 	movieId?: number;
 	userId?: number;
+	dateCreated?: Date;
+	commentCount?: number;
 }
 
 export default Discussion;

@@ -47,11 +47,6 @@ public class DiscussionController {
         return ResponseEntity.ok(comments);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<DiscussionResponseDto> editDiscussion(@Valid @PathVariable Long id, @Valid @RequestBody String title) {
-        return ResponseEntity.ok(discussionService.editDiscussion(id, title));
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDiscussionById(@Valid @PathVariable Long id) {
         discussionService.deleteDiscussionById(id);

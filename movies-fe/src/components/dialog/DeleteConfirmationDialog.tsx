@@ -5,14 +5,15 @@ interface DeleteConfirmationDialogProps {
 	open: boolean;
 	onClose: () => void;
 	onConfirm: () => void;
+	text: string;
 }
 
-const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({ open, onClose, onConfirm }) => {
+const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({ open, onClose, onConfirm, text }) => {
 	return (
 		<Dialog open={open} onClose={onClose}>
 			<DialogTitle sx={{ color: '#008080' }}>Confirm Delete</DialogTitle>
 			<DialogContent>
-				<DialogContentText>Are you sure you want to delete this movie?</DialogContentText>
+				<DialogContentText>{text}</DialogContentText>
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={onClose} color='primary'>

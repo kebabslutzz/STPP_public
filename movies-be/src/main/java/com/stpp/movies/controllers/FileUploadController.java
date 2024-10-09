@@ -29,36 +29,17 @@ import java.util.Base64;
 public class FileUploadController {
     private final FileService fileService;
 
-//    @PostMapping
-//    public ResponseEntity<Long> uploadPoster(@RequestParam("file") MultipartFile file) {
-//        Long posterId = fileService.savePoster(file);
-//        return new ResponseEntity<>(posterId, HttpStatus.OK);
-//    }
-
     @PostMapping
     public ResponseEntity<FileResponseDto> uploadPoster(@RequestParam("file") MultipartFile file) {
         FileResponseDto fileResponseDto = fileService.savePoster(file);
         return new ResponseEntity<>(fileResponseDto, HttpStatus.CREATED);
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<String> getPoster(@PathVariable Long id) {
-//        Poster poster = fileService.getPoster(id);
-//        String base64Poster = Base64.getEncoder().encodeToString(poster.getPoster());
-//        return ResponseEntity.ok(base64Poster);
-//    }
-
     @GetMapping("/{id}")
     public ResponseEntity<FileResponseDto> getPoster(@PathVariable Long id) {
         FileResponseDto fileResponseDto = fileService.getPoster(id);
         return ResponseEntity.ok(fileResponseDto);
     }
-
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<String> updatePoster(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
-//        fileService.updatePoster(id, file);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<FileResponseDto> updatePoster(@PathVariable Long id, @RequestParam("file") MultipartFile file) {

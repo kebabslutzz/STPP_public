@@ -1,0 +1,60 @@
+body {
+	margin: 0;
+}
+
+.Container {
+	max-width: 1475px !important;
+	font-family: var(--font-family) !important;
+}
+
+.TableContainer {
+	font-family: var(--font-family) !important;
+	margin: 20px;
+	padding: 20px;
+	border-radius: 10px;
+	max-width: 1475px !important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.Table {
+	color: #dddbcb !important;
+	background-color: transparent; /* Remove the background color */
+}
+
+.TableCell {
+	color: #dddbcb !important;
+}
+
+.TableHead {
+	color: #dddbcb !important;
+}
+
+.TableRow {
+	color: #dddbcb !important;
+}
+
+/* Ensure text color is applied to all elements within the table */
+.TableContainer,
+.TableContainer * {
+	color: #dddbcb !important;
+}
+
+.Button {
+	border-radius: 25px !important;
+	cursor: pointer;
+	font-family: var(--font-family);
+	color: #dddbcb !important;
+}
+
+.add-movie-button {
+	background: #008080 !important;
+}
+
+.delete-movie-button {
+	margin: 0 10px !important;
+	border: 2px solid #008080 !important;
+	color: #008080 !important;
+	background: none !important;
+}

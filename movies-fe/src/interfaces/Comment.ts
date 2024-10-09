@@ -3,6 +3,7 @@ interface Comment {
 	content: string;
 	userId?: number;
 	discussionId?: number;
+	dateModified?: string;
 }
 
 export default Comment;

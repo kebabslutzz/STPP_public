@@ -1,11 +1,11 @@
-/* src/components/discussions/DiscussionListItem.css */
 .DiscussionListItem {
 	border: 1px solid #ccc;
 	border-radius: 8px;
 	padding: 10px;
 	margin: 10px 0;
-	display: flex;
+	/* display: flex; */
 	align-items: center;
+	text-align: center;
 	justify-content: space-between;
 }
 
@@ -22,5 +22,30 @@
 
 .DiscussionListItem .right-side {
 	display: flex;
+	align-items: center;
+}
+
+.content-box {
+	height: 100%;
+	text-align: left;
+	align-items: center;
+	/* text-align: center; */
+	display: flex;
+	/* justify-content: center; */
+}
+
+.comments-box {
+	height: 100%;
+	border-right: 1px solid #dddbcb;
+	border-left: 1px solid #dddbcb;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.user-date-box {
+	height: 100%;
+	text-align: right;
 	align-items: center;
 }

@@ -11,6 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.OffsetDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -40,4 +42,7 @@ public class UserResponseDto {
 
     @NotNull(message = "Status should not be null")
     private Status status;
+
+    private OffsetDateTime dateCreated;
+    private OffsetDateTime dateModified;
 }

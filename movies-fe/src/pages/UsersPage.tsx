@@ -1,10 +1,11 @@
 import React from 'react';
+import UsersList from '../components/users/UsersList';
 
 const UsersPage: React.FC = () => {
 	return (
-		<div className='PageContainer'>
-			<h1>Users</h1>
-		</div>
+		<>
+			<UsersList />
+		</>
 	);
 };
 

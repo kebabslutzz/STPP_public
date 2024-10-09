@@ -1,7 +1,9 @@
 package com.stpp.movies.controllers;
 
+import com.stpp.movies.dto.comment.CommentEditRequestDto;
 import com.stpp.movies.dto.comment.CommentRequestDto;
 import com.stpp.movies.dto.comment.CommentResponseDto;
+import com.stpp.movies.dto.discussion.DiscussionEditRequestDto;
 import com.stpp.movies.dto.discussion.DiscussionRequestDto;
 import com.stpp.movies.dto.discussion.DiscussionResponseDto;
 import com.stpp.movies.dto.movie.MovieEditRequestDto;
@@ -93,6 +95,14 @@ public class MovieController{
         return ResponseEntity.ok(discussions);
     }
 
+    @GetMapping("/{movieId}/discussions/{discussionId}")
+    public ResponseEntity<DiscussionResponseDto> getDiscussionByMovieAndDiscussionId(@PathVariable Long movieId, @PathVariable Long discussionId){
+        return discussionService
+                .getDiscussionByIMovieAndDiscussiond(movieId, discussionId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping("/{id}/discussions")
     public ResponseEntity<DiscussionResponseDto> createDiscussion(@PathVariable Long id, @Valid @RequestBody DiscussionRequestDto discussionRequestDto){
         DiscussionResponseDto createdDiscussion = discussionService.createDiscussion(id, discussionRequestDto);
@@ -107,7 +117,22 @@ public class MovieController{
     @PostMapping("/{movieId}/discussions/{discussionId}/comments")
     public ResponseEntity<CommentResponseDto> createComment(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @RequestBody CommentRequestDto commentRequestDto) {
         CommentResponseDto createdComment = commentService.createComment(movieId, discussionId, commentRequestDto);
-        return ResponseEntity.ok(createdComment);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdComment.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(createdComment);
+    }
+
+    @PatchMapping("/{movieId}/discussions/{discussionId}")
+    public ResponseEntity<DiscussionResponseDto> editDiscussion(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @RequestBody DiscussionEditRequestDto discussionEditRequestDto) {
+        return ResponseEntity.ok(discussionService.editDiscussion(movieId, discussionId, discussionEditRequestDto));
+    }
+
+    @PatchMapping("/{movieId}/discussions/{discussionId}/comments/{commentId}")
+    public ResponseEntity<CommentResponseDto> editComment(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @PathVariable Long commentId, @Valid @RequestBody CommentEditRequestDto commentEditRequestDto){
+        return ResponseEntity.ok(commentService.editComment(movieId, discussionId, commentId, commentEditRequestDto));
     }
 
     @GetMapping("/{movieId}/discussions/{discussionId}/comments")
@@ -116,4 +141,15 @@ public class MovieController{
         return ResponseEntity.ok(comments);
     }
 
+    @DeleteMapping("/{movieId}/discussions/{discussionId}/comments/{commentId}")
+    public ResponseEntity<Void> deleteCommentById(@PathVariable Long movieId, @PathVariable Long discussionId, @PathVariable Long commentId){
+        commentService.deleteComment(movieId, discussionId, commentId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{movieId}/discussions/{discussionId}")
+    public ResponseEntity<Void> deleteDiscussionById(@PathVariable Long movieId, @PathVariable Long discussionId){
+        discussionService.deleteDiscussionById(movieId, discussionId);
+        return ResponseEntity.noContent().build();
+    }
 }

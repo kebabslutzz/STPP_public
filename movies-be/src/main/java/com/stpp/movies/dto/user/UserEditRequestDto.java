@@ -16,10 +16,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @Data
 public class UserEditRequestDto {
-    @NotBlank(message = "Id should not be blank")
-    @NotNull(message = "Id should not be null")
-    private Long id;
-
     @NotBlank(message = "Username should not be blank")
     @NotNull(message = "Username should not be null")
     @Size(min = 1, max = 256, message = "Username must be between {min} and {max} characters")

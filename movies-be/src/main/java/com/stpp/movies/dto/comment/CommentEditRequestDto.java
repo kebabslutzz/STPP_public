@@ -13,7 +13,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @Data
 public class CommentEditRequestDto {
-
     @NotBlank(message = "Content should not be blank")
     @NotNull(message = "Content should not be null")
     @Size(min = 1, max = 1024, message = "Content must be between {min} and {max} characters")

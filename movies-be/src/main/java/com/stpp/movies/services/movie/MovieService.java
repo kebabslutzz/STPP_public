@@ -30,7 +30,6 @@ public class MovieService {
     private final MovieRepository movieRepository;
     private final FileService fileService;
 
-
     private static final MovieMapper MAPPER = MovieMapper.INSTANCE;
 
     public Optional<MovieResponseDto> getMovieById(@Valid Long id) {

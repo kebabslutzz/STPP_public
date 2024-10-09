@@ -1,5 +1,6 @@
 package com.stpp.movies.services.comment;
 
+import com.stpp.movies.dto.comment.CommentEditRequestDto;
 import com.stpp.movies.dto.comment.CommentRequestDto;
 import com.stpp.movies.dto.comment.CommentResponseDto;
 import com.stpp.movies.dto.movie.MovieRequestDto;
@@ -26,13 +27,14 @@ public interface CommentMapper {
     @Named("commentToResponseDto")
     @Mapping(source = "id", target = "Id")
     @Mapping(source = "content", target = "content")
-    @Mapping(source = "discussion.id", target = "discussion_id")
-    @Mapping(source = "user.id", target = "user_id")
+    @Mapping(source = "discussion.id", target = "discussionId")
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "dateModified", target = "dateModified")
     CommentResponseDto commentToResponseDto(Comment comment);
 
     @Named("commentEditRequestDtoToComment")
     @Mapping(target = "content", source = "content")
-    Comment commentEditRequestDtoToComment(String content, @MappingTarget Comment comment);
+    Comment commentEditRequestDtoToComment(CommentEditRequestDto content, @MappingTarget Comment comment);
 
     @Named("requestDtoToComment")
     @Mapping(target = "discussion.id", source = "discussionId")

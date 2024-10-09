@@ -57,11 +57,6 @@ public class Movie {
     @Column(nullable = false)
     private LocalDate releaseDate;
 
-//    @Column
-//    private String poster;
-//    @Column(columnDefinition = "bytea")
-//    private byte[] poster;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "poster_id", referencedColumnName = "id", unique = true)
     private Poster poster;

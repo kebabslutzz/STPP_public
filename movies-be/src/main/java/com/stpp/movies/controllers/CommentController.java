@@ -38,11 +38,6 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<CommentResponseDto> editComment(@Valid @PathVariable Long id, @RequestBody @Valid String content){
-        return ResponseEntity.ok(commentService.editComment(id, content));
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteComment(@Valid @PathVariable Long id){
         commentService.deleteComment(id);

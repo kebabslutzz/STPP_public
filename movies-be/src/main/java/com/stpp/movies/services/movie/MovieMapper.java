@@ -23,18 +23,6 @@ import java.util.Base64;
 public interface MovieMapper {
     MovieMapper INSTANCE = Mappers.getMapper(MovieMapper.class);
 
-//    @AfterMapping
-//    default void handlePoster(MovieRequestDto requestDto, @MappingTarget Movie movie) {
-//        MultipartFile poster = requestDto.getPoster();
-//        if (poster != null) {
-//            try {
-//                movie.setPoster(poster.getBytes());
-//            } catch (IOException e) {
-//                throw new UncheckedIOException(e);
-//            }
-//        }
-//    }
-
     @Named("movieToResponseDto")
     @Mapping(source = "id", target = "id")
     @Mapping(source = "title", target = "title")
@@ -46,26 +34,12 @@ public interface MovieMapper {
     @Mapping(source = "poster.id", target = "posterId")
     MovieResponseDto movieToResponseDto(Movie movie);
 
-//    @Mapping(expression = "java(convertPosterToBase64(movie.getPoster()))", target = "poster")
-
-
-//    default String convertPosterToBase64(byte[] poster) {
-//        return poster != null ? Base64.getEncoder().encodeToString(poster) : null;
-//    }
-
     @Named("requestDtoToMovie")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dateCreated", ignore = true)
     @Mapping(target = "dateModified", ignore = true)
     @Mapping(source = "posterId", target = "poster.id", ignore = true)
-//    @Mapping(expression = "java(convertPosterToBase64(movie.getPoster()))", target = "movieRequestDto.poster")
     Movie requestDtoToMovie(MovieRequestDto movieRequestDto);
-
-//    @Named("editRequestDtoToMovie")
-//    @Mapping(target = "dateCreated", ignore = true)
-//    @Mapping(target = "dateModified", ignore = true)
-//    @Mapping(target = "poster", ignore = true)
-//    Movie editRequestDtoToMovie(MovieEditRequestDto movieEditRequestDto);
 
     @Named("editRequestDtoToMovie")
     @Mapping(target = "title", source = "title")
@@ -75,6 +49,5 @@ public interface MovieMapper {
     @Mapping(target = "rating", source = "rating")
     @Mapping(target = "releaseDate", source = "releaseDate")
     @Mapping(source = "posterId", target = "poster.id")
-//    @Mapping(target = "poster", source = "movieEditRequestDto.poster")
     Movie movieEditRequestDtoToMovie(MovieEditRequestDto movieEditRequestDto, @MappingTarget Movie movie);
 }

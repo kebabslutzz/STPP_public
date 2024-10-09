@@ -53,5 +53,4 @@ public class MovieRequestDto {
 
     @Nullable
     private Long posterId;
-//    private byte[] poster;
 }

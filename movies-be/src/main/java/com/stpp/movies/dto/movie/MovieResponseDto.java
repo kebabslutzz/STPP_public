@@ -56,21 +56,6 @@ public class MovieResponseDto {
     @NotNull(message = "Release date should not be null")
     private LocalDate releaseDate;
 
-//    private byte[] poster;
     @Nullable
     private Long posterId;
-//    private String poster;
-
-//    public static MovieResponseDto of(Movie movie) {
-//        return MovieResponseDto.builder()
-//                .id(movie.getId())
-//                .title(movie.getTitle())
-//                .description(movie.getDescription())
-//                .director(movie.getDirector())
-//                .genre(movie.getGenre())
-//                .rating(movie.getRating())
-//                .releaseDate(movie.getReleaseDate())
-//                .poster(movie.getPoster())
-//                .build();
-//    }
 }

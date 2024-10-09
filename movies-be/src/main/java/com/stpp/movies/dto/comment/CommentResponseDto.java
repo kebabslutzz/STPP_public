@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.OffsetDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -24,9 +26,11 @@ public class CommentResponseDto {
 
     @NotBlank(message = "Discussion id should not be blank")
     @NotNull(message = "Discussion id should not be null")
-    private Long discussion_id;
+    private Long discussionId;
 
     @NotBlank(message = "User id should not be blank")
     @NotNull(message = "User id should not be null")
-    private Long user_id;
+    private Long userId;
+
+    private OffsetDateTime dateModified;
 }

@@ -1,5 +1,6 @@
 package com.stpp.movies.services.comment;
 
+import com.stpp.movies.dto.comment.CommentEditRequestDto;
 import com.stpp.movies.dto.comment.CommentRequestDto;
 import com.stpp.movies.dto.comment.CommentResponseDto;
 import com.stpp.movies.entities.Comment;
@@ -46,13 +47,33 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponseDto editComment(@Valid Long commentId, @Valid String content){
+    public CommentResponseDto editComment(@Valid long movieId, @Valid long discussionId, @Valid long commentId, CommentEditRequestDto commentEditRequestDto){
         if (!commentRepository.existsById(commentId)) {
             throw new NotFoundException("Comment with ID " + commentId + " not found");
         }
+        if (!movieRepository.existsById(movieId)) {
+            throw new NotFoundException("Movie with ID " + movieId + " not found");
+        }
+        if (!discussionRepository.existsById(discussionId)) {
+            throw new NotFoundException("Discussion with ID " + discussionId + " not found");
+        }
         Comment comment = commentRepository.findById(commentId).get();
-        MAPPER.commentEditRequestDtoToComment(content, comment);
+        MAPPER.commentEditRequestDtoToComment(commentEditRequestDto, comment);
         return MAPPER.commentToResponseDto(comment);
+    }
+
+    @Transactional
+    public void deleteComment(@Valid Long movieId, @Valid Long discussionId, @Valid Long id){
+        if (!movieRepository.existsById(movieId)) {
+            throw new NotFoundException("Movie with ID " + movieId + " not found");
+        }
+        if (!discussionRepository.existsById(discussionId)) {
+            throw new NotFoundException("Discussion with ID " + discussionId + " not found");
+        }
+        if (!commentRepository.existsById(id)) {
+            throw new NotFoundException("Comment with ID " + id + " not found");
+        }
+        commentRepository.deleteById(id);
     }
 
     @Transactional
@@ -96,5 +117,9 @@ public class CommentService {
             throw new NotFoundException("Discussion with ID " + discussionId + " not found");
         }
         return getAllByDiscussionId(discussionId);
+    }
+
+    public int getNumberOfCommentsByDiscussionId(Long discussionId) {
+        return commentRepository.findAllByDiscussionId(discussionId).size();
     }
 }

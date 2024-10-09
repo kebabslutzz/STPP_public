@@ -9,15 +9,22 @@ interface DiscussionFormDialogBoxProps {
 	onClose: () => void;
 	onSubmit: (discussion: Discussion) => void;
 	title: string; // Add title prop
+	discussion?: Discussion;
 }
 
-const DiscussionFormDialogBox: React.FC<DiscussionFormDialogBoxProps> = ({ open, onClose, onSubmit, title }) => {
+const DiscussionFormDialogBox: React.FC<DiscussionFormDialogBoxProps> = ({
+	open,
+	onClose,
+	onSubmit,
+	title,
+	discussion,
+}) => {
 	return (
 		<Dialog open={open} onClose={onClose}>
 			<DialogTitle sx={{ color: '#008080' }}>{title}</DialogTitle> {/* Use the title prop */}
 			<DialogContent>
 				<Formik
-					initialValues={{ title: '' }}
+					initialValues={{ title: discussion?.title || '' }}
 					validationSchema={discussionValidationSchema}
 					onSubmit={(values, { setSubmitting }) => {
 						const newDiscussion: Discussion = { title: values.title };
@@ -43,7 +50,7 @@ const DiscussionFormDialogBox: React.FC<DiscussionFormDialogBoxProps> = ({ open,
 									Cancel
 								</Button>
 								<Button type='submit' color='primary' variant='contained' disabled={isSubmitting}>
-									Create
+									{discussion ? 'Edit' : 'Create'}
 								</Button>
 							</DialogActions>
 						</Form>
