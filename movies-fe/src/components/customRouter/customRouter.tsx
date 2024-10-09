@@ -10,6 +10,7 @@ import ROUTE_PATHS from '../../constants/routePaths';
 import Loader from '../shared/Loader';
 import MovieDetailPage from '../../pages/MovieDetailPage';
 import DiscussionDetail from '../discussions/DiscussionDetails';
+import NotFoundPage from '../../pages/NotFoundPage';
 
 const UsersPage = React.lazy(() => import('../../pages/UsersPage'));
 const MoviesPage = React.lazy(() => import('../../pages/MoviesPage'));
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
 						<DiscussionDetail />
 					</Suspense>
 				),
+			},
+			{
+				path: '*',
+				element: <NotFoundPage />,
 			},
 		],
 	},

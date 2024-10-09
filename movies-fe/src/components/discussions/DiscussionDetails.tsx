@@ -11,6 +11,9 @@ import DiscussionFormDialogBox from './DiscussionFormDialogBox';
 import CommentBox from '../comment/CommentBox';
 import DeleteConfirmationDialog from '../dialog/DeleteConfirmationDialog';
 import CommentListItem from '../comment/CommentListItem';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddCommentIcon from '@mui/icons-material/AddComment';
 
 const DiscussionDetail: React.FC = () => {
 	const [comments, setComments] = useState<Comment[]>([]);
@@ -193,38 +196,19 @@ const DiscussionDetail: React.FC = () => {
 	if (commentsErrors) return <div>{commentsErrors.join(', ')}</div>;
 
 	return (
-		<Container className='DiscussionDetailContainer'>
+		<Container className='PageContainer'>
 			<div className='DiscussionDetail'>
-				<div className='discussion-header'>
-					{discussion && <h1>{discussion.title}</h1>}
-					<div className='discussion-buttons'>
-						{!isCommentBoxVisible && (
-							<Button
-								variant='contained'
-								color='primary'
-								onClick={handleNewReplyClick}
-								className='create-discussion-button'
-							>
-								New Reply
-							</Button>
-						)}
-						<Button
-							onClick={handleOpenDiscussionDialog}
-							variant='contained'
-							color='primary'
-							className='create-discussion-button'
-						>
-							Edit Discussion
-						</Button>
-						<Button
-							onClick={handleOpenDeleteDialog}
-							variant='contained'
-							color='primary'
-							className='create-discussion-button'
-						>
-							Delete Discussion
-						</Button>
-					</div>
+				<div className='discussion-header'>{discussion && <h1>{discussion.title}</h1>}</div>
+				<div className='discussion-buttons'>
+					<Button onClick={handleOpenDiscussionDialog} className='Button add-edit-button' endIcon={<EditIcon />}>
+						Edit Discussion
+					</Button>
+					<Button onClick={handleOpenDeleteDialog} className='Button delete-button' endIcon={<DeleteIcon />}>
+						Delete Discussion
+					</Button>
+					<Button onClick={handleNewReplyClick} className='Button add-edit-button' endIcon={<AddCommentIcon />}>
+						New Reply
+					</Button>
 				</div>
 				<List component='nav' aria-label='discussions'>
 					{comments && comments.length > 0 && (

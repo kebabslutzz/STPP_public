@@ -1,5 +1,5 @@
 .CommentListItem {
-	border: 1px solid #dddbcb;
+	border: 1px solid #ffffff;
 	border-radius: 10px;
 	padding: 10px;
 	margin: 10px 0;
@@ -11,7 +11,7 @@
 
 .separator {
 	width: 1px !important;
-	background-color: #dddbcb;
+	background-color: #ffffff;
 	margin: 0 10px !important;
 	align-self: stretch !important;
 	/* Ensure the separator stretches to the height of the container */
@@ -24,7 +24,7 @@
 }
 .CommentListItem .top-side {
 	height: 35px;
-	border-bottom: 1px solid #dddbcb;
+	border-bottom: 1px solid #ffffff;
 	/* width: 40% !important; */
 	/* width: 80px; */
 	/* margin: 0 10px; */
@@ -50,24 +50,7 @@
 	margin-top: auto;
 }
 
-.Button {
-	font-family: var(--font-family);
-	cursor: pointer !important;
-	padding: 10px 20px !important;
-	color: #dddbcb !important;
-	border-radius: 25px !important;
-	height: 30px !important;
-}
-.edit-comment-button {
-	border: none !important;
-	background: #008080 !important;
-}
-.delete-comment-button {
-	border: 2px solid #008080 !important;
-	background: none !important;
-}
-
 .grid-item {
-	border-right: 1px solid #dddbcb; /* Change the color as needed */
+	border-right: 1px solid #ffffff; /* Change the color as needed */
 	padding: 10px; /* Optional: Add padding for better visibility */
 }

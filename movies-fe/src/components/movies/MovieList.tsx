@@ -4,13 +4,9 @@ import Movie from '../../interfaces/Movie';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { HTTP_METHODS } from '../../constants/httpsMethods';
 import Loader from '../shared/Loader';
-import { FormMethod, Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import MovieCard from './MocieCard';
-import ROUTE_PATHS from '../../constants/routePaths';
 import MovieFormDialogBox from './component/MovieFormDialogBox';
-import { format } from 'path';
-import Poster from '../../interfaces/Poster';
-import { json } from 'stream/consumers';
 import { Button, Container } from '@mui/material';
 import './MovieList.css';
 import AddIcon from '@mui/icons-material/Add';
@@ -18,10 +14,7 @@ import AddIcon from '@mui/icons-material/Add';
 const MovieList: React.FC = () => {
 	const [movieList, setMovieList] = useState<Movie[]>([]);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
-	const [posterId, setPosterId] = useState<number | null>(null);
-	const navigate = useNavigate();
 	const [listOfErrors, setListOfErrors] = useState<string[]>([]);
-	const [movieToCreate, setMovieToCreate] = useState<Movie | null>(null);
 
 	console.log('Calling movies api');
 	const {
@@ -49,10 +42,6 @@ const MovieList: React.FC = () => {
 	console.log('movies:', movieList);
 
 	console.log('MoviesPage rendered');
-	// const handleViewClick = (id: number) => {
-	// 	// navigate(`/movies/${id}`);
-	// 	navigate(`${ROUTE_PATHS.HOME}/${id}${ROUTE_PATHS.DISCUSSIONS}`);
-	// };
 
 	const onCreateMovieSuccess = (response: Movie) => {
 		const newMovie: Movie = response;
@@ -180,15 +169,9 @@ const MovieList: React.FC = () => {
 	return (
 		// <div className='PageContainer'>
 		<Container className='PageContainer' maxWidth={false}>
-			<div className='header-row'>
+			<div className='Header-row'>
 				<h1>Top Trending Movies Right Now!</h1>
-				<Button
-					className='add-movie-button'
-					onClick={handleOpenDialog}
-					variant='text'
-					sx={{ color: '#dddbcb', backgroundColor: '#008080 !important' }}
-					endIcon={<AddIcon />}
-				>
+				<Button className='Button add-edit-button' onClick={handleOpenDialog} endIcon={<AddIcon />}>
 					Add Movie
 				</Button>
 			</div>

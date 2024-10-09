@@ -1,5 +1,7 @@
 import React from 'react';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 interface DeleteConfirmationDialogProps {
 	open: boolean;
@@ -16,10 +18,10 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({ ope
 				<DialogContentText>{text}</DialogContentText>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={onClose} color='primary'>
+				<Button onClick={onClose} className='Button cancel-button' endIcon={<CancelIcon />}>
 					Cancel
 				</Button>
-				<Button onClick={onConfirm} color='primary' variant='contained'>
+				<Button onClick={onConfirm} className='Button add-edit-button' endIcon={<DeleteIcon />}>
 					Delete
 				</Button>
 			</DialogActions>

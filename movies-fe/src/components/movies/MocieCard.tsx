@@ -55,14 +55,14 @@ const MovieCard: React.FC<MovieCardProps> = ({ id, title, description, posterId 
 	return (
 		<div className='MovieCard' onClick={handleCardClick}>
 			<div className='MovieCardInner'>
-				<div className='MovieCardFront'>
-					{isLoading ? (
+				<div className='MovieCardFront' style={{ backgroundImage: `url(${base64String})` }}>
+					{/* {isLoading ? (
 						<p>Loading...</p>
 					) : errors ? (
 						<p>Error loading poster</p>
 					) : (
 						<img src={base64String} alt={`${title} poster`} className='MoviePoster' />
-					)}
+					)} */}
 				</div>
 				<div className='MovieCardBack'>
 					<p>{description}</p>

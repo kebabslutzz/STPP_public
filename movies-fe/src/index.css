@@ -31,23 +31,23 @@ a {
 	text-decoration: none;
 }
 
-h1,
+/* h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
 	color: var(--text-color);
-}
+} */
 
-button {
+/* button {
 	background-color: var(--primary-color);
 	color: #ffffff;
 	border: none;
 	border-radius: 4px;
 	padding: 10px 20px;
 	cursor: pointer;
-}
+} */
 
 button.secondary {
 	background-color: var(--secondary-color);
@@ -58,4 +58,47 @@ button.secondary {
 	--text-color: #ffffff;
 	--header-background-color: #1e1e1e;
 	--link-color: #bb86fc;
+}
+
+.Header-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	color: #ffffff !important;
+}
+
+.PageContainer {
+	max-width: 1475px; /* Adjust this value as needed */
+	margin: 0 auto;
+	padding: 20px;
+}
+
+.Button {
+	border-radius: 25px !important;
+	margin: 0 5px !important;
+	cursor: pointer !important;
+	font-family: var(--font-family) !important;
+
+	/* padding: 10px 20px !important; */
+	height: 30px !important;
+}
+
+.Button.add-edit-button {
+	color: #ffffff !important;
+	background: #008080 !important;
+}
+
+.Button.delete-button {
+	/* margin: 0 10px !important; */
+	border: 2px solid #008080 !important;
+	color: #ffffff !important;
+	background: none !important;
+}
+
+.Button.cancel-button {
+	margin: 0 10px !important;
+	border: 2px solid #008080 !important;
+	color: #008080 !important;
+	background: none !important;
 }

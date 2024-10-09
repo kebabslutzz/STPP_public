@@ -36,8 +36,8 @@
 
 .comments-box {
 	height: 100%;
-	border-right: 1px solid #dddbcb;
-	border-left: 1px solid #dddbcb;
+	border-right: 1px solid #ffffff;
+	border-left: 1px solid #ffffff;
 	text-align: center;
 	display: flex;
 	align-items: center;

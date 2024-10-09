@@ -1,5 +1,5 @@
 .Movie-title {
-	color: #dddbcb;
+	color: #ffffff;
 	text-align: center;
 	font-weight: bold !important;
 	font-size: 2.75rem !important;
@@ -10,7 +10,7 @@
 	display: flex;
 	align-items: flex-start;
 	padding: 20px;
-	color: #dddbcb !important;
+	color: #ffffff !important;
 
 	background-color: var(--background-color);
 	color: var(--text-color);
@@ -40,7 +40,7 @@
 	max-width: 1475px; /* Adjust this value as needed */
 	margin: 0 auto;
 	padding: 10px;
-	color: #dddbcb;
+	color: #ffffff;
 }
 
 .MovieDetail .MovieInfo h1 {
@@ -49,41 +49,19 @@
 	margin-bottom: 20px; /* Add some space below the title */
 }
 
-.Button {
-	border-radius: 25px !important;
-	cursor: pointer;
-	font-family: var(--font-family);
-	color: #dddbcb !important;
-}
-
-.add-movie-button {
-	background: #008080 !important;
-}
-
-.delete-movie-button {
-	margin: 0 10px !important;
-	border: 2px solid #008080 !important;
-	background: none !important;
-}
-
 .discussion-header {
 	display: flex;
 	justify-content: space-between; /* Align items to the left and right */
 	align-items: center;
 }
-.create-discussion-button {
-	margin-left: auto; /* Push the button to the right */
-	color: #dddbcb !important;
-	background-color: #008080 !important;
-	border-radius: 25px !important;
-}
+
 .most-recent-discussions {
 	font-weight: bold;
 }
 
 .divider {
 	width: 100%;
-	background-color: #dddbcb;
+	background-color: #ffffff;
 	opacity: 0.25;
 }
 

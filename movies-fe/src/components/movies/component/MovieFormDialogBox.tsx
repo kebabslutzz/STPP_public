@@ -9,6 +9,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormHelperTe
 import Poster from '../../../interfaces/Poster';
 import movieValidationSchema from '../../../validation/movieValidation';
 import * as yup from 'yup';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 interface MovieFormDialogBoxProps {
 	onClose: () => void;
@@ -185,10 +186,10 @@ const MovieFormDialogBox: React.FC<MovieFormDialogBoxProps> = ({ onClose, onSubm
 				/>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={onClose} color='primary'>
+				<Button onClick={onClose} className='Button cancel-button' endIcon={<CancelIcon />}>
 					Cancel
 				</Button>
-				<Button variant='contained' onClick={handleSubmit} color='primary' endIcon={<SendIcon />}>
+				<Button onClick={handleSubmit} className={'Button add-edit-button'} endIcon={<SendIcon />}>
 					Submit
 				</Button>
 			</DialogActions>

@@ -1,34 +1,18 @@
-/* .MovieList {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-	gap: 10px;
-	justify-content: center;
-}
-
-@media (min-width: 1400px) {
-	.MovieList {
-		grid-template-columns: repeat(7, 1fr);
-	}
-} */
-.PageContainer {
-	max-width: 1475px; /* Adjust this value as needed */
-	margin: 0 auto;
-	padding: 20px;
-}
-
-.header-row {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+.MovieItem {
 	margin-bottom: 20px;
 }
 
-.add-movie-button {
-	padding: 10px 20px;
-	border: none;
-	border-radius: 25px;
-	/* background: #008080;
-	color: #dddbcb; */
-	cursor: pointer;
-	font-family: var(--font-family); /* Ensure global font is used */
+.MoviePoster {
+	width: 100%;
+	height: auto;
+	max-width: 300px; /* Adjust as needed */
+	max-height: 400px; /* Adjust as needed */
+	object-fit: cover;
+}
+
+.MovieList {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 20px;
 }

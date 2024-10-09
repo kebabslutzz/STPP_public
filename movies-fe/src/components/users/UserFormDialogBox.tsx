@@ -6,9 +6,8 @@ import userValidationSchema from '../../validation/userValidation';
 import { STATUS } from '../../constants/userStatuses';
 import { ROLES } from '../../constants/userRoles';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { Edit } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import SendIcon from '@mui/icons-material/Send';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 interface UserFormDialogBoxProps {
@@ -99,25 +98,11 @@ const UserFormDialogBox: React.FC<UserFormDialogBoxProps> = ({ open, onClose, on
 								))}
 							</Field>
 							<DialogActions>
-								<Button className='Button delete-movie-button' onClick={onClose} endIcon={<CancelIcon />}>
+								<Button className='Button cancel-button' onClick={onClose} endIcon={<CancelIcon />}>
 									Cancel
 								</Button>
-								<Button
-									className='Button add-movie-button'
-									type='submit'
-									color='primary'
-									variant='contained'
-									disabled={isSubmitting}
-								>
-									{user ? (
-										<>
-											Edit <EditIcon />
-										</>
-									) : (
-										<>
-											Create <PersonAddIcon />
-										</>
-									)}
+								<Button className='Button add-edit-button' disabled={isSubmitting} endIcon={<SendIcon />}>
+									Submit
 								</Button>
 							</DialogActions>
 						</Form>

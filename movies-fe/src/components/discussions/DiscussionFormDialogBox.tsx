@@ -3,6 +3,8 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField } 
 import Discussion from '../../interfaces/Discussion';
 import discussionValidationSchema from '../../validation/discussionValidation';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
+import CancelIcon from '@mui/icons-material/Cancel';
+import SendIcon from '@mui/icons-material/Send';
 
 interface DiscussionFormDialogBoxProps {
 	open: boolean;
@@ -46,11 +48,11 @@ const DiscussionFormDialogBox: React.FC<DiscussionFormDialogBoxProps> = ({
 								helperText={<ErrorMessage name='title' component='div' />}
 							/>
 							<DialogActions>
-								<Button onClick={onClose} color='primary'>
+								<Button onClick={onClose} className='Button cancel-button' endIcon={<CancelIcon />}>
 									Cancel
 								</Button>
-								<Button type='submit' color='primary' variant='contained' disabled={isSubmitting}>
-									{discussion ? 'Edit' : 'Create'}
+								<Button type='submit' className='Button add-edit-button' disabled={isSubmitting} endIcon={<SendIcon />}>
+									Submit
 								</Button>
 							</DialogActions>
 						</Form>

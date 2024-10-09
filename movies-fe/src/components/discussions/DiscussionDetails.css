@@ -1,20 +1,13 @@
-.discussion-header {
-	display: flex;
-	justify-content: space-between; /* Align items to the left and right */
-	align-items: center;
-}
-
 .DiscussionDetailContainer {
 	display: flex;
 	flex-direction: column;
 	max-width: 1475px; /* Adjust this value as needed */
 	margin: 0 auto;
 	padding: 20px;
-	color: #dddbcb;
+	color: #ffffff;
 }
 
 .discussion-buttons {
-	display: flex;
 	padding: 10px 20px !important;
 	margin: 0 10px !important;
 	gap: 10px; /* Add some space between the buttons */

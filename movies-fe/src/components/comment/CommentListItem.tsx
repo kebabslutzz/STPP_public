@@ -3,6 +3,8 @@ import { Box, Button, Divider, Typography, Grid } from '@mui/material';
 import './CommentListItem.css';
 import Comment from '../../interfaces/Comment';
 import DeleteConfirmationDialog from '../dialog/DeleteConfirmationDialog';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 interface CommentListItemProps {
 	comment: Comment;
@@ -58,10 +60,10 @@ const CommentListItem: React.FC<CommentListItemProps> = ({ comment, onDelete, on
 				<Grid item xs={10}>
 					<Typography variant='body1' className='comment-content-box'>{`${comment.content}`}</Typography>
 					<Box className='button-container'>
-						<Button onClick={handleDeleteDialogOpen} className='Button delete-comment-button'>
+						<Button onClick={handleDeleteDialogOpen} className='Button delete-button' endIcon={<DeleteIcon />}>
 							Delete
 						</Button>
-						<Button onClick={handleEditComment} className='Button edit-comment-button'>
+						<Button onClick={handleEditComment} className='Button add-edit-button' endIcon={<EditIcon />}>
 							Edit
 						</Button>
 					</Box>

@@ -24,7 +24,7 @@ const UsersTable: React.FC<UserListProps> = ({ users, onDelete, onEdit }) => {
 		<TableContainer className='TableContainer'>
 			<Table>
 				<TableHead>
-					<TableRow>
+					<TableRow className='TableRow'>
 						<TableCell>User ID</TableCell>
 						<TableCell>User Name</TableCell>
 						<TableCell>User Email</TableCell>
@@ -47,7 +47,7 @@ const UsersTable: React.FC<UserListProps> = ({ users, onDelete, onEdit }) => {
 							<TableCell>{new Date(user.dateModified!).toDateString()}</TableCell>
 							<TableCell>
 								<Button
-									className='Button add-movie-button'
+									className='Button add-edit-button'
 									onClick={() => handleUpdateUser(user)}
 									variant='contained'
 									color='primary'
@@ -56,7 +56,7 @@ const UsersTable: React.FC<UserListProps> = ({ users, onDelete, onEdit }) => {
 									Edit
 								</Button>
 								<Button
-									className='Button delete-movie-button'
+									className='Button delete-button'
 									onClick={() => handleDeleteUser(user.id!)}
 									variant='contained'
 									color='secondary'

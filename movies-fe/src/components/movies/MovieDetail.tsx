@@ -15,6 +15,7 @@ import DeleteConfirmationDialog from '../dialog/DeleteConfirmationDialog';
 import { useNavigate } from 'react-router-dom';
 import DiscussionFormDialogBox from '../discussions/DiscussionFormDialogBox';
 import EditIcon from '@mui/icons-material/Edit';
+import ForumIcon from '@mui/icons-material/Forum';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 interface MovieDetailProps {
@@ -289,7 +290,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 
 						<ListItem>
 							<Button
-								className='Button add-movie-button'
+								className='Button add-edit-button'
 								onClick={handleOpenDialog}
 								variant='text'
 								endIcon={<EditIcon />}
@@ -297,7 +298,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 								Edit Movie
 							</Button>
 							<Button
-								className='Button delete-movie-button'
+								className='Button delete-button'
 								onClick={handleOpenDeleteDialog}
 								variant='text'
 								endIcon={<DeleteIcon />}
@@ -318,8 +319,8 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 					<Button
 						onClick={handleOpenDiscussionDialog}
 						variant='text'
-						className='Button create-discussion-button'
-						endIcon={<EditIcon />}
+						className='Button add-edit-button'
+						endIcon={<ForumIcon />}
 					>
 						Create Discussion
 					</Button>

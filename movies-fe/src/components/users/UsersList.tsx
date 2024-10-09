@@ -8,7 +8,6 @@ import './UsersList.css';
 import UsersTable from './UsersTable';
 import UserFormDialogBox from './UserFormDialogBox';
 import DeleteConfirmationDialog from '../dialog/DeleteConfirmationDialog';
-// import AddIcon from '@mui/icons-material/Add';
 import Loader from '../shared/Loader';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
@@ -115,12 +114,15 @@ const UsersList: React.FC = () => {
 	if (usersErrors) return <div>{usersErrors.join(', ')}</div>;
 
 	return (
-		<Container className='Container'>
-			<>User List</>
+		<Container className='PageContainer' maxWidth={false}>
+			<div className='Header-row'>
+				<h1>User List</h1>
+				<Button className='Button add-edit-button' onClick={handleUserCreateClick} endIcon={<PersonAddIcon />}>
+					Add user
+				</Button>
+			</div>
 			{fetchedUsers && <UsersTable users={users} onDelete={handleDeleteDialogFormOpen} onEdit={handleEditUser} />}
-			<Button className='Button add-movie-button' onClick={handleUserCreateClick} endIcon={<PersonAddIcon />}>
-				Add user
-			</Button>
+
 			<UserFormDialogBox
 				open={isUserSubmitFormOpen}
 				onClose={handleUserSubmitFormClose}
