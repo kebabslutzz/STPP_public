@@ -40,7 +40,7 @@ public class MovieController{
     private final DiscussionService discussionService;
     private final CommentService commentService;
 
-//    Create Movie CRUD
+    /** ************* MOVIE CRUDS ************* **/
     @PostMapping
     public ResponseEntity<MovieResponseDto> createMovie(@Valid @RequestBody MovieRequestDto movieRequestDto){
         MovieResponseDto movie = movieService.createMovie(movieRequestDto);
@@ -52,7 +52,6 @@ public class MovieController{
         return ResponseEntity.created(location).body(movie);
     }
 
-//    Read Movie CRUD
     @GetMapping("/{id}")
     public ResponseEntity<MovieResponseDto> getMovieById(@PathVariable Long id){
         return movieService
@@ -61,33 +60,31 @@ public class MovieController{
                 .orElse(ResponseEntity.notFound().build());
     }
 
-//    Read All Movies CRUD
     @GetMapping
     public ResponseEntity<List<MovieResponseDto>> getAllMovies(){
         List<MovieResponseDto> movies = movieService.getAllMovies();
         return ResponseEntity.ok(movies);
     }
 
-//    Update Movie CRUD
     @PutMapping
     public ResponseEntity<?> editMovie(@Valid @RequestBody MovieEditRequestDto movieEditRequestDto) {
         MovieResponseDto updatedMovie = movieService.editMovie(movieEditRequestDto);
         return ResponseEntity.ok(updatedMovie);
     }
 
-//    Add Poster to Movie
     @PatchMapping("/{id}")
     public ResponseEntity<MovieResponseDto> addPosterToMovie(@PathVariable Long id, @Valid @RequestBody Long posterId){
         MovieResponseDto movie = movieService.addPosterToMovie(id, posterId);
         return ResponseEntity.ok(movie);
     }
 
-//    Delete Movie CRUD
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMovieById(@PathVariable Long id){
         movieService.deleteMovieById(id);
         return ResponseEntity.noContent().build();
     }
+
+    /** ************* DISCUSSION CRUDS ************* **/
 
     @GetMapping("/{id}/discussions")
     public ResponseEntity<List<DiscussionResponseDto>> getAllDiscussionsByMovieId(@PathVariable @Valid Long id){
@@ -114,6 +111,33 @@ public class MovieController{
         return ResponseEntity.created(location).body(createdDiscussion);
     }
 
+    @PatchMapping("/{movieId}/discussions/{discussionId}")
+    public ResponseEntity<DiscussionResponseDto> editDiscussion(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @RequestBody DiscussionEditRequestDto discussionEditRequestDto) {
+        return ResponseEntity.ok(discussionService.editDiscussion(movieId, discussionId, discussionEditRequestDto));
+    }
+
+    @DeleteMapping("/{movieId}/discussions/{discussionId}")
+    public ResponseEntity<Void> deleteDiscussionById(@PathVariable Long movieId, @PathVariable Long discussionId){
+        discussionService.deleteDiscussionById(movieId, discussionId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /** ************* COMMENT CRUDS ************* **/
+
+    @GetMapping("/{movieId}/discussions/{discussionId}/comments/{commentId}")
+    private ResponseEntity<CommentResponseDto> getCommentById(@PathVariable Long movieId, @PathVariable Long discussionId, @PathVariable Long commentId){
+        return commentService
+                .getCommentById(movieId, discussionId, commentId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{movieId}/discussions/{discussionId}/comments")
+    public ResponseEntity<List<CommentResponseDto>> getAllCommentsByDiscussionId(@PathVariable Long movieId, @PathVariable Long discussionId){
+        List<CommentResponseDto> comments = commentService.getAllCommentsByDiscussionId(movieId, discussionId);
+        return ResponseEntity.ok(comments);
+    }
+
     @PostMapping("/{movieId}/discussions/{discussionId}/comments")
     public ResponseEntity<CommentResponseDto> createComment(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @RequestBody CommentRequestDto commentRequestDto) {
         CommentResponseDto createdComment = commentService.createComment(movieId, discussionId, commentRequestDto);
@@ -125,31 +149,14 @@ public class MovieController{
         return ResponseEntity.created(location).body(createdComment);
     }
 
-    @PatchMapping("/{movieId}/discussions/{discussionId}")
-    public ResponseEntity<DiscussionResponseDto> editDiscussion(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @RequestBody DiscussionEditRequestDto discussionEditRequestDto) {
-        return ResponseEntity.ok(discussionService.editDiscussion(movieId, discussionId, discussionEditRequestDto));
-    }
-
     @PatchMapping("/{movieId}/discussions/{discussionId}/comments/{commentId}")
     public ResponseEntity<CommentResponseDto> editComment(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @PathVariable Long commentId, @Valid @RequestBody CommentEditRequestDto commentEditRequestDto){
         return ResponseEntity.ok(commentService.editComment(movieId, discussionId, commentId, commentEditRequestDto));
     }
 
-    @GetMapping("/{movieId}/discussions/{discussionId}/comments")
-    public ResponseEntity<List<CommentResponseDto>> getAllCommentsByDiscussionId(@PathVariable Long movieId, @PathVariable Long discussionId){
-        List<CommentResponseDto> comments = commentService.getAllCommentsByDiscussionId(movieId, discussionId);
-        return ResponseEntity.ok(comments);
-    }
-
     @DeleteMapping("/{movieId}/discussions/{discussionId}/comments/{commentId}")
     public ResponseEntity<Void> deleteCommentById(@PathVariable Long movieId, @PathVariable Long discussionId, @PathVariable Long commentId){
         commentService.deleteComment(movieId, discussionId, commentId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{movieId}/discussions/{discussionId}")
-    public ResponseEntity<Void> deleteDiscussionById(@PathVariable Long movieId, @PathVariable Long discussionId){
-        discussionService.deleteDiscussionById(movieId, discussionId);
         return ResponseEntity.noContent().build();
     }
 }

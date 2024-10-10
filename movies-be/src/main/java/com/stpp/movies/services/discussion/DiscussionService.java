@@ -87,7 +87,6 @@ public class DiscussionService {
                     discussionResponseDto.setCommentCount(commentCount);
                     return discussionResponseDto;
                 })
-//                        MAPPER::discussionToResponseDto)
                 .collect(Collectors.toList());
     }
 

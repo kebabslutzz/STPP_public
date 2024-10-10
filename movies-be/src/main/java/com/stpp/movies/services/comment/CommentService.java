@@ -122,4 +122,19 @@ public class CommentService {
     public int getNumberOfCommentsByDiscussionId(Long discussionId) {
         return commentRepository.findAllByDiscussionId(discussionId).size();
     }
+
+    public Optional<CommentResponseDto> getCommentById(Long movieId, Long discussionId, Long commentId) {
+        if (!movieRepository.existsById(movieId)) {
+            throw new NotFoundException("Movie with ID " + movieId + " not found");
+        }
+        if (!discussionRepository.existsById(discussionId)) {
+            throw new NotFoundException("Discussion with ID " + discussionId + " not found");
+        }
+        if (!commentRepository.existsById(commentId)) {
+            throw new NotFoundException("Comment with ID " + commentId + " not found");
+        }
+
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        return comment.map(MAPPER::commentToResponseDto);
+    }
 }
