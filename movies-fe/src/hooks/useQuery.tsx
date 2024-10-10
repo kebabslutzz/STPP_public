@@ -23,7 +23,7 @@ export default function useQuery<T>({
 		throw new Error('URL is required');
 	}
 	// console.log('in api service');
-	console.log('url in query:', url, 'method', httpMethod);
+	// console.log('url in query:', url, 'method', httpMethod);
 
 	const [data, setData] = useState<T | null>(null);
 	const [isLoading, setIsLoading] = useState(false);

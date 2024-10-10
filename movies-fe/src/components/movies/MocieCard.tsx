@@ -18,7 +18,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ id, title, description, posterId 
 	const [poster, setPoster] = React.useState<Poster | null>(null);
 	const navigate = useNavigate();
 
-	console.log('posterId:', posterId);
+	// console.log('posterId:', posterId);
 
 	const {
 		data: posterBytes,
@@ -46,7 +46,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ id, title, description, posterId 
 		navigate(`${ROUTE_PATHS.HOME}/${id}${ROUTE_PATHS.DISCUSSIONS}`);
 	};
 
-	console.log('posterBytes:', posterBytes);
+	// console.log('posterBytes:', posterBytes);
 
 	const base64String = posterBytes?.poster
 		? `data:image/jpeg;base64,${posterBytes.poster}`

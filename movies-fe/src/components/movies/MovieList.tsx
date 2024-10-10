@@ -16,7 +16,7 @@ const MovieList: React.FC = () => {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [listOfErrors, setListOfErrors] = useState<string[]>([]);
 
-	console.log('Calling movies api');
+	// console.log('Calling movies api');
 	const {
 		data: movies,
 		isLoading,
@@ -39,9 +39,9 @@ const MovieList: React.FC = () => {
 		}
 	}, [movies]);
 
-	console.log('movies:', movieList);
+	// console.log('movies:', movieList);
 
-	console.log('MoviesPage rendered');
+	// console.log('MoviesPage rendered');
 
 	const onCreateMovieSuccess = (response: Movie) => {
 		const newMovie: Movie = response;
@@ -63,7 +63,7 @@ const MovieList: React.FC = () => {
 			if (poster) {
 				const formData = new FormData();
 				formData.append('file', poster);
-				console.log('body:', formData);
+				// console.log('body:', formData);
 
 				const posterResponse = await fetch(ENDPOINTS.POSTER.CREATE_POSTER, {
 					method: HTTP_METHODS.POST,
@@ -74,11 +74,11 @@ const MovieList: React.FC = () => {
 					throw new Error('Failed to upload poster');
 				}
 
-				console.log('POSTER RESPONSE:', posterResponse);
+				// console.log('POSTER RESPONSE:', posterResponse);
 				const posterData = await posterResponse.json();
-				console.log('POSTER DATA:', posterData);
+				// console.log('POSTER DATA:', posterData);
 				posterId = Number(posterData.id);
-				console.log('CREATED POSTER ID:', posterId);
+				// console.log('CREATED POSTER ID:', posterId);
 			}
 
 			// Step 2: Create Movie
@@ -86,7 +86,7 @@ const MovieList: React.FC = () => {
 				...newMovie,
 				...(posterId && { posterId }), // Conditionally include posterId
 			};
-			console.log('movieWithPoster:', movieWithPoster);
+			// console.log('movieWithPoster:', movieWithPoster);
 			const movieResponse = await createMovieCommand.sendData(movieWithPoster);
 
 			if (!movieResponse?.data.id) {

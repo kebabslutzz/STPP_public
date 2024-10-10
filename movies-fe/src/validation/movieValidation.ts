@@ -7,22 +7,26 @@ const movieValidationSchema = yup.object().shape({
 		.string()
 		.required('Title is required')
 		.min(1, 'Title must be at least 1 character long')
-		.max(256, 'Title must be at most 256 characters long'),
+		.max(256, 'Title must be at most 256 characters long')
+		.matches(/.*\S.*/, 'Title must not be blank'),
 	description: yup
 		.string()
 		.required('Description is required')
 		.min(1, 'Description must be at least 1 character long')
-		.max(1024, 'Description must be at most 256 characters long'),
+		.max(1024, 'Description must be at most 256 characters long')
+		.matches(/.*\S.*/, 'Title must not be blank'),
 	director: yup
 		.string()
 		.required('Director is required')
 		.min(1, 'Director must be at least 1 character long')
-		.max(256, 'Director must be at most 256 characters long'),
+		.max(256, 'Director must be at most 256 characters long')
+		.matches(/.*\S.*/, 'Title must not be blank'),
 	genre: yup
 		.string()
 		.required('Genre is required')
 		.min(1, 'Genre must be at least 1 character long')
-		.max(256, 'Genre must be at most 256 characters long'),
+		.max(256, 'Genre must be at most 256 characters long')
+		.matches(/.*\S.*/, 'Title must not be blank'),
 	rating: yup
 		.number()
 		.required('Rating is required')

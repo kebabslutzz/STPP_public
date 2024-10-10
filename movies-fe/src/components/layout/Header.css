@@ -27,7 +27,7 @@
 	margin: 0 15px;
 }
 .header nav a {
-	color: #dddbcb;
+	color: #ffffff;
 	text-decoration: none;
 	font-size: 1.2em;
 }
@@ -45,13 +45,13 @@
 }
 .custom-button {
 	border-radius: 20px;
-	color: #dddbcb; /* Ensure the button text color is #dddbcb */
+	color: #ffffff; /* Ensure the button text color is #ffffff */
 	background-color: transparent;
 	border: 1px solid transparent; /* Initially transparent outline */
 	text-decoration: none; /* Remove underline */
 	z-index: 20; /* Ensure the buttons are on top of everything */
 }
 .custom-button:hover {
-	border-color: #dddbcb; /* Outline color same as text color */
+	border-color: #ffffff; /* Outline color same as text color */
 	text-decoration: none; /* Ensure underline is removed on hover */
 }
