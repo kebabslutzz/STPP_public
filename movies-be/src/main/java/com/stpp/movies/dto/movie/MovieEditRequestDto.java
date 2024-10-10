@@ -20,8 +20,8 @@ import java.time.LocalDate;
 @SuperBuilder(toBuilder = true)
 @Data
 public class MovieEditRequestDto {
-    @NotNull(message = "Id should not be null")
-    private Long id;
+//    @NotNull(message = "Id should not be null")
+//    private Long id;
 
     @NotBlank(message = "Title should not be blank")
     @NotEmpty(message = "Title should not be empty")

@@ -32,35 +32,35 @@ const MovieFormDialogBox: React.FC<MovieFormDialogBoxProps> = ({ onClose, onSubm
 	const [posterID, setPosterID] = useState<number | undefined>(movie?.posterId || undefined);
 	const dialogRef = useRef<HTMLDivElement>(null);
 
-	const handleSubmit = async (event: React.FormEvent) => {
-		event.preventDefault(); // Prevent form submission
+	// const handleSubmit = async (event: React.FormEvent) => {
+	// 	event.preventDefault(); // Prevent form submission
 
-		const newMovie: Movie = {
-			id: movie?.id,
-			title,
-			description,
-			director,
-			genre,
-			rating: Number(rating),
-			releaseDate,
-			posterId: posterID,
-		};
+	// 	const newMovie: Movie = {
+	// 		id: movie?.id,
+	// 		title,
+	// 		description,
+	// 		director,
+	// 		genre,
+	// 		rating: Number(rating),
+	// 		releaseDate,
+	// 		posterId: posterID,
+	// 	};
 
-		try {
-			await movieValidationSchema.validate(
-				{ title, description, director, genre, rating, releaseDate, poster },
-				{ abortEarly: false }
-			);
-			onSubmit(newMovie, poster!);
-			onClose();
-		} catch (validationErrors) {
-			const newErrors: { [key: string]: string } = {};
-			(validationErrors as yup.ValidationError).inner.forEach((error) => {
-				if (error.path) newErrors[error.path] = error.message;
-			});
-			setErrors(newErrors);
-		}
-	};
+	// 	try {
+	// 		await movieValidationSchema.validate(
+	// 			{ title, description, director, genre, rating, releaseDate, poster },
+	// 			{ abortEarly: false }
+	// 		);
+	// 		onSubmit(newMovie, poster!);
+	// 		onClose();
+	// 	} catch (validationErrors) {
+	// 		const newErrors: { [key: string]: string } = {};
+	// 		(validationErrors as yup.ValidationError).inner.forEach((error) => {
+	// 			if (error.path) newErrors[error.path] = error.message;
+	// 		});
+	// 		setErrors(newErrors);
+	// 	}
+	// };
 
 	const handleKeyDown = (event: KeyboardEvent) => {
 		if (event.key === 'Escape') {
@@ -82,7 +82,7 @@ const MovieFormDialogBox: React.FC<MovieFormDialogBoxProps> = ({ onClose, onSubm
 			<DialogContent>
 				<Formik
 					initialValues={{
-						id: movie?.id || undefined,
+						id: movie?.id! || undefined,
 						title: movie?.title || '',
 						description: movie?.description || '',
 						director: movie?.director || '',
@@ -91,6 +91,7 @@ const MovieFormDialogBox: React.FC<MovieFormDialogBoxProps> = ({ onClose, onSubm
 						releaseDate: movie?.releaseDate
 							? movie.releaseDate.toISOString().split('T')[0]
 							: new Date().toISOString().split('T')[0],
+						posterId: movie?.posterId || undefined,
 					}}
 					validationSchema={movieValidationSchema}
 					onSubmit={(values, { setSubmitting }) => {

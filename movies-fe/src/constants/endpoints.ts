@@ -15,7 +15,7 @@ export const ENDPOINTS = {
 		GET_MOVIE_BY_ID: (id: number) => `${BASE_URL}/movies/${id}`,
 		CREATE_MOVIE: `${BASE_URL}/movies`,
 		DELETE_MOVIE: (id: number) => `${BASE_URL}/movies/${id}`,
-		UPDATE_MOVIE: `${BASE_URL}/movies`,
+		UPDATE_MOVIE: (id: number) => `${BASE_URL}/movies/${id}`,
 		ADD_POSTER: (id: number) => `${BASE_URL}/movies/${id}/poster`,
 		CREATE_DISCUSSION: (id: number) => `${BASE_URL}/movies/${id}/discussions`,
 		EDIT_DISCUSSION: (movieId: number, discussionId: number) =>

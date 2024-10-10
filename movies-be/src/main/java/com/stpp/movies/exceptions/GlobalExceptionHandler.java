@@ -4,6 +4,7 @@ import com.stpp.movies.dto.ErrorResponseDto;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -49,6 +50,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleValidationException(ValidationException ex) {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto();
         errorResponseDto.setMessage(ex.getMessage());
+        errorResponseDto.setStatus(HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+    }
+
+
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponseDto> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto();
+        errorResponseDto.setMessage("Invalid request body: " + ex.getMessage());
         errorResponseDto.setStatus(HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
     }

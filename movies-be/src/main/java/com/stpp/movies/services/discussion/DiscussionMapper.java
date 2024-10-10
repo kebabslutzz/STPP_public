@@ -30,7 +30,7 @@ public interface DiscussionMapper {
 
     @Named("discussionRequestDtoToDiscussion")
     @Mapping(target = "title", source = "discussionRequestDto.title")
-    @Mapping(target = "movie.id", source = "discussionRequestDto.movieId")
+    @Mapping(target = "movie.id", source = "movieId")
     @Mapping(target = "user.id", source = "discussionRequestDto.userId")
-    Discussion discussionRequestDtoToDiscussion(DiscussionRequestDto discussionRequestDto);
+    Discussion discussionRequestDtoToDiscussion(DiscussionRequestDto discussionRequestDto, Long movieId);
 }

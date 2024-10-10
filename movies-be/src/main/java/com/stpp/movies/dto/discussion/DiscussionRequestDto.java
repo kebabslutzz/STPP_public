@@ -20,9 +20,6 @@ public class DiscussionRequestDto {
     @Size(min = 1, max = 256, message = "Title must be between {min} and {max} characters")
     private String title;
 
-    @NotNull(message = "Movie should not be null")
-    private Long movieId;
-
     @NotNull(message = "User should not be null")
     private Long userId;
 }

@@ -62,18 +62,19 @@ public class MovieService {
     }
 
     @Transactional
-    public MovieResponseDto editMovie(@Valid MovieEditRequestDto movieEditRequestDto) {
-        if (!movieRepository.existsById(movieEditRequestDto.getId())) {
-            throw new NotFoundException("Movie with ID " + movieEditRequestDto.getId() + " not found");
+    public MovieResponseDto editMovie(Long movieId, @Valid MovieEditRequestDto movieEditRequestDto) {
+        if (!movieRepository.existsById(movieId)) {
+            throw new NotFoundException("Movie with ID " + movieId + " not found");
         }
 
-        Movie movie = movieRepository.findById(movieEditRequestDto.getId()).get();
+        Movie movie = movieRepository.findById(movieId).get();
 
         if (movieEditRequestDto.getPosterId() != null) {
+            if (!fileService.existsById(movieEditRequestDto.getPosterId())) {
+                throw new NotFoundException("Poster with ID " + movieEditRequestDto.getPosterId() + " not found");
+            }
             Poster poster = fileService.getPosterAsPoster(movieEditRequestDto.getPosterId());
             movie.setPoster(poster);
-        } else{
-            movie.setPoster(null);
         }
 
         MAPPER.movieEditRequestDtoToMovie(movieEditRequestDto, movie);

@@ -133,15 +133,17 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 	}, [posterBytes]);
 
 	const updateMovieCommand = useQuery({
-		url: ENDPOINTS.MOVIES.UPDATE_MOVIE,
+		url: ENDPOINTS.MOVIES.UPDATE_MOVIE(movieId),
 		httpMethod: HTTP_METHODS.PUT,
 		onSuccess: handleEditSuccess,
 	});
 
 	const onEditSubmit = async (newMovie: Movie, poster: File) => {
+		console.log('atejes filmas', newMovie);
 		try {
 			let posterId: number | null = newMovie.posterId ? newMovie.posterId : null;
 
+			// Step 1: Upload Poster if it exists
 			if (poster) {
 				const formData = new FormData();
 				formData.append('file', poster);
@@ -172,8 +174,10 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 			}
 
 			// Step 2: Create Movie
+			const { id, ...newMovieWithoutId } = newMovie;
+
 			const movieWithPoster: Movie = {
-				...newMovie,
+				...newMovieWithoutId,
 				...(posterId ? { posterId } : {}),
 			};
 			const movieResponse = await updateMovieCommand.sendData(movieWithPoster);

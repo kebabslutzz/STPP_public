@@ -48,6 +48,6 @@ public interface MovieMapper {
     @Mapping(target = "genre", source = "genre")
     @Mapping(target = "rating", source = "rating")
     @Mapping(target = "releaseDate", source = "releaseDate")
-    @Mapping(source = "posterId", target = "poster.id")
+//    @Mapping(target = "poster.id", source = "posterId")
     Movie movieEditRequestDtoToMovie(MovieEditRequestDto movieEditRequestDto, @MappingTarget Movie movie);
 }

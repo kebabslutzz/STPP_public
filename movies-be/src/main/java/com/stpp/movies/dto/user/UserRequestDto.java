@@ -4,9 +4,11 @@ import com.stpp.movies.enumerators.Role;
 import com.stpp.movies.enumerators.Status;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,9 +37,11 @@ public class UserRequestDto {
 
     @NotNull(message = "Role should not be null")
     @Enumerated(EnumType.STRING)
+//    @Pattern(regexp = "^(USER|ADMIN|GUEST)$", message = "Role should be either ADMIN or USER or GUEST")
     private Role role;
 
     @NotNull(message = "Status should not be null")
     @Enumerated(EnumType.STRING)
+//    @Pattern(regexp = "^(ACTIVE|NOT_ACTIVE)$", message = "Status should be either ACTIVE or NOT_ACTIVE")
     private Status status;
 }

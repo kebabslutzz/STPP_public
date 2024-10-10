@@ -66,12 +66,14 @@ public class MovieController{
         return ResponseEntity.ok(movies);
     }
 
-    @PutMapping
-    public ResponseEntity<?> editMovie(@Valid @RequestBody MovieEditRequestDto movieEditRequestDto) {
-        MovieResponseDto updatedMovie = movieService.editMovie(movieEditRequestDto);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editMovie(@Valid @PathVariable Long id, @Valid @RequestBody MovieEditRequestDto movieEditRequestDto) {
+        MovieResponseDto updatedMovie = movieService.editMovie(id, movieEditRequestDto);
         return ResponseEntity.ok(updatedMovie);
     }
 
+
+    //NOT USED!
     @PatchMapping("/{id}")
     public ResponseEntity<MovieResponseDto> addPosterToMovie(@PathVariable Long id, @Valid @RequestBody Long posterId){
         MovieResponseDto movie = movieService.addPosterToMovie(id, posterId);
@@ -125,7 +127,7 @@ public class MovieController{
     /** ************* COMMENT CRUDS ************* **/
 
     @GetMapping("/{movieId}/discussions/{discussionId}/comments/{commentId}")
-    private ResponseEntity<CommentResponseDto> getCommentById(@PathVariable Long movieId, @PathVariable Long discussionId, @PathVariable Long commentId){
+    public ResponseEntity<CommentResponseDto> getCommentById(@PathVariable Long movieId, @PathVariable Long discussionId, @PathVariable Long commentId){
         return commentService
                 .getCommentById(movieId, discussionId, commentId)
                 .map(ResponseEntity::ok)

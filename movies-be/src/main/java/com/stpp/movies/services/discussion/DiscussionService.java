@@ -33,6 +33,9 @@ public class DiscussionService {
 
     @Transactional
     public List<DiscussionResponseDto> getAllDiscussionsByMovieId(Long movieId) {
+        if (!movieRepository.existsById(movieId)) {
+            throw new NotFoundException("Movie with ID " + movieId + " not found");
+        }
         return discussionRepository
                 .findAllByMovieId(movieId)
                 .stream()
@@ -131,7 +134,7 @@ public class DiscussionService {
             throw new NotFoundException("User with ID " + discussionRequestDto.getUserId() + " not found");
         }
 
-        Discussion discussion = MAPPER.discussionRequestDtoToDiscussion(discussionRequestDto);
+        Discussion discussion = MAPPER.discussionRequestDtoToDiscussion(discussionRequestDto, id);
 
         discussion = discussionRepository.save(discussion);
         return MAPPER.discussionToResponseDto(discussion);
