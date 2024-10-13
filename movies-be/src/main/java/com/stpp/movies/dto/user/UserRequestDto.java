@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -18,20 +19,17 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@SuperBuilder(toBuilder = true)
+@Builder(toBuilder = true)
 public class UserRequestDto {
-    @NotNull(message = "Username should not be null")
     @NotBlank(message = "Username should not be blank")
     @Size(min = 1, max = 256, message = "Username must be between {min} and {max} characters")
     private String username;
 
-    @NotNull(message = "Password should not be null")
     @NotBlank(message = "Password should not be blank")
     @Size(min = 8, max = 64, message = "Password must be between {min} and {max} characters")
     private String password;
 
     @Email
-    @NotNull(message = "Email should not be null")
     @NotBlank(message = "Email should not be blank")
     private String email;
 

@@ -23,7 +23,7 @@ import java.time.OffsetDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Data
 @Entity
 @Table(name = "discussion_comments", schema = "public")

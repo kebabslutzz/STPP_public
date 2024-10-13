@@ -139,8 +139,9 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 	});
 
 	const onEditSubmit = async (newMovie: Movie, poster: File) => {
-		console.log('atejes filmas', newMovie);
+		// console.log('atejes filmas', newMovie);
 		try {
+			
 			let posterId: number | null = newMovie.posterId ? newMovie.posterId : null;
 
 			// Step 1: Upload Poster if it exists

@@ -31,6 +31,7 @@ const UserFormDialogBox: React.FC<UserFormDialogBoxProps> = ({ open, onClose, on
 					}}
 					validationSchema={userValidationSchema}
 					onSubmit={(values, { setSubmitting }) => {
+						console.log('Ateinas i UserForm');
 						const newUser: User = {
 							...user,
 							username: values.username,
@@ -101,7 +102,7 @@ const UserFormDialogBox: React.FC<UserFormDialogBoxProps> = ({ open, onClose, on
 								<Button className='Button cancel-button' onClick={onClose} endIcon={<CancelIcon />}>
 									Cancel
 								</Button>
-								<Button className='Button add-edit-button' disabled={isSubmitting} endIcon={<SendIcon />}>
+								<Button type='submit' className='Button add-edit-button' disabled={isSubmitting} endIcon={<SendIcon />}>
 									Submit
 								</Button>
 							</DialogActions>

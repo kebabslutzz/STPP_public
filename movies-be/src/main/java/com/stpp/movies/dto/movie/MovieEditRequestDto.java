@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -20,9 +19,6 @@ import java.time.LocalDate;
 @SuperBuilder(toBuilder = true)
 @Data
 public class MovieEditRequestDto {
-//    @NotNull(message = "Id should not be null")
-//    private Long id;
-
     @NotBlank(message = "Title should not be blank")
     @NotEmpty(message = "Title should not be empty")
     @NotNull(message = "Title should not be null")

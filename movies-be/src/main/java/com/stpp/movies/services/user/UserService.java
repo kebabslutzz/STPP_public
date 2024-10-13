@@ -13,55 +13,48 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 @Service
 @Validated
 public class UserService {
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    private static final UserMapper MAPPER = UserMapper.INSTANCE;
+  private static final UserMapper MAPPER = UserMapper.INSTANCE;
 
-    @Transactional
-    public Optional<UserResponseDto> getUserById(@Valid Long id) {
-        Optional<User> user = userRepository.findById(id);
-        return user.map(MAPPER::userToResponseDto);
+  public UserResponseDto getUserById(Long id) {
+    return userRepository.findById(id)
+      .map(MAPPER::userToResponseDto)
+      .orElseThrow(() -> new NotFoundException("User with ID " + id + " not found"));
+  }
+
+  public List<UserResponseDto> getAllUsers() {
+    return userRepository
+      .findAll()
+      .stream()
+      .map(MAPPER::userToResponseDto)
+      .toList();
+  }
+
+  public UserResponseDto createUser(@Valid UserRequestDto userRequestDto) {
+    User user = MAPPER.requestDtoToUser(userRequestDto);
+    user = userRepository.save(user);
+    return MAPPER.userToResponseDto(user);
+  }
+
+  public void deleteUserById(Long id) {
+    if (!userRepository.existsById(id)) {
+      throw new NotFoundException("User with ID " + id + " not found");
     }
+    userRepository.deleteById(id);
+  }
 
-    @Transactional
-    public List<UserResponseDto> getAllUsers() {
-        return userRepository
-                .findAll()
-                .stream()
-                .map(MAPPER::userToResponseDto)
-                .collect(java.util.stream.Collectors.toList());
-    }
-
-    @Transactional
-    public UserResponseDto createUser(@Valid UserRequestDto userRequestDto) {
-        User user = MAPPER.requestDtoToUser(userRequestDto);
-        user = userRepository.save(user);
-        return MAPPER.userToResponseDto(user);
-    }
-
-    @Transactional
-    public void deleteUserById(@Valid Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new NotFoundException("User with ID " + id + " not found");
-        }
-        userRepository.deleteById(id);
-    }
-
-    @Transactional
-    public UserResponseDto editUser(Long userId, UserEditRequestDto userRequestDto) {
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("User with ID " + userId + " not found");
-        }
-        User user = userRepository.findById(userId).get();
-        MAPPER.userEditRequestDtoToUser(userRequestDto, user);
-        user = userRepository.save(user);
-        return MAPPER.userToResponseDto(user);
-    }
+  public UserResponseDto editUser(Long userId, UserEditRequestDto userRequestDto) {
+    var user = userRepository.findById(userId)
+      .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
+    MAPPER.userEditRequestDtoToUser(userRequestDto, user);
+    user = userRepository.save(user);
+    return MAPPER.userToResponseDto(user);
+  }
 }

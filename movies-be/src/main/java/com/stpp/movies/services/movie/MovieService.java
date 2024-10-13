@@ -13,111 +13,97 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 @Service
 @Validated
 public class MovieService {
 
-    private final MovieRepository movieRepository;
-    private final FileService fileService;
+  private final MovieRepository movieRepository;
+  private final FileService fileService;
 
-    private static final MovieMapper MAPPER = MovieMapper.INSTANCE;
+  private static final MovieMapper MAPPER = MovieMapper.INSTANCE;
 
-    public Optional<MovieResponseDto> getMovieById(@Valid Long id) {
-        Optional<Movie> movie = movieRepository.findById(id);
-        return movie.map(MAPPER::movieToResponseDto);
+  public MovieResponseDto getMovieById(@Valid Long id) {
+    return movieRepository.findById(id)
+      .map(MAPPER::movieToResponseDto)
+      .orElseThrow(() -> new NotFoundException("Movie with ID " + id + " not found"));
+  }
+
+  public MovieResponseDto createMovie(@Valid MovieRequestDto movieRequestDto) {
+    Movie movie = MAPPER.requestDtoToMovie(movieRequestDto);
+
+    if (movieRequestDto.getPosterId() != null) {
+      Poster poster = fileService.getPosterAsPoster(movieRequestDto.getPosterId());
+      movie.setPoster(poster);
+    } else {
+      movie.setPoster(null);
     }
 
-    @Transactional
-    public MovieResponseDto createMovie(@Valid MovieRequestDto movieRequestDto) {
-        Movie movie = MAPPER.requestDtoToMovie(movieRequestDto);
+    movie = movieRepository.save(movie);
+    return MAPPER.movieToResponseDto(movie);
+  }
 
-        if (movieRequestDto.getPosterId() != null) {
-            Poster poster = fileService.getPosterAsPoster(movieRequestDto.getPosterId());
-            movie.setPoster(poster);
-        }else {
-            movie.setPoster(null);
-        }
+  public List<MovieResponseDto> getAllMovies() {
+    return movieRepository
+      .findAllByOrderByReleaseDateAsc()
+      .stream()
+      .map(MAPPER::movieToResponseDto)
+      .toList();
+  }
 
-        movie = movieRepository.save(movie);
-        return MAPPER.movieToResponseDto(movie);
+  public MovieResponseDto editMovie(Long movieId, @Valid MovieEditRequestDto movieEditRequestDto) {
+    Movie movie = movieRepository.findById(movieId)
+      .orElseThrow(() -> new NotFoundException("Movie with ID " + movieId + " not found"));
+
+    if (movieEditRequestDto.getPosterId() != null) {
+      if (!fileService.existsById(movieEditRequestDto.getPosterId())) {
+        throw new NotFoundException("Poster with ID " + movieEditRequestDto.getPosterId() + " not found");
+      }
+      Poster poster = fileService.getPosterAsPoster(movieEditRequestDto.getPosterId());
+      movie.setPoster(poster);
     }
 
-    @Transactional
-    public List<MovieResponseDto> getAllMovies() {
-        return movieRepository
-                .findAllByOrderByReleaseDateAsc()
-                .stream()
-                .map(MAPPER::movieToResponseDto)
-                .collect(Collectors.toList());
+    MAPPER.movieEditRequestDtoToMovie(movieEditRequestDto, movie);
+
+    movie = movieRepository.save(movie);
+    return MAPPER.movieToResponseDto(movie);
+  }
+
+  public void deleteMovieById(@Valid Long id) {
+    if (!movieRepository.existsById(id)) {
+      throw new NotFoundException("Movie with ID " + id + " not found");
+    }
+    movieRepository.deleteById(id);
+  }
+
+  public MovieResponseDto updateMoviePoster(Long id, byte[] bytes) {
+    if (!movieRepository.existsById(id)) {
+      throw new NotFoundException("Movie with ID " + id + " not found");
     }
 
-    @Transactional
-    public MovieResponseDto editMovie(Long movieId, @Valid MovieEditRequestDto movieEditRequestDto) {
-        if (!movieRepository.existsById(movieId)) {
-            throw new NotFoundException("Movie with ID " + movieId + " not found");
-        }
-
-        Movie movie = movieRepository.findById(movieId).get();
-
-        if (movieEditRequestDto.getPosterId() != null) {
-            if (!fileService.existsById(movieEditRequestDto.getPosterId())) {
-                throw new NotFoundException("Poster with ID " + movieEditRequestDto.getPosterId() + " not found");
-            }
-            Poster poster = fileService.getPosterAsPoster(movieEditRequestDto.getPosterId());
-            movie.setPoster(poster);
-        }
-
-        MAPPER.movieEditRequestDtoToMovie(movieEditRequestDto, movie);
-
-        movie = movieRepository.save(movie);
-        return MAPPER.movieToResponseDto(movie);
-    }
-
-    @Transactional
-    public void deleteMovieById(@Valid Long id) {
-        if (!movieRepository.existsById(id)) {
-            throw new NotFoundException("Movie with ID " + id + " not found");
-        }
-        movieRepository.deleteById(id);
-    }
-
-    public MovieResponseDto updateMoviePoster(Long id, byte[] bytes) {
-        if (!movieRepository.existsById(id)) {
-            throw new NotFoundException("Movie with ID " + id + " not found");
-        }
-
-        Movie movie = movieRepository.findById(id).get();
+    Movie movie = movieRepository.findById(id).get();
 //        movie.setPoster(bytes);
-        movie = movieRepository.save(movie);
-        return MAPPER.movieToResponseDto(movie);
+    movie = movieRepository.save(movie);
+    return MAPPER.movieToResponseDto(movie);
+  }
+
+  public MovieResponseDto addPosterToMovie(Long id, Long posterId) {
+    Movie movie = movieRepository.findById(id)
+      .orElseThrow(() -> new NotFoundException("Movie with ID " + id + " not found"));
+    if (!fileService.existsById(posterId)) {
+      throw new NotFoundException("Poster with ID " + posterId + " not found");
     }
 
-    @Transactional
-    public MovieResponseDto addPosterToMovie(Long id, Long posterId) {
-        if (!movieRepository.existsById(id)) {
-            throw new NotFoundException("Movie with ID " + id + " not found");
-        }
-        if (!fileService.existsById(posterId)) {
-            throw new NotFoundException("Poster with ID " + posterId + " not found");
-        }
-
-        Movie movie = movieRepository.findById(id).get();
-        Poster poster = Poster.builder()
-                .id(posterId)
-                .poster(fileService.getPoster(posterId).getPoster())
-                .build();
-        movie.setPoster(poster);
-        movie = movieRepository.save(movie);
-        return MAPPER.movieToResponseDto(movie);
-    }
+    Poster poster = Poster.builder()
+      .id(posterId)
+      .poster(fileService.getPoster(posterId).getPoster())
+      .build();
+    movie.setPoster(poster);
+    movie = movieRepository.save(movie);
+    return MAPPER.movieToResponseDto(movie);
+  }
 }

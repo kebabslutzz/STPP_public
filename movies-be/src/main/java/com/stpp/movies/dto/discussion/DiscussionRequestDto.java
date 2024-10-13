@@ -14,8 +14,6 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder(toBuilder = true)
 public class DiscussionRequestDto {
-    @NotNull(message = "Title should not be null")
-    @NotEmpty(message = "Title should not be empty")
     @NotBlank(message = "Title should not be blank")
     @Size(min = 1, max = 256, message = "Title must be between {min} and {max} characters")
     private String title;
