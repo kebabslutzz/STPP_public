@@ -4,6 +4,7 @@ import com.stpp.movies.dto.discussion.DiscussionEditRequestDto;
 import com.stpp.movies.dto.discussion.DiscussionRequestDto;
 import com.stpp.movies.dto.discussion.DiscussionResponseDto;
 import com.stpp.movies.entities.Discussion;
+import com.stpp.movies.entities.User;
 import com.stpp.movies.exceptions.NotFoundException;
 import com.stpp.movies.repositories.DiscussionRepository;
 import com.stpp.movies.repositories.MovieRepository;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -42,7 +42,7 @@ public class DiscussionService {
         discussionResponseDto.setCommentCount(commentCount);
         return discussionResponseDto;
       })
-      .collect(Collectors.toList());
+      .toList();
   }
 
   public DiscussionResponseDto getDiscussionById(Long id) {
@@ -83,13 +83,16 @@ public class DiscussionService {
     if (!movieRepository.existsById(movieId)) {
       throw new NotFoundException("Movie with ID " + movieId + " not found");
     }
+    User user = userRepository.findById(discussionEditRequestDto.getUserId())
+      .orElseThrow(() -> new NotFoundException("User with ID " + discussionEditRequestDto.getUserId() + " not found"));
 
     return discussionRepository.findById(discussionId)
       .filter(discussion -> discussion.getMovie().getId().equals(movieId))
+      .filter(discussion -> discussion.getUser().getId().equals(user.getId()))
       .map(discussion -> {
         MAPPER.discussionEditRequestDtoToDiscussion(discussionEditRequestDto, discussion);
         return MAPPER.discussionToResponseDto(discussion);
-      }).orElseThrow(() -> new NotFoundException("Discussion with ID " + discussionId + " not found or does not belong to movie with ID " + movieId));
+      }).orElseThrow(() -> new NotFoundException("Discussion with ID " + discussionId + " not found or does not belong to movie with ID " + movieId + " or user with ID " + discussionEditRequestDto.getUserId()));
   }
 
   public void deleteDiscussionById(Long id) {
@@ -103,8 +106,10 @@ public class DiscussionService {
     if (!movieRepository.existsById(movieId)) {
       throw new NotFoundException("Movie with ID " + movieId + " not found");
     }
+
     Discussion discussion = discussionRepository.findById(discussionId)
       .orElseThrow(() -> new NotFoundException("Discussion with ID " + discussionId + " not found"));
+
     if (!discussion.getMovie().getId().equals(movieId)) {
       throw new NotFoundException("Discussion with ID " + discussionId + " does not belong to movie with ID " + movieId);
     }

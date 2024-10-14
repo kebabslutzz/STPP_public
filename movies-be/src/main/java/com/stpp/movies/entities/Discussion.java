@@ -24,7 +24,7 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Data
 @Entity
 @Table(name = "movie_discussions", schema = "public")

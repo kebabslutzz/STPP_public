@@ -5,18 +5,20 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder(toBuilder = true)
+@Builder(toBuilder = true)
 @Data
 public class DiscussionEditRequestDto {
-    @NotNull(message = "Title should not be null")
-    @NotEmpty(message = "Title should not be empty")
-    @NotBlank(message = "Title should not be blank")
-    @Size(min = 1, max = 256, message = "Title must be between {min} and {max} characters")
-    private String title;
+  @NotEmpty(message = "Title should not be empty")
+  @NotBlank(message = "Title should not be blank")
+  @Size(min = 1, max = 256, message = "Title must be between {min} and {max} characters")
+  private String title;
+
+  @NotNull(message = "User should not be null")
+  private Long userId;
 }

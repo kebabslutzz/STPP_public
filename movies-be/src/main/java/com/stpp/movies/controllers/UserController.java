@@ -1,12 +1,15 @@
 package com.stpp.movies.controllers;
 
+import com.stpp.movies.dto.ErrorResponseDto;
 import com.stpp.movies.dto.user.UserEditRequestDto;
 import com.stpp.movies.dto.user.UserRequestDto;
 import com.stpp.movies.dto.user.UserResponseDto;
 import com.stpp.movies.services.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,20 +33,12 @@ import java.util.List;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "User Operations", description = "Operations related to users")
 public class UserController {
 
   private final UserService userService;
 
-  @Operation(summary = "Get a user by ID", description = "Fetches a user from the database based on the user ID.", responses = {
-    @ApiResponse(responseCode = "200", description = "User found and returned successfully"),
-    @ApiResponse(responseCode = "404", description = "User not found")
-  })
-  @GetMapping("/{id}")
-  public UserResponseDto getUserById(@PathVariable Long id) {
-    return userService.getUserById(id);
-  }
-
-  @Operation(summary = "Get all users", description = "Fetches all users from the database.", responses = {
+  @Operation(summary = "Get all users", description = "Fetches all users from the database.", operationId = "1", responses = {
     @ApiResponse(responseCode = "200", description = "List of users returned successfully")
   })
   @GetMapping
@@ -51,9 +46,18 @@ public class UserController {
     return userService.getAllUsers();
   }
 
-  @Operation(summary = "Create a new user", description = "Create and return a new user", responses = {
+  @Operation(summary = "Get a user by ID", description = "Fetches a user from the database based on the user ID.", operationId = "2", responses = {
+    @ApiResponse(responseCode = "200", description = "User found and returned successfully"),
+    @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+  })
+  @GetMapping("/{userId}")
+  public UserResponseDto getUserById(@PathVariable Long userId) {
+    return userService.getUserById(userId);
+  }
+
+  @Operation(summary = "Create a new user", description = "Create and return a new user", operationId = "3", responses = {
     @ApiResponse(responseCode = "201", description = "User created successfully and returned"),
-    @ApiResponse(responseCode = "400", description = "User creation failed due to invalid request body")
+    @ApiResponse(responseCode = "400", description = "User creation failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping
@@ -67,24 +71,24 @@ public class UserController {
     return ResponseEntity.created(location).body(user);
   }
 
-  @Operation(summary = "Delete a user by ID", description = "Deletes a user from database based on the user ID.")
-  @ApiResponses(value = {
-    @ApiResponse(responseCode = "204", description = "User found and deleted successfully"),
-    @ApiResponse(responseCode = "404", description = "User not found")
-  })
-  @DeleteMapping("/{id}")
-  @ResponseStatus(value = HttpStatus.NO_CONTENT)
-  public void deleteUserById(@PathVariable Long id) {
-    userService.deleteUserById(id);
-  }
-
-  @Operation(summary = "Edit a user by ID", description = "Edits a user in the database based on the user ID.", responses = {
+  @Operation(summary = "Edit a user by ID", description = "Edits a user in the database based on the user ID.", operationId = "4", responses = {
     @ApiResponse(responseCode = "200", description = "User found and edited successfully"),
-    @ApiResponse(responseCode = "400", description = "User edit failed due to invalid request body"),
-    @ApiResponse(responseCode = "404", description = "User not found")
+    @ApiResponse(responseCode = "400", description = "User edit failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+
   })
   @PutMapping("/{userId}")
   public UserResponseDto editUser(@Valid @PathVariable Long userId, @Valid @RequestBody UserEditRequestDto userRequestDto) {
     return userService.editUser(userId, userRequestDto);
+  }
+
+  @Operation(summary = "Delete a user by ID", description = "Deletes a user from database based on the user ID.", operationId = "5", responses = {
+    @ApiResponse(responseCode = "204", description = "User found and deleted successfully"),
+    @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+  })
+  @DeleteMapping("/{userId}")
+  @ResponseStatus(value = HttpStatus.NO_CONTENT)
+  public void deleteUserById(@PathVariable Long userId) {
+    userService.deleteUserById(userId);
   }
 }

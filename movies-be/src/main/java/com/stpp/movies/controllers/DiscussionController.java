@@ -1,11 +1,15 @@
 package com.stpp.movies.controllers;
 
+import com.stpp.movies.dto.ErrorResponseDto;
 import com.stpp.movies.dto.comment.CommentResponseDto;
 import com.stpp.movies.dto.discussion.DiscussionResponseDto;
 import com.stpp.movies.services.comment.CommentService;
 import com.stpp.movies.services.discussion.DiscussionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,21 +27,22 @@ import java.util.List;
 @RequestMapping("/api/v1/discussions")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Discussion Operations", description = "Some more operations on discussions")
 public class DiscussionController {
 
   private final DiscussionService discussionService;
   private final CommentService commentService;
 
-  @Operation(summary = "Get a discussion by id", description = "Get a discussion by id", tags = {"discussions"}, responses = {
+  @Operation(summary = "Get a discussion by id", description = "Get a discussion by id", responses = {
     @ApiResponse(responseCode = "200", description = "Discussion found"),
-    @ApiResponse(responseCode = "404", description = "Discussion not Found")
+    @ApiResponse(responseCode = "404", description = "Discussion not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
-  @GetMapping("/{id}")
-  public DiscussionResponseDto getDiscussionById(@Valid @PathVariable Long id) {
-    return discussionService.getDiscussionById(id);
+  @GetMapping("/{discussionId}")
+  public DiscussionResponseDto getDiscussionById(@Valid @PathVariable Long discussionId) {
+    return discussionService.getDiscussionById(discussionId);
   }
 
-  @Operation(summary = "Get all discussions", description = "Get all discussions", tags = {"discussions"}, responses = {
+  @Operation(summary = "Get all discussions", description = "Get all discussions", responses = {
     @ApiResponse(responseCode = "200", description = "Discussions found")
   })
   @GetMapping
@@ -45,22 +50,22 @@ public class DiscussionController {
     return discussionService.getAllDiscussions();
   }
 
-  @Operation(summary = "Get all comments by discussion id", description = "Get all comments by discussion id", tags = {"discussions"}, responses = {
+  @Operation(summary = "Get all comments by discussion id", description = "Get all comments by discussion id", responses = {
     @ApiResponse(responseCode = "200", description = "Comments found"),
-    @ApiResponse(responseCode = "404", description = "Discussion not Found")
+    @ApiResponse(responseCode = "404", description = "Discussion not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
-  @GetMapping("/{id}/comments")
-  public List<CommentResponseDto> getAllCommentsByDiscussionId(@Valid @PathVariable Long id) {
-    return commentService.getAllByDiscussionId(id);
+  @GetMapping("/{discussionId}/comments")
+  public List<CommentResponseDto> getAllCommentsByDiscussionId(@Valid @PathVariable Long discussionId) {
+    return commentService.getAllByDiscussionId(discussionId);
   }
 
-  @Operation(summary = "Delete a discussion by id", description = "Delete a discussion by id", tags = {"discussions"}, responses = {
+  @Operation(summary = "Delete a discussion by id", description = "Delete a discussion by id", responses = {
     @ApiResponse(responseCode = "204", description = "Discussion deleted"),
-    @ApiResponse(responseCode = "404", description = "Discussion not Found")
+    @ApiResponse(responseCode = "404", description = "Discussion not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
-  @DeleteMapping("/{id}")
-  public void deleteDiscussionById(@Valid @PathVariable Long id) {
-    discussionService.deleteDiscussionById(id);
+  @DeleteMapping("/{discussionId}")
+  public void deleteDiscussionById(@Valid @PathVariable Long discussionId) {
+    discussionService.deleteDiscussionById(discussionId);
   }
 }

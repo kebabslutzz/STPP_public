@@ -101,6 +101,7 @@ const DiscussionDetail: React.FC = () => {
 	});
 
 	const handleDiscussionSubmit = async (newDiscussion: Discussion) => {
+		newDiscussion.userId = 1; // Hardcoded user id for now
 		const discussionResponse = await editDiscussionCommand.sendData(newDiscussion);
 		if (discussionResponse?.status === 200) {
 			setDiscussion(newDiscussion);

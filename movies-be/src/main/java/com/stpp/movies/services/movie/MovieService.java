@@ -80,17 +80,6 @@ public class MovieService {
     movieRepository.deleteById(id);
   }
 
-  public MovieResponseDto updateMoviePoster(Long id, byte[] bytes) {
-    if (!movieRepository.existsById(id)) {
-      throw new NotFoundException("Movie with ID " + id + " not found");
-    }
-
-    Movie movie = movieRepository.findById(id).get();
-//        movie.setPoster(bytes);
-    movie = movieRepository.save(movie);
-    return MAPPER.movieToResponseDto(movie);
-  }
-
   public MovieResponseDto addPosterToMovie(Long id, Long posterId) {
     Movie movie = movieRepository.findById(id)
       .orElseThrow(() -> new NotFoundException("Movie with ID " + id + " not found"));

@@ -37,10 +37,10 @@ public class SecurityConfig {
         .requestMatchers(HttpMethod.PATCH, "/api/v1/**").permitAll()
         .requestMatchers(HttpMethod.DELETE, "/api/v1/**").permitAll()
         .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()  // Allow OpenAPI and Swagger UI access
-        .requestMatchers(HttpMethod.POST, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-        .requestMatchers(HttpMethod.PUT, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-        .requestMatchers(HttpMethod.PATCH, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-        .requestMatchers(HttpMethod.DELETE, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+//        .requestMatchers(HttpMethod.POST, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+//        .requestMatchers(HttpMethod.PUT, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+//        .requestMatchers(HttpMethod.PATCH, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+//        .requestMatchers(HttpMethod.DELETE, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
         .anyRequest().authenticated())
       .exceptionHandling(exceptionHandling ->
         exceptionHandling.authenticationEntryPoint(restAuthenticationEntryPoint()))

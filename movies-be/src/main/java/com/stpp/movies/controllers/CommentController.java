@@ -1,9 +1,13 @@
 package com.stpp.movies.controllers;
 
+import com.stpp.movies.dto.ErrorResponseDto;
 import com.stpp.movies.dto.comment.CommentResponseDto;
 import com.stpp.movies.services.comment.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -20,20 +24,21 @@ import java.util.List;
 @RequestMapping("/api/v1/comments")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Comment Operations", description = "Some more operations on comments")
 public class CommentController {
 
   private final CommentService commentService;
 
-  @Operation(summary = "Get a comment by id", description = "Get a comment by id", tags = {"comments"}, responses = {
+  @Operation(summary = "Get a comment by id", description = "Get a comment by id", responses = {
     @ApiResponse(responseCode = "200", description = "Comment found"),
-    @ApiResponse(responseCode = "404", description = "Comment not found")
+    @ApiResponse(responseCode = "404", description = "Comment not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
-  @GetMapping("/{id}")
-  public CommentResponseDto getCommentById(@PathVariable Long id) {
-    return commentService.getCommentByMovieIdAndDiscussionIdAndCommentId(id);
+  @GetMapping("/{commentId}")
+  public CommentResponseDto getCommentById(@PathVariable Long commentId) {
+    return commentService.getCommentByMovieIdAndDiscussionIdAndCommentId(commentId);
   }
 
-  @Operation(summary = "Get all comments", description = "Get all comments", tags = {"comments"}, responses = {
+  @Operation(summary = "Get all comments", description = "Get all comments", responses = {
     @ApiResponse(responseCode = "200", description = "Comments found")
   })
   @GetMapping
@@ -41,13 +46,13 @@ public class CommentController {
     return commentService.getAllComments();
   }
 
-  @Operation(summary = "Delete a comment by id", description = "Delete a comment by id", tags = {"comments"}, responses = {
+  @Operation(summary = "Delete a comment by id", description = "Delete a comment by id", responses = {
     @ApiResponse(responseCode = "204", description = "No Content"),
-    @ApiResponse(responseCode = "404", description = "Comment not Found")
+    @ApiResponse(responseCode = "404", description = "Comment not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
-  @DeleteMapping("/{id}")
-  public void deleteComment(@PathVariable Long id) {
-    commentService.deleteComment(id);
+  @DeleteMapping("/{commentId}")
+  public void deleteComment(@PathVariable Long commentId) {
+    commentService.deleteComment(commentId);
   }
 }

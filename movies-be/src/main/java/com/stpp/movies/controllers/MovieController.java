@@ -1,5 +1,6 @@
 package com.stpp.movies.controllers;
 
+import com.stpp.movies.dto.ErrorResponseDto;
 import com.stpp.movies.dto.comment.CommentEditRequestDto;
 import com.stpp.movies.dto.comment.CommentRequestDto;
 import com.stpp.movies.dto.comment.CommentResponseDto;
@@ -13,7 +14,10 @@ import com.stpp.movies.services.comment.CommentService;
 import com.stpp.movies.services.discussion.DiscussionService;
 import com.stpp.movies.services.movie.MovieService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,6 +42,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 @RequestMapping("/api/v1/movies")
+@Tag(name = "Movie Operations", description = "Operations related to movies, their discussions and comments")
 public class MovieController {
 
   private final MovieService movieService;
@@ -47,9 +52,27 @@ public class MovieController {
   /**
    * ************ MOVIE CRUDS *************
    **/
+
+  @Operation(summary = "Get all movies", description = "Get all movies", responses = {
+    @ApiResponse(responseCode = "200", description = "Movies found"),
+  })
+  @GetMapping
+  public List<MovieResponseDto> getAllMovies() {
+    return movieService.getAllMovies();
+  }
+
+  @Operation(summary = "Get a movie by id", description = "Get a movie by id", responses = {
+    @ApiResponse(responseCode = "200", description = "Movie found"),
+    @ApiResponse(responseCode = "404", description = "Movie not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+  })
+  @GetMapping("/{movieId}")
+  public MovieResponseDto getMovieById(@PathVariable Long movieId) {
+    return movieService.getMovieById(movieId);
+  }
+
   @Operation(summary = "Create a new movie", description = "Create a new movie", responses = {
     @ApiResponse(responseCode = "201", description = "Movie created successfully"),
-    @ApiResponse(responseCode = "400", description = "Invalid input"),
+    @ApiResponse(responseCode = "400", description = "Movie creation failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
   @PostMapping
   public ResponseEntity<MovieResponseDto> createMovie(@Valid @RequestBody MovieRequestDto movieRequestDto) {
@@ -62,70 +85,43 @@ public class MovieController {
     return ResponseEntity.created(location).body(movie);
   }
 
-  @Operation(summary = "Get a movie by id", description = "Get a movie by id", responses = {
-    @ApiResponse(responseCode = "200", description = "Movie found"),
-    @ApiResponse(responseCode = "404", description = "Movie not found"),
-  })
-  @GetMapping("/{id}")
-  public MovieResponseDto getMovieById(@PathVariable Long id) {
-    return movieService.getMovieById(id);
-  }
-
-  @Operation(summary = "Get all movies", description = "Get all movies", responses = {
-    @ApiResponse(responseCode = "200", description = "Movies found"),
-    @ApiResponse(responseCode = "404", description = "Movies not found"),
-  })
-  @GetMapping
-  public List<MovieResponseDto> getAllMovies() {
-    return movieService.getAllMovies();
-  }
-
   @Operation(summary = "Edit a movie", description = "Edit a movie", responses = {
     @ApiResponse(responseCode = "200", description = "Movie edited successfully"),
-    @ApiResponse(responseCode = "404", description = "Movie not found"),
-    @ApiResponse(responseCode = "400", description = "Invalid input"),
+    @ApiResponse(responseCode = "400", description = "Movie edit failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "404", description = "Movie not found or poster not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
-  @PutMapping("/{id}")
-  public MovieResponseDto editMovie(@Valid @PathVariable Long id, @Valid @RequestBody MovieEditRequestDto movieEditRequestDto) {
-    return movieService.editMovie(id, movieEditRequestDto);
-  }
-
-  //NOT USED!
-  @Operation(summary = "Add a poster to a movie", description = "Add a poster to a movie", responses = {
-    @ApiResponse(responseCode = "200", description = "Poster added successfully"),
-    @ApiResponse(responseCode = "404", description = "Movie not found"),
-    @ApiResponse(responseCode = "400", description = "Invalid input"),
-  })
-  @PatchMapping("/{id}")
-  public MovieResponseDto addPosterToMovie(@PathVariable Long id, @Valid @RequestBody Long posterId) {
-    return movieService.addPosterToMovie(id, posterId);
+  @PutMapping("/{movieId}")
+  public MovieResponseDto editMovie(@Valid @PathVariable Long movieId, @Valid @RequestBody MovieEditRequestDto movieEditRequestDto) {
+    return movieService.editMovie(movieId, movieEditRequestDto);
   }
 
   @Operation(summary = "Delete a movie by id", description = "Delete a movie by id", responses = {
     @ApiResponse(responseCode = "204", description = "Movie deleted successfully"),
-    @ApiResponse(responseCode = "404", description = "Movie not found"),
+    @ApiResponse(responseCode = "404", description = "Movie not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
-  @DeleteMapping("/{id}")
-  public void deleteMovieById(@PathVariable Long id) {
-    movieService.deleteMovieById(id);
+  @DeleteMapping("/{movieId}")
+  public void deleteMovieById(@PathVariable Long movieId) {
+    movieService.deleteMovieById(movieId);
   }
+
 
   /**
    * ************ DISCUSSION CRUDS *************
    **/
+
   @Operation(summary = "Get all discussions by movie id", description = "Get all discussions by movie id", responses = {
     @ApiResponse(responseCode = "200", description = "Discussions found"),
-    @ApiResponse(responseCode = "404", description = "Discussions not found"),
+    @ApiResponse(responseCode = "404", description = "Movie not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
-  @GetMapping("/{id}/discussions")
-  public List<DiscussionResponseDto> getAllDiscussionsByMovieId(@PathVariable @Valid Long id) {
-    return discussionService.getAllDiscussionsByMovieId(id);
+  @GetMapping("/{movieId}/discussions")
+  public List<DiscussionResponseDto> getAllDiscussionsByMovieId(@PathVariable @Valid Long movieId) {
+    return discussionService.getAllDiscussionsByMovieId(movieId);
   }
 
   @Operation(summary = "Get a discussion by movie and discussion id", description = "Get a discussion by movie and discussion id", responses = {
     @ApiResponse(responseCode = "200", description = "Discussion found"),
-    @ApiResponse(responseCode = "404", description = "Discussion not found"),
+    @ApiResponse(responseCode = "404", description = "Discussion not found or movie not found or discussion does not belong to the movie", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
   @GetMapping("/{movieId}/discussions/{discussionId}")
   public DiscussionResponseDto getDiscussionByMovieAndDiscussionId(@PathVariable Long movieId, @PathVariable Long discussionId) {
@@ -134,11 +130,12 @@ public class MovieController {
 
   @Operation(summary = "Create a new discussion", description = "Create a new discussion", responses = {
     @ApiResponse(responseCode = "201", description = "Discussion created successfully"),
-    @ApiResponse(responseCode = "400", description = "Invalid input"),
+    @ApiResponse(responseCode = "400", description = "Discussion creation failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "404", description = "Movie not found or user not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
-  @PostMapping("/{id}/discussions")
-  public ResponseEntity<DiscussionResponseDto> createDiscussion(@PathVariable Long id, @Valid @RequestBody DiscussionRequestDto discussionRequestDto) {
-    DiscussionResponseDto createdDiscussion = discussionService.createDiscussion(id, discussionRequestDto);
+  @PostMapping("/{movieId}/discussions")
+  public ResponseEntity<DiscussionResponseDto> createDiscussionByMovieId(@PathVariable Long movieId, @Valid @RequestBody DiscussionRequestDto discussionRequestDto) {
+    DiscussionResponseDto createdDiscussion = discussionService.createDiscussion(movieId, discussionRequestDto);
     URI location = ServletUriComponentsBuilder
       .fromCurrentRequest()
       .path("/{id}")
@@ -149,17 +146,17 @@ public class MovieController {
 
   @Operation(summary = "Edit a discussion", description = "Edit a discussion", responses = {
     @ApiResponse(responseCode = "200", description = "Discussion edited successfully"),
-    @ApiResponse(responseCode = "404", description = "Discussion not found"),
-    @ApiResponse(responseCode = "400", description = "Invalid input"),
+    @ApiResponse(responseCode = "400", description = "Discussion edit failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "404", description = "Discussion not found or movie not or discussion does not belong to the movie or the user", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
   @PatchMapping("/{movieId}/discussions/{discussionId}")
-  public DiscussionResponseDto editDiscussion(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @RequestBody DiscussionEditRequestDto discussionEditRequestDto) {
+  public DiscussionResponseDto editDiscussionByMovieIdAndDiscussionId(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @RequestBody DiscussionEditRequestDto discussionEditRequestDto) {
     return discussionService.editDiscussion(movieId, discussionId, discussionEditRequestDto);
   }
 
   @Operation(summary = "Delete a discussion by movie and discussion id", description = "Delete a discussion by movie and discussion id", responses = {
     @ApiResponse(responseCode = "204", description = "Discussion deleted successfully"),
-    @ApiResponse(responseCode = "404", description = "Discussion not found"),
+    @ApiResponse(responseCode = "404", description = "Discussion not found or movie not found of discussion does not belong to the movie", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
   @DeleteMapping("/{movieId}/discussions/{discussionId}")
@@ -170,30 +167,32 @@ public class MovieController {
   /**
    * ************ COMMENT CRUDS *************
    **/
-  @Operation(summary = "Get a comment by movie, discussion and comment id", description = "Get a comment by movie, discussion and comment id", responses = {
-    @ApiResponse(responseCode = "200", description = "Comment found"),
-    @ApiResponse(responseCode = "404", description = "Comment not found"),
-  })
-  @GetMapping("/{movieId}/discussions/{discussionId}/comments/{commentId}")
-  public CommentResponseDto getCommentById(@PathVariable Long movieId, @PathVariable Long discussionId, @PathVariable Long commentId) {
-    return commentService.getCommentByMovieIdAndDiscussionIdAndCommentId(movieId, discussionId, commentId);
-  }
-
   @Operation(summary = "Get all comments by discussion id", description = "Get all comments by discussion id", responses = {
     @ApiResponse(responseCode = "200", description = "Comments found"),
-    @ApiResponse(responseCode = "404", description = "Comments not found"),
+    @ApiResponse(responseCode = "404", description = "Movie not found, or discussion not found, or discussion does not belong to the movie", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
   @GetMapping("/{movieId}/discussions/{discussionId}/comments")
-  public List<CommentResponseDto> getAllCommentsByDiscussionId(@PathVariable Long movieId, @PathVariable Long discussionId) {
+  public List<CommentResponseDto> getAllCommentsByMovieAndDiscussionId(@PathVariable Long movieId, @PathVariable Long discussionId) {
     return commentService.getAllCommentsByMovieIdAndDiscussionId(movieId, discussionId);
   }
 
+  @Operation(summary = "Get a comment by movie, discussion and comment id", description = "Get a comment by movie, discussion and comment id", responses = {
+    @ApiResponse(responseCode = "200", description = "Comment found"),
+    @ApiResponse(responseCode = "404", description = "Movie not found, or discussion not found, or comment not found, or discussion does not belong to the movie, or comment does not belong to the discussion", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+  })
+  @GetMapping("/{movieId}/discussions/{discussionId}/comments/{commentId}")
+  public CommentResponseDto getCommentByMovieIdAnDiscussionIdAndCommentId(@PathVariable Long movieId, @PathVariable Long discussionId, @PathVariable Long commentId) {
+    return commentService.getCommentByMovieIdAndDiscussionIdAndCommentId(movieId, discussionId, commentId);
+  }
+
+
   @Operation(summary = "Create a new comment", description = "Create a new comment", responses = {
     @ApiResponse(responseCode = "201", description = "Comment created successfully"),
-    @ApiResponse(responseCode = "400", description = "Invalid input"),
+    @ApiResponse(responseCode = "400", description = "Comment creation failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "404", description = "Movie not found or Discussion not found or User not found or discussion does not belong to the movie", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
   @PostMapping("/{movieId}/discussions/{discussionId}/comments")
-  public ResponseEntity<CommentResponseDto> createComment(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @RequestBody CommentRequestDto commentRequestDto) {
+  public ResponseEntity<CommentResponseDto> createCommentMovieIdAndDiscussionId(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @RequestBody CommentRequestDto commentRequestDto) {
     CommentResponseDto createdComment = commentService.createComment(movieId, discussionId, commentRequestDto);
     URI location = ServletUriComponentsBuilder
       .fromCurrentRequest()
@@ -205,11 +204,11 @@ public class MovieController {
 
   @Operation(summary = "Edit a comment", description = "Edit a comment", responses = {
     @ApiResponse(responseCode = "200", description = "Comment edited successfully"),
-    @ApiResponse(responseCode = "404", description = "Comment not found"),
-    @ApiResponse(responseCode = "400", description = "Invalid input"),
+    @ApiResponse(responseCode = "400", description = "Comment edit failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "404", description = "Movie not found, or discussion not found, or comment not found, or discussion does not belong to the movie, or comment does not belong to the discussion", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
   @PatchMapping("/{movieId}/discussions/{discussionId}/comments/{commentId}")
-  public CommentResponseDto editComment(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @PathVariable Long commentId, @Valid @RequestBody CommentEditRequestDto commentEditRequestDto) {
+  public CommentResponseDto editCommentByMovieIdAndDiscussionIdAndCommentId(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @PathVariable Long commentId, @Valid @RequestBody CommentEditRequestDto commentEditRequestDto) {
     return commentService.editComment(movieId, discussionId, commentId, commentEditRequestDto);
   }
 
@@ -217,11 +216,12 @@ public class MovieController {
     @ApiResponse(responseCode = "204", description = "Comment deleted successfully"),
     @ApiResponse(
       responseCode = "404",
-      description = "Movie not found or Discussion not found or Comment not found or Discussion not found in movie or Comment not found in discussion"),
+      description = "Movie not found, or discussion not found, or comment not found, or discussion does not belong to the movie, or comment does not belong to the discussion",
+      content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
   @DeleteMapping("/{movieId}/discussions/{discussionId}/comments/{commentId}")
-  public void deleteCommentById(@PathVariable Long movieId, @PathVariable Long discussionId, @PathVariable Long commentId) {
+  public void deleteCommentByMovieIdAndDiscussionIdAndCommentId(@PathVariable Long movieId, @PathVariable Long discussionId, @PathVariable Long commentId) {
     commentService.deleteComment(movieId, discussionId, commentId);
   }
 }
