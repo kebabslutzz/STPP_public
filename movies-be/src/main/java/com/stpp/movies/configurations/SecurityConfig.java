@@ -22,7 +22,6 @@ import java.util.List;
 public class SecurityConfig {
 
   private static final String ALLOWED_ORIGIN = System.getProperty("ALLOWED_ORIGIN", "http://localhost:3000");
-
   private static final List<String> ALLOWED_METHODS = List.of("GET", "POST", "PATCH", "DELETE", "PUT");
 
   @Bean
@@ -36,11 +35,7 @@ public class SecurityConfig {
         .requestMatchers(HttpMethod.PUT, "/api/v1/**").permitAll()
         .requestMatchers(HttpMethod.PATCH, "/api/v1/**").permitAll()
         .requestMatchers(HttpMethod.DELETE, "/api/v1/**").permitAll()
-        .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()  // Allow OpenAPI and Swagger UI access
-//        .requestMatchers(HttpMethod.POST, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-//        .requestMatchers(HttpMethod.PUT, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-//        .requestMatchers(HttpMethod.PATCH, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-//        .requestMatchers(HttpMethod.DELETE, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+        .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
         .anyRequest().authenticated())
       .exceptionHandling(exceptionHandling ->
         exceptionHandling.authenticationEntryPoint(restAuthenticationEntryPoint()))

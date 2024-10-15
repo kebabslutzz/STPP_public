@@ -18,13 +18,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "posters", schema = "public")
 public class Poster {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+  
+  @Column(columnDefinition = "bytea")
+  private byte[] poster;
 
-    @Column(columnDefinition = "bytea")
-    private byte[] poster;
-
-    @Column(nullable = false)
-    private String title;
+  @Column(nullable = false)
+  private String title;
 }

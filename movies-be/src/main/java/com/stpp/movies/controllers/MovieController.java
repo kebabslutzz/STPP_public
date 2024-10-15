@@ -145,6 +145,7 @@ public class MovieController {
   }
 
   @Operation(summary = "Edit a discussion", description = "Edit a discussion", responses = {
+
     @ApiResponse(responseCode = "200", description = "Discussion edited successfully"),
     @ApiResponse(responseCode = "400", description = "Discussion edit failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "404", description = "Discussion not found or movie not or discussion does not belong to the movie or the user", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),

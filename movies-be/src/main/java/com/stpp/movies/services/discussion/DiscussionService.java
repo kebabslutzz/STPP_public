@@ -92,7 +92,8 @@ public class DiscussionService {
       .map(discussion -> {
         MAPPER.discussionEditRequestDtoToDiscussion(discussionEditRequestDto, discussion);
         return MAPPER.discussionToResponseDto(discussion);
-      }).orElseThrow(() -> new NotFoundException("Discussion with ID " + discussionId + " not found or does not belong to movie with ID " + movieId + " or user with ID " + discussionEditRequestDto.getUserId()));
+      })
+      .orElseThrow(() -> new NotFoundException("Discussion with ID " + discussionId + " not found or does not belong to movie with ID " + movieId + " or user with ID " + discussionEditRequestDto.getUserId()));
   }
 
   public void deleteDiscussionById(Long id) {

@@ -31,52 +31,52 @@ import java.util.List;
 @Entity
 @Table(name = "movies", schema = "public")
 public class Movie {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(nullable = false, updatable = false)
+  private Long id;
 
-    @Column(nullable = false)
-    private String title;
+  @Column(nullable = false)
+  private String title;
 
-    @Column(nullable = false)
-    private String description;
+  @Column(nullable = false)
+  private String description;
 
-    @Column(nullable = false)
-    private String director;
+  @Column(nullable = false)
+  private String director;
 
-    @Column(nullable = false)
-    private String genre;
+  @Column(nullable = false)
+  private String genre;
 
-    @Min(1)
-    @Max(10)
-    private Double rating;
+  @Min(1)
+  @Max(10)
+  private Double rating;
 
-    @Column(nullable = false)
-    private LocalDate releaseDate;
+  @Column(nullable = false)
+  private LocalDate releaseDate;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "poster_id", referencedColumnName = "id", unique = true)
-    private Poster poster;
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "poster_id", referencedColumnName = "id", unique = true)
+  private Poster poster;
 
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
+  @Column(nullable = false, updatable = false)
+  private OffsetDateTime dateCreated;
 
-    @Column(nullable = false)
-    @LastModifiedDate
-    private OffsetDateTime dateModified;
+  @Column(nullable = false)
+  @LastModifiedDate
+  private OffsetDateTime dateModified;
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Discussion> discussions;
+  @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Discussion> discussions;
 
-    @PrePersist
-    public void prePersist() {
-        this.setDateCreated(OffsetDateTime.now());
-        this.setDateModified(OffsetDateTime.now());
-    }
+  @PrePersist
+  public void prePersist() {
+    this.setDateCreated(OffsetDateTime.now());
+    this.setDateModified(OffsetDateTime.now());
+  }
 
-    @PreUpdate
-    public void preUpdate() {
-        this.setDateModified(OffsetDateTime.now());
-    }
+  @PreUpdate
+  public void preUpdate() {
+    this.setDateModified(OffsetDateTime.now());
+  }
 }

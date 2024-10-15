@@ -29,40 +29,40 @@ import java.util.List;
 @Entity
 @Table(name = "movie_discussions", schema = "public")
 public class Discussion {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(nullable = false, updatable = false)
+  private Long id;
 
-    @Column(nullable = false)
-    private String title;
+  @Column(nullable = false)
+  private String title;
 
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
+  @Column(nullable = false, updatable = false)
+  private OffsetDateTime dateCreated;
 
-    @Column(nullable = false)
-    @LastModifiedDate
-    private OffsetDateTime dateModified;
+  @Column(nullable = false)
+  @LastModifiedDate
+  private OffsetDateTime dateModified;
 
-    @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
+  @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Comment> comments;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "movie_id", nullable = false, updatable = false)
-    private Movie movie;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "movie_id", nullable = false, updatable = false)
+  private Movie movie;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false, updatable = false)
-    private User user;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", nullable = false, updatable = false)
+  private User user;
 
-    @PrePersist
-    public void prePersist() {
-        this.setDateCreated(OffsetDateTime.now());
-        this.setDateModified(OffsetDateTime.now());
-    }
+  @PrePersist
+  public void prePersist() {
+    this.setDateCreated(OffsetDateTime.now());
+    this.setDateModified(OffsetDateTime.now());
+  }
 
-    @PreUpdate
-    public void preUpdate() {
-        this.setDateModified(OffsetDateTime.now());
-    }
+  @PreUpdate
+  public void preUpdate() {
+    this.setDateModified(OffsetDateTime.now());
+  }
 }

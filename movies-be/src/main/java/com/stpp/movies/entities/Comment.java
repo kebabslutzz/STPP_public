@@ -11,13 +11,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-
-import org.springframework.data.annotation.LastModifiedDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.OffsetDateTime;
 
@@ -28,37 +26,37 @@ import java.time.OffsetDateTime;
 @Entity
 @Table(name = "discussion_comments", schema = "public")
 public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(nullable = false, updatable = false)
+  private Long id;
 
-    @Column(nullable = false)
-    private String content;
+  @Column(nullable = false)
+  private String content;
 
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
+  @Column(nullable = false, updatable = false)
+  private OffsetDateTime dateCreated;
 
-    @Column(nullable = false)
-    @LastModifiedDate
-    private OffsetDateTime dateModified;
+  @Column(nullable = false)
+  @LastModifiedDate
+  private OffsetDateTime dateModified;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "discussion_id", nullable = false, updatable = false)
-    private Discussion discussion;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "discussion_id", nullable = false, updatable = false)
+  private Discussion discussion;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false, updatable = false)
-    private User user;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", nullable = false, updatable = false)
+  private User user;
 
-    @PrePersist
-    public void prePersist() {
-        this.setDateCreated(OffsetDateTime.now());
-        this.setDateModified(OffsetDateTime.now());
-    }
+  @PrePersist
+  public void prePersist() {
+    this.setDateCreated(OffsetDateTime.now());
+    this.setDateModified(OffsetDateTime.now());
+  }
 
-    @PreUpdate
-    public void preUpdate() {
-        this.setDateModified(OffsetDateTime.now());
-    }
+  @PreUpdate
+  public void preUpdate() {
+    this.setDateModified(OffsetDateTime.now());
+  }
 }

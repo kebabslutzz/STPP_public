@@ -66,7 +66,7 @@ public class MovieService {
       Poster poster = fileService.getPosterAsPoster(movieEditRequestDto.getPosterId());
       movie.setPoster(poster);
     }
-
+    
     MAPPER.movieEditRequestDtoToMovie(movieEditRequestDto, movie);
 
     movie = movieRepository.save(movie);
@@ -78,21 +78,5 @@ public class MovieService {
       throw new NotFoundException("Movie with ID " + id + " not found");
     }
     movieRepository.deleteById(id);
-  }
-
-  public MovieResponseDto addPosterToMovie(Long id, Long posterId) {
-    Movie movie = movieRepository.findById(id)
-      .orElseThrow(() -> new NotFoundException("Movie with ID " + id + " not found"));
-    if (!fileService.existsById(posterId)) {
-      throw new NotFoundException("Poster with ID " + posterId + " not found");
-    }
-
-    Poster poster = Poster.builder()
-      .id(posterId)
-      .poster(fileService.getPoster(posterId).getPoster())
-      .build();
-    movie.setPoster(poster);
-    movie = movieRepository.save(movie);
-    return MAPPER.movieToResponseDto(movie);
   }
 }

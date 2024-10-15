@@ -13,7 +13,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper()
 public interface UserMapper {
   UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
-
+  
   @Named("userToResponseDto")
   @Mapping(target = "id", source = "id")
   @Mapping(target = "username", source = "username")

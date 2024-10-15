@@ -8,8 +8,7 @@ import java.util.List;
 
 @Repository
 public interface DiscussionRepository extends JpaRepository<Discussion, Long> {
+  List<Discussion> findAllByMovieId(Long movieId);
 
-    List<Discussion> findAllByMovieId(Long movieId);
-
-    List<Discussion> findAllByOrderByMovieAsc();
+  List<Discussion> findAllByOrderByMovieAsc();
 }
