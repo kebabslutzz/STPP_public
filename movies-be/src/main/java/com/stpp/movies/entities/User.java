@@ -1,7 +1,11 @@
 package com.stpp.movies.entities;
 
+import com.stpp.movies.enumerators.Role;
+import com.stpp.movies.enumerators.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,47 +23,49 @@ import java.time.OffsetDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Data
 @Entity
 @Table(name = "users", schema = "public")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(nullable = false, updatable = false)
+  private Long id;
+  
+  @Column(nullable = false)
+  private String username;
 
-    @Column(nullable = false)
-    private String username;
+  @Column(nullable = false)
+  private String password;
 
-    @Column(nullable = false)
-    private String password;
+  @Email
+  @Column(nullable = false)
+  private String email;
 
-    @Email
-    @Column(nullable = false)
-    private String email;
+  @Enumerated(value = EnumType.STRING)
+  @Column(nullable = false)
+  private Role role;
 
-    @Column(nullable = false)
-    private Integer role;
+  @Enumerated(value = EnumType.STRING)
+  @Column(nullable = false)
+  private Status status;
 
-    @Column(nullable = false)
-    private Integer status;
+  @Column(nullable = false, updatable = false)
+  private OffsetDateTime dateCreated;
 
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
+  @Column(nullable = false)
+  @LastModifiedDate
+  private OffsetDateTime dateModified;
 
-    @Column(nullable = false)
-    @LastModifiedDate
-    private OffsetDateTime dateModified;
+  @PrePersist
+  public void prePersist() {
+    this.setDateCreated(OffsetDateTime.now());
+    this.setDateModified(OffsetDateTime.now());
+  }
 
-    @PrePersist
-    public void prePersist() {
-        this.setDateCreated(OffsetDateTime.now());
-        this.setDateModified(OffsetDateTime.now());
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.setDateModified(OffsetDateTime.now());
-    }
+  @PreUpdate
+  public void preUpdate() {
+    this.setDateModified(OffsetDateTime.now());
+  }
 }

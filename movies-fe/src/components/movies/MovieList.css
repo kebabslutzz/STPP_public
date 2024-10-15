@@ -1,0 +1,18 @@
+.MovieItem {
+	margin-bottom: 20px;
+}
+
+.MoviePoster {
+	width: 100%;
+	height: auto;
+	max-width: 300px; /* Adjust as needed */
+	max-height: 400px; /* Adjust as needed */
+	object-fit: cover;
+}
+
+.MovieList {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 20px;
+}

@@ -1,0 +1,44 @@
+package com.stpp.movies.dto.user;
+
+import com.stpp.movies.enumerators.Role;
+import com.stpp.movies.enumerators.Status;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
+@Data
+public class UserEditRequestDto {
+  @NotBlank(message = "Username should not be blank")
+  @NotEmpty(message = "Username should not be empty")
+  @Size(min = 1, max = 256, message = "Username must be between {min} and {max} characters")
+  private String username;
+
+  @NotBlank(message = "Password should not be blank")
+  @NotEmpty(message = "Password should not be empty")
+  @Size(min = 8, max = 64, message = "Password must be between {min} and {max} characters")
+  private String password;
+
+  @Email
+  @NotEmpty(message = "Email should not be empty")
+  @NotBlank(message = "Email should not be blank")
+  private String email;
+
+  @NotNull(message = "Role should not be null")
+  @Enumerated(EnumType.STRING)
+  private Role role;
+
+  @NotNull(message = "Status should not be null")
+  @Enumerated(EnumType.STRING)
+  private Status status;
+}

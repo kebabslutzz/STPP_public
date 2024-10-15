@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import CustomRouter from './components/customRouter/customRouter';
+// import Users from './components/Users';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [darkMode, setDarkMode] = useState(true);
+
+	useEffect(() => {
+		const savedMode = localStorage.getItem('darkMode');
+		if (savedMode) {
+			setDarkMode(JSON.parse(savedMode));
+		}
+	}, []);
+
+	useEffect(() => {
+		if (darkMode) {
+			document.documentElement.classList.add('dark-mode');
+		} else {
+			document.documentElement.classList.remove('dark-mode');
+		}
+		localStorage.setItem('darkMode', JSON.stringify(darkMode));
+	}, [darkMode]);
+
+	return (
+		<>
+			<CustomRouter />
+		</>
+	);
 }
 
 export default App;
