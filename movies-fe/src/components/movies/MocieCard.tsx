@@ -6,6 +6,7 @@ import useQuery from '../../hooks/useQuery';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { HTTP_METHODS } from '../../constants/httpsMethods';
 import Poster from '../../interfaces/Poster';
+import HideImageIcon from '@mui/icons-material/HideImage';
 
 interface MovieCardProps {
 	id: number;
@@ -18,23 +19,16 @@ const MovieCard: React.FC<MovieCardProps> = ({ id, title, description, posterId 
 	const [poster, setPoster] = React.useState<Poster | null>(null);
 	const navigate = useNavigate();
 
-	// console.log('posterId:', posterId);
-
-	const {
-		data: posterBytes,
-		isLoading,
-		errors,
-		getData,
-	} = useQuery<Poster>({
+	const { data: posterBytes, getData: getPosterData } = useQuery<Poster>({
 		url: ENDPOINTS.POSTER.GET_POSTER(posterId ? posterId : 0),
 		httpMethod: HTTP_METHODS.GET,
 	});
 
 	useEffect(() => {
-		if (!posterBytes) {
-			getData();
+		if (posterId && posterId !== 0) {
+			getPosterData();
 		}
-	}, []);
+	}, [posterId]);
 
 	useEffect(() => {
 		if (posterBytes) {
@@ -46,24 +40,21 @@ const MovieCard: React.FC<MovieCardProps> = ({ id, title, description, posterId 
 		navigate(`${ROUTE_PATHS.HOME}/${id}${ROUTE_PATHS.DISCUSSIONS}`);
 	};
 
-	// console.log('posterBytes:', posterBytes);
-
-	const base64String = posterBytes?.poster
-		? `data:image/jpeg;base64,${posterBytes.poster}`
-		: 'path/to/default/poster.jpg';
+	const base64String = poster?.poster ? `data:image/jpeg;base64,${poster.poster}` : null;
 
 	return (
 		<div className='MovieCard' onClick={handleCardClick}>
 			<div className='MovieCardInner'>
-				<div className='MovieCardFront' style={{ backgroundImage: `url(${base64String})` }}>
-					{/* {isLoading ? (
-						<p>Loading...</p>
-					) : errors ? (
-						<p>Error loading poster</p>
-					) : (
-						<img src={base64String} alt={`${title} poster`} className='MoviePoster' />
-					)} */}
-				</div>
+				{base64String ? (
+					<div className='MovieCardFront' style={{ backgroundImage: `url(${base64String})` }} />
+				) : (
+					<div className='MovieCardFront NoImageText'>
+						<span>
+							Movie Poster Not Available
+							<HideImageIcon />
+						</span>
+					</div>
+				)}
 				<div className='MovieCardBack'>
 					<p>{description}</p>
 				</div>

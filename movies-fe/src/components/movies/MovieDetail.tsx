@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import DiscussionFormDialogBox from '../discussions/DiscussionFormDialogBox';
 import EditIcon from '@mui/icons-material/Edit';
 import ForumIcon from '@mui/icons-material/Forum';
+import HideImageIcon from '@mui/icons-material/HideImage';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 interface MovieDetailProps {
@@ -24,7 +25,7 @@ interface MovieDetailProps {
 
 const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 	const [discussionList, setDiscussionList] = useState<Discussion[]>([]);
-	const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+	const [poster, setPoster] = useState<Poster | null>(null);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [listOfErrors, setListOfErrors] = useState<string[]>([]);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -111,26 +112,25 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 		data: posterBytes,
 		isLoading: isLoadingPoster,
 		errors: errorsPoster,
-		getData: getDataPoster,
+		getData: getPosterData,
 	} = useQuery<Poster>({
 		url: ENDPOINTS.POSTER.GET_POSTER(openMovie?.posterId! ?? 0),
 		httpMethod: HTTP_METHODS.GET,
 	});
 
-	useEffect(() => {
-		if (!posterBytes) {
-			getDataPoster();
+	const refetchPoster = useEffect(() => {
+		if (openMovie?.posterId && openMovie.posterId !== 0 && !poster) {
+			getPosterData();
 		}
-	}, [openMovie?.posterId, getDataPoster]);
+	}, [openMovie?.posterId, poster]);
 
-	useEffect(() => {
+	const resetPoster = useEffect(() => {
 		if (posterBytes) {
-			let base64String = posterBytes?.poster
-				? `data:image/jpeg;base64,${posterBytes.poster}`
-				: 'path/to/default/poster.jpg';
-			setImageUrl(base64String);
+			setPoster(posterBytes);
 		}
 	}, [posterBytes]);
+
+	const base64String = poster?.poster ? `data:image/jpeg;base64,${poster.poster}` : null;
 
 	const updateMovieCommand = useQuery({
 		url: ENDPOINTS.MOVIES.UPDATE_MOVIE(movieId),
@@ -138,14 +138,12 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 		onSuccess: handleEditSuccess,
 	});
 
-	const onEditSubmit = async (newMovie: Movie, poster: File) => {
-		// console.log('atejes filmas', newMovie);
+	const onEditSubmit = async (newMovie: Movie, poster?: File) => {
 		try {
-			
 			let posterId: number | null = newMovie.posterId ? newMovie.posterId : null;
 
 			// Step 1: Upload Poster if it exists
-			if (poster) {
+			if (poster!) {
 				const formData = new FormData();
 				formData.append('file', poster);
 				let posterResponse: Response;
@@ -171,6 +169,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 				}
 
 				const posterData = await posterResponse.json();
+				// newMovie!.posterId = posterData.id;
 				posterId = Number(posterData.id);
 			}
 
@@ -184,22 +183,21 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 			const movieResponse = await updateMovieCommand.sendData(movieWithPoster);
 			if (movieResponse?.status === 200) {
 				setOpenMovie(movieWithPoster);
+
+				console.log('current poster id:', newMovie.posterId);
+				console.log('new poster id:', movieWithPoster.posterId);
+				// Fetch the updated poster if it was changed
+				if (posterId != newMovie.posterId) {
+					getPosterData();
+				}
 			}
-
-			// 	throw new Error('Failed to create movie');
-			// }
-
-			// onCreateMovieSuccess(movieResponse.data);
 		} catch (error) {
 			setListOfErrors([String((error as Error).message)]);
+			console.error(listOfErrors);
 		}
 	};
 
-	const {
-		isLoading: isDeletingMovie,
-		errors: deleteMovieErrors,
-		sendData: deleteMovie,
-	} = useQuery<void>({
+	const { errors: deleteMovieErrors, sendData: deleteMovie } = useQuery<void>({
 		url: ENDPOINTS.MOVIES.DELETE_MOVIE(movieId),
 		httpMethod: HTTP_METHODS.DELETE,
 	});
@@ -234,30 +232,17 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 	return (
 		<Container className='MovieDetailContainer' maxWidth={false}>
 			<Typography className='Movie-title'>{openMovie?.title}</Typography>
-			{isDialogOpen && (
-				<MovieFormDialogBox
-					movie={openMovie!}
-					onClose={handleCloseDialog}
-					onSubmit={onEditSubmit}
-					open={isDialogOpen}
-				/>
-			)}
-			<DeleteConfirmationDialog
-				open={isDeleteDialogOpen}
-				onClose={handleCloseDeleteDialog}
-				onConfirm={handleDelete}
-				text='Are you sure you want to delete this movie?'
-			/>
-			<DiscussionFormDialogBox
-				open={isDiscussionDialogOpen}
-				onClose={handleCloseDiscussionDialog}
-				onSubmit={handleDiscussionSubmit}
-				title='Create Discussion'
-			/>
 			<div className='MovieDetail'>
-				{openMovie?.posterId && (
+				{base64String ? (
 					<div className='MoviePosterContainer'>
-						<img src={imageUrl} alt={`${openMovie.title} poster`} className='MoviePosterDetails' />
+						<img src={base64String} alt={movie?.title} className='MoviePosterDetails' />
+					</div>
+				) : (
+					<div className='NoImageTextDetails'>
+						<span>
+							Movie Poster Not Available
+							<HideImageIcon />
+						</span>
 					</div>
 				)}
 				<div>
@@ -340,6 +325,26 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 					</>
 				)}
 			</List>
+			{isDialogOpen && (
+				<MovieFormDialogBox
+					movie={openMovie!}
+					onClose={handleCloseDialog}
+					onSubmit={onEditSubmit}
+					open={isDialogOpen}
+				/>
+			)}
+			<DeleteConfirmationDialog
+				open={isDeleteDialogOpen}
+				onClose={handleCloseDeleteDialog}
+				onConfirm={handleDelete}
+				text='Are you sure you want to delete this movie?'
+			/>
+			<DiscussionFormDialogBox
+				open={isDiscussionDialogOpen}
+				onClose={handleCloseDiscussionDialog}
+				onSubmit={handleDiscussionSubmit}
+				title='Create Discussion'
+			/>
 		</Container>
 	);
 };

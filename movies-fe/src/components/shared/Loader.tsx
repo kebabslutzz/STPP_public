@@ -1,11 +1,26 @@
 import React from 'react';
-import { Skeleton } from '@mui/material';
+import { CircularProgress } from '@mui/material';
+import './Loader.css';
 
-const Loader: React.FC = () => (
+interface LoaderProps {
+	errors?: string[] | null;
+	textNeeded?: boolean;
+}
+
+const Loader: React.FC<LoaderProps> = ({ errors, textNeeded }) => (
 	<div>
-		<Skeleton variant='text' width={210} height={40} />
-		<Skeleton variant='rectangular' width={210} height={118} />
-		<Skeleton variant='text' width={210} height={40} />
+		<CircularProgress className='CircularProgress' />
+		{textNeeded && (
+			<>
+				<div className='Loader'>Loading...</div>
+				{errors && errors.length > 0 && (
+					<div className='LoaderErrors'>
+						<h4>The server right now is not responding, please try again later</h4>
+						<div>{errors.join(', ')}</div>
+					</div>
+				)}
+			</>
+		)}
 	</div>
 );
 

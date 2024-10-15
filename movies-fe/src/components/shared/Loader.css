@@ -1,0 +1,12 @@
+.CircularProgress {
+	color: #008080 !important;
+	justify-content: center;
+	display: flex !important;
+	margin: auto;
+}
+
+.Loader {
+	margin-top: 20px;
+	display: flex;
+	justify-content: center;
+}

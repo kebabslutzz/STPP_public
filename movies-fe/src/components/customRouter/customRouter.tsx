@@ -27,7 +27,7 @@ const router = createBrowserRouter([
 			{
 				path: ROUTE_PATHS.USERS,
 				element: (
-					<Suspense fallback={<div>...Loading...</div>}>
+					<Suspense fallback={<Loader />}>
 						<UsersPage />
 					</Suspense>
 				),
