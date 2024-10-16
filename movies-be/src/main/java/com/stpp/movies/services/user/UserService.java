@@ -4,6 +4,7 @@ import com.stpp.movies.dto.user.UserEditRequestDto;
 import com.stpp.movies.dto.user.UserRequestDto;
 import com.stpp.movies.dto.user.UserResponseDto;
 import com.stpp.movies.entities.User;
+import com.stpp.movies.exceptions.ConflictException;
 import com.stpp.movies.exceptions.NotFoundException;
 import com.stpp.movies.repositories.UserRepository;
 import jakarta.validation.Valid;
@@ -38,6 +39,13 @@ public class UserService {
   }
 
   public UserResponseDto createUser(@Valid UserRequestDto userRequestDto) {
+    if (userRepository.findByEmail(userRequestDto.getEmail()).isPresent()) {
+      throw new ConflictException("User with email " + userRequestDto.getEmail() + " already exists");
+    }
+    if (userRepository.findByUsername(userRequestDto.getUsername()).isPresent()) {
+      throw new ConflictException("User with username " + userRequestDto.getUsername() + " already exists");
+    }
+
     User user = MAPPER.requestDtoToUser(userRequestDto);
     user = userRepository.save(user);
     return MAPPER.userToResponseDto(user);
@@ -56,5 +64,11 @@ public class UserService {
     MAPPER.userEditRequestDtoToUser(userRequestDto, user);
     user = userRepository.save(user);
     return MAPPER.userToResponseDto(user);
+  }
+
+  public UserResponseDto getUserByEmail(String email) {
+    return userRepository.findByEmail(email)
+      .map(MAPPER::userToResponseDto)
+      .orElseThrow(() -> new NotFoundException("User with email " + email + " not found"));
   }
 }

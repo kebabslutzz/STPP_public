@@ -18,6 +18,10 @@ public class UserResponseDto {
   private String username;
   private String password;
   private String email;
+
+  private String token;
+  private long expiresIn;
+  
   private Role role;
   private Status status;
   private OffsetDateTime dateCreated;

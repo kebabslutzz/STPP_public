@@ -2,8 +2,12 @@ package com.stpp.movies.controllers;
 
 import com.stpp.movies.dto.ErrorResponseDto;
 import com.stpp.movies.dto.user.UserEditRequestDto;
+import com.stpp.movies.dto.user.UserLoginDto;
 import com.stpp.movies.dto.user.UserRequestDto;
 import com.stpp.movies.dto.user.UserResponseDto;
+import com.stpp.movies.entities.User;
+import com.stpp.movies.services.jwt.AuthenticationService;
+import com.stpp.movies.services.jwt.JwtService;
 import com.stpp.movies.services.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,6 +18,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +43,9 @@ import java.util.List;
 public class UserController {
 
   private final UserService userService;
+  private final AuthenticationService authenticationService;
+  private final JwtService jwtService;
+
 
   @Operation(summary = "Get all users", description = "Fetches all users from the database.", operationId = "1", responses = {
     @ApiResponse(responseCode = "200", description = "List of users returned successfully")
@@ -90,5 +99,32 @@ public class UserController {
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
   public void deleteUserById(@PathVariable Long userId) {
     userService.deleteUserById(userId);
+  }
+
+  @ResponseStatus(HttpStatus.CREATED)
+  @PostMapping("/signup")
+  public UserResponseDto registerUser(@Valid @RequestBody UserRequestDto userRequestDto) {
+    return authenticationService.register(userRequestDto);
+  }
+
+  @PostMapping("/login")
+  public UserResponseDto loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
+    UserResponseDto userResponseDto = authenticationService.login(userLoginDto);
+    String jwtToken = jwtService.generateToken(userResponseDto);
+
+    userResponseDto.setToken(jwtToken);
+    userResponseDto.setExpiresIn(jwtService.getExpirationTime());
+
+    return userResponseDto;
+  }
+
+  @GetMapping("/me")
+  public UserResponseDto getMe() {
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    User user = (User) authentication.getPrincipal();
+    return userService.getUserById(user.getId());
+
   }
 }

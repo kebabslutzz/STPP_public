@@ -2,46 +2,34 @@ package com.stpp.movies.services.jwt;
 
 import com.stpp.movies.dto.user.UserLoginDto;
 import com.stpp.movies.dto.user.UserRequestDto;
-import com.stpp.movies.entities.User;
-import com.stpp.movies.repositories.UserRepository;
+import com.stpp.movies.dto.user.UserResponseDto;
+import com.stpp.movies.services.user.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+@RequiredArgsConstructor
+@Transactional
 @Service
+@Validated
 public class AuthenticationService {
-  private final UserRepository userRepository;
+
+  private final UserService userService;
 
   private final PasswordEncoder passwordEncoder;
 
   private final AuthenticationManager authenticationManager;
 
-  public AuthenticationService(
-    UserRepository userRepository,
-    AuthenticationManager authenticationManager,
-    PasswordEncoder passwordEncoder
-  ) {
-    this.authenticationManager = authenticationManager;
-    this.userRepository = userRepository;
-    this.passwordEncoder = passwordEncoder;
+  public UserResponseDto register(UserRequestDto input) {
+    input.setPassword(passwordEncoder.encode(input.getPassword()));
+    return userService.createUser(input);
   }
 
-  //https://medium.com/@tericcabrel/implement-jwt-authentication-in-a-spring-boot-3-application-5839e4fd8fac
-  public User signup(UserRequestDto input) {
-    User user = new User()
-      .toBuilder()
-      .username(input.getUsername())
-      .role(input.getRole())
-      .email(input.getEmail())
-      .password(passwordEncoder.encode(input.getPassword()))
-      .status(input.getStatus())
-      .build();
-
-    return userRepository.save(user);
-  }
-
-  public User authenticate(UserLoginDto input) {
+  public UserResponseDto login(UserLoginDto input) {
     authenticationManager.authenticate(
       new UsernamePasswordAuthenticationToken(
         input.getEmail(),
@@ -49,7 +37,6 @@ public class AuthenticationService {
       )
     );
 
-    return userRepository.findByEmail(input.getEmail())
-      .orElseThrow();
+    return userService.getUserByEmail(input.getEmail());
   }
 }
