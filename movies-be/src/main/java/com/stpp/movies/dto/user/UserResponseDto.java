@@ -1,7 +1,6 @@
 package com.stpp.movies.dto.user;
 
-import com.stpp.movies.enumerators.Role;
-import com.stpp.movies.enumerators.Status;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,14 +15,12 @@ import java.time.OffsetDateTime;
 public class UserResponseDto {
   private Long id;
   private String username;
-  private String password;
+  //  private String password;
   private String email;
 
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   private String token;
-  private long expiresIn;
-  
-  private Role role;
-  private Status status;
+
   private OffsetDateTime dateCreated;
   private OffsetDateTime dateModified;
 }

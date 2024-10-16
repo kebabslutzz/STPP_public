@@ -1,6 +1,6 @@
 package com.stpp.movies.services.jwt;
 
-import com.stpp.movies.dto.user.UserResponseDto;
+import com.stpp.movies.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.logging.Logger;
 
 @Service
 public class JwtService {
@@ -25,45 +24,38 @@ public class JwtService {
   @Value("${security.jwt.expiration-time}")
   private long jwtExpiration;
 
-  Logger logger = Logger.getLogger(JwtService.class.getName());
 
   public String extractUsername(String token) {
     String claims = extractClaim(token, Claims::getSubject);
-    logger.severe("CLAIMS ARE AFTER APPLICATION:" + claims);
     return claims;
   }
 
   public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
     final Claims claims = extractAllClaims(token);
-    logger.severe("CLAIMS ARE:" + claims);
     return claimsResolver.apply(claims);
   }
 
   //  CIA KEICIA IS DETAILS I DTO
-  public String generateToken(UserResponseDto userResponseDto) {
-    return generateToken(new HashMap<>(), userResponseDto);
+  public String generateToken(User user) {
+    return generateToken(new HashMap<>(), user);
   }
 
-  public String generateToken(Map<String, Object> extraClaims, UserResponseDto userResponseDto) {
-    return buildToken(extraClaims, userResponseDto, jwtExpiration);
+  public String generateToken(Map<String, Object> extraClaims, User user) {
+    return buildToken(extraClaims, user, jwtExpiration);
   }
 
   public long getExpirationTime() {
     return jwtExpiration;
   }
 
-  private String buildToken(Map<String, Object> extraClaims, UserResponseDto userResponseDto, long expiration) {
-    extraClaims.put("role", userResponseDto.getRole().name());
-    extraClaims.put("status", userResponseDto.getStatus().name());
+  private String buildToken(Map<String, Object> extraClaims, User user, long expiration) {
+    extraClaims.put("role", user.getRole().name());
+    extraClaims.put("status", user.getStatus().name());
 
     return Jwts
       .builder()
       .setClaims(extraClaims)
-      .setSubject(userResponseDto.getUsername())
-      .setSubject(userResponseDto.getId().toString())
-      .setSubject(userResponseDto.getStatus().name())
-      .setSubject(userResponseDto.getRole().name())
-      .setSubject(userResponseDto.getEmail())
+      .setSubject(user.getEmail())
       .setIssuedAt(new Date(System.currentTimeMillis()))
       .setExpiration(new Date(System.currentTimeMillis() + expiration))
       .signWith(getSignInKey(), SignatureAlgorithm.HS256)

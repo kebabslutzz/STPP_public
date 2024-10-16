@@ -109,11 +109,8 @@ public class UserController {
 
   @PostMapping("/login")
   public UserResponseDto loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
-    UserResponseDto userResponseDto = authenticationService.login(userLoginDto);
-    String jwtToken = jwtService.generateToken(userResponseDto);
 
-    userResponseDto.setToken(jwtToken);
-    userResponseDto.setExpiresIn(jwtService.getExpirationTime());
+    UserResponseDto userResponseDto = authenticationService.login(userLoginDto);
 
     return userResponseDto;
   }

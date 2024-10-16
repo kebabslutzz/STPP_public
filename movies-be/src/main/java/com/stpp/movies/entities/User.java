@@ -78,13 +78,13 @@ public class User implements UserDetails {
     return List.of();
   }
 
-  public String getPassword() {
-    return password;
-  }
-
   @Override
   public String getUsername() {
     return email;
+  }
+
+  public String realUsername() {
+    return username;
   }
 
   @Override
