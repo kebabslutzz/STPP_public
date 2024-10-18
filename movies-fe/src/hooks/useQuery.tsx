@@ -10,6 +10,7 @@ type UseQueryArguments<T> = {
 	id?: number;
 	mapper?: (data: any) => T;
 	onSuccess?: (data: T) => void;
+	token?: string;
 };
 
 export default function useQuery<T>({
@@ -18,6 +19,7 @@ export default function useQuery<T>({
 	httpMethod,
 	mapper = (data) => data as T,
 	onSuccess = () => {},
+	token,
 }: UseQueryArguments<T>) {
 	if (!url) {
 		throw new Error('URL is required');
@@ -42,6 +44,7 @@ export default function useQuery<T>({
 			const response = await apiService.makeRequestAsync<T>({
 				url: requestUrl,
 				httpMethod: HTTP_METHODS.GET,
+				token,
 			});
 
 			if ('message' in response) {
@@ -74,6 +77,7 @@ export default function useQuery<T>({
 				queryParams: id ? { id } : undefined,
 				body: sanitizedValues,
 				httpMethod: httpMethod || HTTP_METHODS.POST,
+				token,
 			});
 			if ('message' in response) {
 				setErrors([response.message]);

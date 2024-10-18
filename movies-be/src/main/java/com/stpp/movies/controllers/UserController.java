@@ -7,7 +7,6 @@ import com.stpp.movies.dto.user.UserRequestDto;
 import com.stpp.movies.dto.user.UserResponseDto;
 import com.stpp.movies.entities.User;
 import com.stpp.movies.services.jwt.AuthenticationService;
-import com.stpp.movies.services.jwt.JwtService;
 import com.stpp.movies.services.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -44,12 +44,12 @@ public class UserController {
 
   private final UserService userService;
   private final AuthenticationService authenticationService;
-  private final JwtService jwtService;
 
 
   @Operation(summary = "Get all users", description = "Fetches all users from the database.", operationId = "1", responses = {
     @ApiResponse(responseCode = "200", description = "List of users returned successfully")
   })
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') and hasAuthority('STATUS_ACTIVE')")
   @GetMapping
   public List<UserResponseDto> getAllUsers() {
     return userService.getAllUsers();
@@ -59,6 +59,7 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "User found and returned successfully"),
     @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
+  @PreAuthorize("(hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')) and hasAuthority('STATUS_ACTIVE')")
   @GetMapping("/{userId}")
   public UserResponseDto getUserById(@PathVariable Long userId) {
     return userService.getUserById(userId);
@@ -86,6 +87,7 @@ public class UserController {
     @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
 
   })
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') and hasAuthority('STATUS_ACTIVE')")
   @PutMapping("/{userId}")
   public UserResponseDto editUser(@Valid @PathVariable Long userId, @Valid @RequestBody UserEditRequestDto userRequestDto) {
     return userService.editUser(userId, userRequestDto);
@@ -95,6 +97,7 @@ public class UserController {
     @ApiResponse(responseCode = "204", description = "User found and deleted successfully"),
     @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') and hasAuthority('STATUS_ACTIVE')")
   @DeleteMapping("/{userId}")
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
   public void deleteUserById(@PathVariable Long userId) {

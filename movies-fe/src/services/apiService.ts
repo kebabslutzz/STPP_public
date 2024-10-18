@@ -15,6 +15,7 @@ type RequestParams = {
 	httpMethod: string;
 	queryParams?: Query;
 	body?: any;
+	token?: string;
 };
 
 export type ApiResponse<T> = {
@@ -43,6 +44,7 @@ const makeRequestAsync = async <T>({
 	httpMethod,
 	queryParams,
 	body,
+	token,
 }: RequestParams): Promise<ApiResponse<T> | ErrorResponse> => {
 	const request: AxiosRequestConfig = {
 		url,
@@ -51,6 +53,7 @@ const makeRequestAsync = async <T>({
 		data: body,
 		headers: {
 			'Content-Type': 'application/json',
+			...(token && { Authorization: `Bearer ${token}` }), // Conditionally add the token to headers
 		},
 	};
 
