@@ -76,15 +76,12 @@ public class User implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(
-      new SimpleGrantedAuthority("ROLE_" + this.role.name()),
-      new SimpleGrantedAuthority("STATUS_" + this.status.name())
-    );
+    return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
   }
 
   @Override
   public String getUsername() {
-    return email;
+    return id.toString();
   }
 
   public String realUsername() {

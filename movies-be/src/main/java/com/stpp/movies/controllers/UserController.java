@@ -49,7 +49,7 @@ public class UserController {
   @Operation(summary = "Get all users", description = "Fetches all users from the database.", operationId = "1", responses = {
     @ApiResponse(responseCode = "200", description = "List of users returned successfully")
   })
-  @PreAuthorize("hasAuthority('ROLE_ADMIN') and hasAuthority('STATUS_ACTIVE')")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @GetMapping
   public List<UserResponseDto> getAllUsers() {
     return userService.getAllUsers();
@@ -59,7 +59,7 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "User found and returned successfully"),
     @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
-  @PreAuthorize("(hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')) and hasAuthority('STATUS_ACTIVE')")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @GetMapping("/{userId}")
   public UserResponseDto getUserById(@PathVariable Long userId) {
     return userService.getUserById(userId);
@@ -87,7 +87,7 @@ public class UserController {
     @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
 
   })
-  @PreAuthorize("hasAuthority('ROLE_ADMIN') and hasAuthority('STATUS_ACTIVE')")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @PutMapping("/{userId}")
   public UserResponseDto editUser(@Valid @PathVariable Long userId, @Valid @RequestBody UserEditRequestDto userRequestDto) {
     return userService.editUser(userId, userRequestDto);
@@ -97,7 +97,7 @@ public class UserController {
     @ApiResponse(responseCode = "204", description = "User found and deleted successfully"),
     @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
-  @PreAuthorize("hasAuthority('ROLE_ADMIN') and hasAuthority('STATUS_ACTIVE')")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @DeleteMapping("/{userId}")
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
   public void deleteUserById(@PathVariable Long userId) {
@@ -112,19 +112,14 @@ public class UserController {
 
   @PostMapping("/login")
   public UserResponseDto loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
-
-    UserResponseDto userResponseDto = authenticationService.login(userLoginDto);
-
-    return userResponseDto;
+    return authenticationService.login(userLoginDto);
   }
 
   @GetMapping("/me")
   public UserResponseDto getMe() {
-
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     User user = (User) authentication.getPrincipal();
     return userService.getUserById(user.getId());
-
   }
 }

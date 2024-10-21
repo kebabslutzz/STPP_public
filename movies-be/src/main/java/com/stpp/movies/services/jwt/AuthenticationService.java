@@ -49,7 +49,6 @@ public class AuthenticationService {
     UserResponseDto userResponseDto = MAPPER.userToResponseDto(user);
 
     userResponseDto.setToken(jwtToken);
-//    userResponseDto.setExpiresIn(jwtService.getExpirationTime());
 
     return userResponseDto;
   }

@@ -9,7 +9,9 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableMethodSecurity
@@ -23,8 +25,19 @@ public class ApplicationConfiguration {
 
   @Bean
   UserDetailsService userDetailsService() {
-    return username -> userRepository.findByEmail(username)
-      .orElseThrow(() -> new NotFoundException("User not found"));
+    return new UserDetailsService() {
+      @Override
+      public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
+        try {
+          Long userId = Long.parseLong(identifier);
+          return userRepository.findById(userId)
+            .orElseThrow(() -> new NotFoundException("User not found"));
+        } catch (NumberFormatException e) {
+          return userRepository.findByEmail(identifier)
+            .orElseThrow(() -> new NotFoundException("User not found"));
+        }
+      }
+    };
   }
 
   @Bean
