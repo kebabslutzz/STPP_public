@@ -9,6 +9,7 @@ import com.stpp.movies.exceptions.NotFoundException;
 import com.stpp.movies.repositories.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -21,8 +22,8 @@ import java.util.List;
 @Validated
 public class UserService {
   private final UserRepository userRepository;
-
   private static final UserMapper MAPPER = UserMapper.INSTANCE;
+  private final PasswordEncoder passwordEncoder;
 
   public UserResponseDto getUserById(Long id) {
     return userRepository.findById(id)
@@ -40,11 +41,13 @@ public class UserService {
 
   public UserResponseDto createUser(@Valid UserRequestDto userRequestDto) {
     if (userRepository.findByEmail(userRequestDto.getEmail()).isPresent()) {
-      throw new ConflictException("User with email " + userRequestDto.getEmail() + " already exists");
+      throw new ConflictException("User with the email already exists");
     }
     if (userRepository.findByUsername(userRequestDto.getUsername()).isPresent()) {
-      throw new ConflictException("User with username " + userRequestDto.getUsername() + " already exists");
+      throw new ConflictException("The username is already taken");
     }
+
+    userRequestDto.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
 
     User user = MAPPER.requestDtoToUser(userRequestDto);
     user = userRepository.save(user);

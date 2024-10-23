@@ -218,7 +218,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 		newDiscussion.movieId = movieId;
 		newDiscussion.userId = 1; // Hardcoded user id for now
 		const discussionResponse = await createDiscussionCommand.sendData(newDiscussion);
-		if (discussionResponse?.status === 201) {
+		if (discussionResponse?.status === 201 && 'data' in discussionResponse) {
 			let createdDiscussion = discussionResponse?.data as Discussion;
 			setDiscussionList((prev) => [createdDiscussion, ...prev]);
 		}

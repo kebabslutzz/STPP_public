@@ -9,7 +9,6 @@ import com.stpp.movies.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -21,17 +20,11 @@ import org.springframework.validation.annotation.Validated;
 public class AuthenticationService {
 
   private final JwtService jwtService;
-
   private final UserService userService;
-
-  private final PasswordEncoder passwordEncoder;
-
   private final AuthenticationManager authenticationManager;
-
   private static final UserMapper MAPPER = UserMapper.INSTANCE;
 
   public UserResponseDto register(UserRequestDto input) {
-    input.setPassword(passwordEncoder.encode(input.getPassword()));
     return userService.createUser(input);
   }
 

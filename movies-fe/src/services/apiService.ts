@@ -10,6 +10,10 @@ export type Query = {
 	[key: string]: string | number | boolean | any;
 };
 
+interface ErrorResponseData {
+	message: string;
+}
+
 type RequestParams = {
 	url: string;
 	httpMethod: string;
@@ -23,15 +27,18 @@ export type ApiResponse<T> = {
 	status: number;
 };
 
-const getErrorMessages = (error: AxiosError): string => {
+const getErrorMessages = (error: AxiosError<ErrorResponseData>): string => {
 	if (!error.response) {
 		return 'Network Error';
 	}
 
-	return error.message;
+	// Extract the error message from the server response
+	const serverMessage = error.response.data?.message || error.message;
+	return serverMessage;
+	// return error.message;
 };
 
-const createErrorResponse = (error: AxiosError): ErrorResponse => {
+const createErrorResponse = (error: AxiosError<ErrorResponseData>): ErrorResponse => {
 	return {
 		status: error.response?.status || 500,
 		message: getErrorMessages(error),
@@ -64,7 +71,7 @@ const makeRequestAsync = async <T>({
 			status: response.status,
 		};
 	} catch (error) {
-		return createErrorResponse(error as AxiosError);
+		return createErrorResponse(error as AxiosError<ErrorResponseData>);
 	}
 };
 

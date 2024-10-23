@@ -120,7 +120,7 @@ const DiscussionDetail: React.FC = () => {
 			// const updatedComments = [...comments, newComment];
 			// setComments(updatedComments);
 			const commentResponse = await createCommentCommand.sendData(newComment);
-			if (commentResponse?.status === 201) {
+			if (commentResponse?.status === 201 && 'data' in commentResponse) {
 				let createdComment = commentResponse?.data as Comment;
 				setComments((prev) => [createdComment, ...prev]);
 				// getCommentsData();
@@ -132,7 +132,7 @@ const DiscussionDetail: React.FC = () => {
 			setCommentBoxIsVisible(false);
 			const commentUpdateResponse = await updateCommentCommand.sendData(commentToUpdate);
 			setCommentToUpdate(null);
-			if (commentUpdateResponse?.status === 200) {
+			if (commentUpdateResponse?.status === 200 && 'data' in commentUpdateResponse) {
 				let updatedComment = commentUpdateResponse?.data as Comment;
 				setComments((prev) => prev.map((comment) => (comment.id === updatedComment.id ? updatedComment : comment)));
 			}

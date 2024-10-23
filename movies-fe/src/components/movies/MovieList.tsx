@@ -10,11 +10,13 @@ import { Button, Container } from '@mui/material';
 import './MovieList.css';
 import AddIcon from '@mui/icons-material/Add';
 import ErrorDisplay from '../shared/ErrorDisplay';
+import { useAuth } from '../../context/AuthContext';
 
 const MovieList: React.FC = () => {
 	const [movieList, setMovieList] = useState<Movie[]>([]);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [listOfErrors, setListOfErrors] = useState<string[]>([]);
+	const { claims } = useAuth();
 
 	const handleOpenDialog = () => {
 		setIsDialogOpen(true);
@@ -87,9 +89,9 @@ const MovieList: React.FC = () => {
 			};
 			const movieResponse = await createMovieCommand.sendData(movieWithPoster);
 
-			if (!movieResponse?.data.id) {
-				throw new Error('Failed to create movie');
-			}
+			// if (!movieResponse?.data.id) {
+			// 	throw new Error('Failed to create movie');
+			// }
 		} catch (error) {
 			setListOfErrors([String((error as Error).message)]);
 			console.log('Error creating movie', listOfErrors);

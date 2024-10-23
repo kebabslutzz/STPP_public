@@ -11,7 +11,6 @@ import DeleteConfirmationDialog from '../dialog/DeleteConfirmationDialog';
 import Loader from '../shared/Loader';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ErrorDisplay from '../shared/ErrorDisplay';
-import { TOKENS } from '../../constants/tokens';
 
 const UsersList: React.FC = () => {
 	const [users, setUsers] = useState<User[]>([]);
@@ -28,7 +27,6 @@ const UsersList: React.FC = () => {
 	} = useQuery<User[]>({
 		url: ENDPOINTS.USERS.GET_ALL_USERS,
 		httpMethod: HTTP_METHODS.GET,
-		token: TOKENS.ACTIVE_ADMIN,
 	});
 
 	useEffect(() => {
@@ -56,7 +54,6 @@ const UsersList: React.FC = () => {
 	const deleteUserCommand = useQuery<User>({
 		url: ENDPOINTS.USERS.DELETE_USER(userToDeleteId!),
 		httpMethod: HTTP_METHODS.DELETE,
-		token: TOKENS.ACTIVE_ADMIN,
 	});
 
 	const handleDeleteUser = async () => {
@@ -84,7 +81,6 @@ const UsersList: React.FC = () => {
 	const updateUserCommand = useQuery<User>({
 		url: ENDPOINTS.USERS.UPDATE_USER(userToUpdate?.id!),
 		httpMethod: HTTP_METHODS.PUT,
-		token: TOKENS.ACTIVE_ADMIN,
 	});
 
 	const createUserCommand = useQuery<User>({
@@ -110,7 +106,7 @@ const UsersList: React.FC = () => {
 		} else {
 			user.password = 'password'; // TEMPORARY SOLUTION
 			const createUserResponse = await createUserCommand.sendData(user);
-			if (createUserResponse?.status === 201) {
+			if (createUserResponse?.status === 201 && 'data' in createUserResponse) {
 				setUsers((prevUsers) => [createUserResponse.data, ...prevUsers]);
 			}
 		}

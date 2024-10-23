@@ -15,7 +15,6 @@ import java.time.OffsetDateTime;
 public class UserResponseDto {
   private Long id;
   private String username;
-  //  private String password;
   private String email;
 
   @JsonInclude(JsonInclude.Include.NON_NULL)

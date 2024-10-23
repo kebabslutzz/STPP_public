@@ -7,6 +7,9 @@ export const ENDPOINTS = {
 		GET_ALL_USERS: `${BASE_URL}/users`,
 		GET_USER_BY_ID: (id: number) => `${BASE_URL}/users/${id}`,
 		CREATE_USER: `${BASE_URL}/users`,
+		REGISTER: `${BASE_URL}/users/signup`,
+		// CHANGE THIS
+		LOGIN: `${BASE_URL}/users/login`,
 		DELETE_USER: (id: number) => `${BASE_URL}/users/${id}`,
 		UPDATE_USER: (id: number) => `${BASE_URL}/users/${id}`,
 	},

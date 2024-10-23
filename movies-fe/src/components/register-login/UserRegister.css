@@ -1,0 +1,65 @@
+.smth {
+	color: white !important;
+}
+
+.LoginRegister {
+	max-width: 500px;
+	padding: 20px;
+	position: relative;
+}
+
+.h1 {
+	color: white;
+}
+
+.textField-root {
+	color: white !important; /* Default text color */
+}
+
+.textField-root .MuiOutlinedInput-root {
+	color: white !important; /* Input text color */
+}
+
+.textField-root .MuiOutlinedInput-root fieldset {
+	border-color: white !important; /* Default border color */
+}
+
+.textField-root .MuiOutlinedInput-root:hover fieldset {
+	border-color: #7fbfbf !important; /* Border color on hover */
+}
+
+.textField-root .MuiOutlinedInput-root.Mui-focused fieldset {
+	border-color: #008080 !important; /* Border color when focused */
+}
+
+.textField-root .MuiOutlinedInput-root.Mui-error fieldset {
+	border-color: red !important; /* Border color when there's an error */
+}
+
+.textField-root .MuiInputLabel-root {
+	color: white !important; /* Default label color */
+}
+
+.textField-root .MuiInputLabel-root.Mui-focused {
+	color: #008080 !important; /* Label color when focused */
+}
+
+.textField-root .MuiInputLabel-root.Mui-error {
+	color: red !important; /* Label color when there's an error */
+}
+
+.helperText {
+	color: red !important; /* Helper text color */
+}
+
+.ButtonContainer {
+	margin-top: 20px;
+	padding-left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.error-message {
+	color: red;
+}

@@ -1,16 +1,14 @@
 import React, { Suspense } from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
-// import './App.css';
-// import Movies from './components/Movies';
-// import Discussions from './components/Discussions';
-// import Comments from './components/Comments';
-// import CommentDetail from './components/CommentDetail';
 import Layout from '../layout/Layout';
 import ROUTE_PATHS from '../../constants/routePaths';
 import Loader from '../shared/Loader';
 import MovieDetailPage from '../../pages/MovieDetailPage';
 import DiscussionDetail from '../discussions/DiscussionDetails';
 import NotFoundPage from '../../pages/NotFoundPage';
+import RegisterPage from '../../pages/RegisterPage';
+import LoginPage from '../../pages/LoginPage';
+import Logout from '../register-login/Logout';
 
 const UsersPage = React.lazy(() => import('../../pages/UsersPage'));
 const MoviesPage = React.lazy(() => import('../../pages/MoviesPage'));
@@ -65,6 +63,33 @@ const router = createBrowserRouter([
 				element: (
 					<Suspense fallback={<Loader />}>
 						<DiscussionDetail />
+					</Suspense>
+				),
+			},
+			{
+				path: `${ROUTE_PATHS.REGISTER}`,
+
+				element: (
+					<Suspense fallback={<Loader />}>
+						<RegisterPage />
+					</Suspense>
+				),
+			},
+			{
+				path: `${ROUTE_PATHS.LOGIN}`,
+
+				element: (
+					<Suspense fallback={<Loader />}>
+						<LoginPage />
+					</Suspense>
+				),
+			},
+			{
+				path: `${ROUTE_PATHS.LOGOUT}`,
+
+				element: (
+					<Suspense fallback={<Loader />}>
+						<Logout />
 					</Suspense>
 				),
 			},

@@ -3,6 +3,9 @@ export const ROUTE_PATHS = {
 	USERS: '/users',
 	DISCUSSIONS: '/discussions',
 	COMMENTS: '/comments',
+	REGISTER: '/register',
+	LOGIN: '/login',
+	LOGOUT: '/logout',
 };
 
 export default ROUTE_PATHS;
