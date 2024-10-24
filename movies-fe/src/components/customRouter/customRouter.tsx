@@ -10,6 +10,7 @@ import RegisterPage from '../../pages/RegisterPage';
 import LoginPage from '../../pages/LoginPage';
 import Logout from '../register-login/Logout';
 import ProtectedRoute from './ProtectedRoute';
+import ProfilePage from '../../pages/ProfilePage';
 
 const UsersPage = React.lazy(() => import('../../pages/UsersPage'));
 const MoviesPage = React.lazy(() => import('../../pages/MoviesPage'));
@@ -32,16 +33,14 @@ const router = createBrowserRouter([
 						</Suspense>
 					</ProtectedRoute>
 				),
-				children: [
-					{
-						path: ':id',
-						element: (
-							<Suspense fallback={<Loader />}>
-								<UsersPage />
-							</Suspense>
-						),
-					},
-				],
+			},
+			{
+				path: `${ROUTE_PATHS.USERS}/:id`,
+				element: (
+					<Suspense fallback={<Loader />}>
+						<ProfilePage />
+					</Suspense>
+				),
 			},
 			{
 				path: ROUTE_PATHS.HOME,

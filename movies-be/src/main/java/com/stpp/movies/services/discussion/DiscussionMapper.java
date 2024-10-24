@@ -4,6 +4,7 @@ import com.stpp.movies.dto.discussion.DiscussionEditRequestDto;
 import com.stpp.movies.dto.discussion.DiscussionRequestDto;
 import com.stpp.movies.dto.discussion.DiscussionResponseDto;
 import com.stpp.movies.entities.Discussion;
+import com.stpp.movies.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -19,6 +20,7 @@ public interface DiscussionMapper {
   @Mapping(target = "movieId", source = "movie.id")
   @Mapping(target = "userId", source = "user.id")
   @Mapping(target = "dateCreated", source = "dateCreated")
+  @Mapping(target = "username", source = "user", qualifiedByName = "mapRealUsername")
   DiscussionResponseDto discussionToResponseDto(Discussion discussion);
 
   @Named("discussionEditRequestDtoToDiscussion")
@@ -28,6 +30,11 @@ public interface DiscussionMapper {
   @Named("discussionRequestDtoToDiscussion")
   @Mapping(target = "title", source = "discussionRequestDto.title")
   @Mapping(target = "movie.id", source = "movieId")
-  @Mapping(target = "user.id", source = "discussionRequestDto.userId")
-  Discussion discussionRequestDtoToDiscussion(DiscussionRequestDto discussionRequestDto, Long movieId);
+  @Mapping(target = "user.id", source = "userId")
+  Discussion discussionRequestDtoToDiscussion(DiscussionRequestDto discussionRequestDto, Long movieId, Long userId);
+
+  @Named("mapRealUsername")
+  default String mapRealUsername(User user) {
+    return user.realUsername();
+  }
 }

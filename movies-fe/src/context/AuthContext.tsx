@@ -64,6 +64,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 		setLoggedInUserRole(undefined);
 		setTokenCreationTime(undefined);
 		setTokenExpirationTime(undefined);
+		setIsAdmin(false);
 		setClaims(null);
 	};
 

@@ -89,7 +89,7 @@ public class GlobalExceptionHandler {
     } else if (ex instanceof SignatureException) {
       message = "Invalid JWT signature";
     } else if (ex instanceof AuthenticationException) {
-      message = "Account not active or unauthorized";
+      message = "Invalid username or password";
     }
     return ErrorResponseDto.builder()
       .message(message)

@@ -103,7 +103,7 @@ const DiscussionDetail: React.FC = () => {
 	});
 
 	const handleDiscussionSubmit = async (newDiscussion: Discussion) => {
-		newDiscussion.userId = loggedInUserId; // Hardcoded user id for now
+		// newDiscussion.userId = loggedInUserId; // Hardcoded user id for now
 		const discussionResponse = await editDiscussionCommand.sendData(newDiscussion);
 		if (discussionResponse?.status === 200) {
 			setDiscussion(newDiscussion);
@@ -206,9 +206,15 @@ const DiscussionDetail: React.FC = () => {
 					<div className='discussion-buttons'>
 						{(isAdmin || loggedInUserId === discussion?.userId) && (
 							<>
-								<Button onClick={handleOpenDiscussionDialog} className='Button add-edit-button' endIcon={<EditIcon />}>
-									Edit Discussion
-								</Button>
+								{loggedInUserId === discussion?.userId && (
+									<Button
+										onClick={handleOpenDiscussionDialog}
+										className='Button add-edit-button'
+										endIcon={<EditIcon />}
+									>
+										Edit Discussion
+									</Button>
+								)}
 								<Button onClick={handleOpenDeleteDialog} className='Button delete-button' endIcon={<DeleteIcon />}>
 									Delete Discussion
 								</Button>

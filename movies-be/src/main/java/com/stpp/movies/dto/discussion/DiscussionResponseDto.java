@@ -16,6 +16,7 @@ public class DiscussionResponseDto {
   private String title;
   private Long movieId;
   private Long userId;
+  private String username;
   private OffsetDateTime dateCreated;
   private int commentCount;
 }

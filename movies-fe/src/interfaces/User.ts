@@ -7,7 +7,6 @@ interface User {
 	dateCreated?: Date;
 	dateModified?: Date;
 	password?: string;
-	token?: string;
 }
 
 export default User;

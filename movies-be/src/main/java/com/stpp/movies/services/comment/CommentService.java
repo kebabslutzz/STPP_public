@@ -6,6 +6,7 @@ import com.stpp.movies.dto.comment.CommentResponseDto;
 import com.stpp.movies.entities.Comment;
 import com.stpp.movies.entities.Discussion;
 import com.stpp.movies.entities.Movie;
+import com.stpp.movies.enumerators.Role;
 import com.stpp.movies.exceptions.NotFoundException;
 import com.stpp.movies.repositories.CommentRepository;
 import com.stpp.movies.repositories.DiscussionRepository;
@@ -13,6 +14,7 @@ import com.stpp.movies.repositories.MovieRepository;
 import com.stpp.movies.repositories.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -46,14 +48,16 @@ public class CommentService {
       .toList();
   }
 
-  public CommentResponseDto editComment(@Valid long movieId, @Valid long discussionId, @Valid long commentId, CommentEditRequestDto commentEditRequestDto) {
+  public CommentResponseDto editComment(@Valid long movieId, @Valid long discussionId, @Valid long commentId, CommentEditRequestDto commentEditRequestDto, Long userId) {
     Comment comment = commentRepository.findById(commentId)
       .orElseThrow(() -> new NotFoundException("Comment with ID " + commentId + " not found"));
+
     if (!movieRepository.existsById(movieId)) {
       throw new NotFoundException("Movie with ID " + movieId + " not found");
     }
     Discussion discussion = discussionRepository.findById(discussionId)
       .orElseThrow(() -> new NotFoundException("Discussion with ID " + discussionId + " not found"));
+
     if (!discussion.getMovie().getId().equals(movieId)) {
       throw new NotFoundException("Discussion with ID " + discussionId + " not found in movie with ID " + movieId);
     }
@@ -61,24 +65,36 @@ public class CommentService {
       throw new NotFoundException("Comment with ID " + commentId + " not found in discussion with ID " + discussionId);
     }
 
+    if (!comment.getUser().getId().equals(userId)) {
+      throw new AccessDeniedException("User is not authorized edit this comment");
+    }
+
     MAPPER.commentEditRequestDtoToComment(commentEditRequestDto, comment);
     return MAPPER.commentToResponseDto(comment);
   }
 
-  public void deleteComment(@Valid Long movieId, @Valid Long discussionId, @Valid Long id) {
+  public void deleteComment(@Valid Long movieId, @Valid Long discussionId, @Valid Long id, Long userId, Role userRole) {
     if (!movieRepository.existsById(movieId)) {
       throw new NotFoundException("Movie with ID " + movieId + " not found");
     }
     Discussion discussion = discussionRepository.findById(discussionId)
       .orElseThrow(() -> new NotFoundException("Discussion with ID " + discussionId + " not found"));
+
     if (!discussion.getMovie().getId().equals(movieId)) {
       throw new NotFoundException("Discussion with ID " + discussionId + " not found in movie with ID " + movieId);
     }
+
     Comment comment = commentRepository.findById(id)
       .orElseThrow(() -> new NotFoundException("Comment with ID " + id + " not found"));
+
     if (!comment.getDiscussion().getId().equals(discussionId)) {
       throw new NotFoundException("Comment with ID " + id + " not found in discussion with ID " + discussionId);
     }
+
+    if (!comment.getUser().getId().equals(userId) && !userRole.equals(Role.ADMIN)) {
+      throw new AccessDeniedException("User is not authorized to delete this comment");
+    }
+
     commentRepository.deleteById(id);
   }
 
@@ -97,7 +113,7 @@ public class CommentService {
       .toList();
   }
 
-  public CommentResponseDto createComment(Long movieId, Long discussionId, CommentRequestDto content) {
+  public CommentResponseDto createComment(Long movieId, Long discussionId, CommentRequestDto content, Long userId) {
     if (!movieRepository.existsById(movieId)) {
       throw new NotFoundException("Movie with ID " + movieId + " not found");
     }
@@ -106,11 +122,11 @@ public class CommentService {
     if (!discussion.getMovie().getId().equals(movieId)) {
       throw new NotFoundException("Discussion with ID " + discussionId + " not found in movie with ID " + movieId);
     }
-    if (!userRepository.existsById(content.getUserId())) {
-      throw new NotFoundException("User with ID " + content.getUserId() + " not found");
+    if (!userRepository.existsById(userId)) {
+      throw new NotFoundException("User not found");
     }
 
-    Comment comment = MAPPER.requestDtoToComment(content, discussionId);
+    Comment comment = MAPPER.requestDtoToComment(content, discussionId, userId);
     comment = commentRepository.save(comment);
     return MAPPER.commentToResponseDto(comment);
   }
@@ -121,6 +137,7 @@ public class CommentService {
     }
     Discussion discussion = discussionRepository.findById(discussionId)
       .orElseThrow(() -> new NotFoundException("Discussion with ID " + discussionId + " not found"));
+
     if (!discussion.getMovie().getId().equals(movieId)) {
       throw new NotFoundException("Discussion with ID " + discussionId + " not found in movie with ID " + movieId);
     }

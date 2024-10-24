@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +42,7 @@ public class FileUploadController {
   @Operation(summary = "Upload a poster", description = "Upload a poster for a movie", responses = {
     @ApiResponse(responseCode = "201", description = "Created")
   })
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping(consumes = "multipart/form-data")
   public FileResponseDto uploadPoster(@RequestParam("file") MultipartFile file) {
@@ -51,6 +53,7 @@ public class FileUploadController {
     @ApiResponse(responseCode = "200", description = "OK"),
     @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @PutMapping(value = "/{fileId}", consumes = "multipart/form-data")
   public FileResponseDto updatePoster(@PathVariable Long fileId, @RequestParam("file") MultipartFile file) {
     return fileService.updatePoster(fileId, file);

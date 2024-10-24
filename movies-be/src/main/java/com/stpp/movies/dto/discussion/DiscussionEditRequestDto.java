@@ -2,7 +2,6 @@ package com.stpp.movies.dto.discussion;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +17,4 @@ public class DiscussionEditRequestDto {
   @NotBlank(message = "Title should not be blank")
   @Size(min = 1, max = 256, message = "Title must be between {min} and {max} characters")
   private String title;
-
-  @NotNull(message = "User should not be null")
-  private Long userId;
 }

@@ -7,14 +7,12 @@ import com.stpp.movies.dto.user.UserRequestDto;
 import com.stpp.movies.dto.user.UserResponseDto;
 import com.stpp.movies.entities.User;
 import com.stpp.movies.services.jwt.AuthenticationService;
-import com.stpp.movies.services.jwt.TokenBlacklistService;
 import com.stpp.movies.services.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -46,7 +44,6 @@ public class UserController {
 
   private final UserService userService;
   private final AuthenticationService authenticationService;
-  private final TokenBlacklistService tokenBlacklistService;
 
   @Operation(summary = "Get all users", description = "Fetches all users from the database.", operationId = "1", responses = {
     @ApiResponse(responseCode = "200", description = "List of users returned successfully")
@@ -122,21 +119,12 @@ public class UserController {
       .body(userResponseDto);
   }
 
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @GetMapping("/me")
   public UserResponseDto getMe() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     User user = (User) authentication.getPrincipal();
     return userService.getUserById(user.getId());
-  }
-
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  @PostMapping("/logout")
-  public void logout(HttpServletRequest request) {
-    String authHeader = request.getHeader("Authorization");
-    if (authHeader != null && authHeader.startsWith("Bearer ")) {
-      String token = authHeader.substring(7);
-      tokenBlacklistService.blacklistToken(token);
-    }
   }
 }

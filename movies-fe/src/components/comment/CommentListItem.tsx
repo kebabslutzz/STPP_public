@@ -6,6 +6,7 @@ import DeleteConfirmationDialog from '../dialog/DeleteConfirmationDialog';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useAuth } from '../../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 interface CommentListItemProps {
 	comment: Comment;
@@ -49,6 +50,10 @@ const CommentListItem: React.FC<CommentListItemProps> = ({ comment, onDelete, on
 		}
 	};
 
+	const handleUserLinkClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+		event.stopPropagation();
+	};
+
 	return (
 		<Box className='CommentListItem' sx={{ flexGrow: 1 }}>
 			<Grid container spacing={1}>
@@ -57,7 +62,12 @@ const CommentListItem: React.FC<CommentListItemProps> = ({ comment, onDelete, on
 					{`${comment.dateModified ? formatDate(comment.dateModified) : 'N/A'}`}
 				</Grid>
 				<Grid item xs={2} className='grid-item'>
-					<Typography variant='body1' className='user-box'>{`User ID: ${comment.userId}`}</Typography>
+					<Typography variant='body1' className='user-box'>
+						by{' '}
+						<Link to={`/users/${comment.userId}`} onClick={handleUserLinkClick}>
+							{comment.username}
+						</Link>
+					</Typography>
 				</Grid>
 				<Grid item xs={10}>
 					<Typography variant='body1' className='comment-content-box'>{`${comment.content}`}</Typography>
@@ -66,9 +76,11 @@ const CommentListItem: React.FC<CommentListItemProps> = ({ comment, onDelete, on
 							<Button onClick={handleDeleteDialogOpen} className='Button delete-button' endIcon={<DeleteIcon />}>
 								Delete
 							</Button>
-							<Button onClick={handleEditComment} className='Button add-edit-button' endIcon={<EditIcon />}>
-								Edit
-							</Button>
+							{loggedInUserId === comment.userId && (
+								<Button onClick={handleEditComment} className='Button add-edit-button' endIcon={<EditIcon />}>
+									Edit
+								</Button>
+							)}
 						</Box>
 					)}
 				</Grid>

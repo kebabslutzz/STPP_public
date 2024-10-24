@@ -221,7 +221,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 	const handleDiscussionSubmit = async (newDiscussion: Discussion) => {
 		if (isLoggedIn) {
 			newDiscussion.movieId = movieId;
-			newDiscussion.userId = loggedInUserId;
+			// newDiscussion.userId = loggedInUserId;
 			const discussionResponse = await createDiscussionCommand.sendData(newDiscussion);
 			if (discussionResponse?.status === 201 && 'data' in discussionResponse) {
 				let createdDiscussion = discussionResponse?.data as Discussion;

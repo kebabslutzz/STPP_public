@@ -10,6 +10,7 @@ import com.stpp.movies.dto.discussion.DiscussionResponseDto;
 import com.stpp.movies.dto.movie.MovieEditRequestDto;
 import com.stpp.movies.dto.movie.MovieRequestDto;
 import com.stpp.movies.dto.movie.MovieResponseDto;
+import com.stpp.movies.entities.User;
 import com.stpp.movies.services.comment.CommentService;
 import com.stpp.movies.services.discussion.DiscussionService;
 import com.stpp.movies.services.movie.MovieService;
@@ -22,6 +23,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -74,6 +78,7 @@ public class MovieController {
     @ApiResponse(responseCode = "201", description = "Movie created successfully"),
     @ApiResponse(responseCode = "400", description = "Movie creation failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @PostMapping
   public ResponseEntity<MovieResponseDto> createMovie(@Valid @RequestBody MovieRequestDto movieRequestDto) {
     MovieResponseDto movie = movieService.createMovie(movieRequestDto);
@@ -90,6 +95,7 @@ public class MovieController {
     @ApiResponse(responseCode = "400", description = "Movie edit failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "404", description = "Movie not found or poster not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @PutMapping("/{movieId}")
   public MovieResponseDto editMovie(@Valid @PathVariable Long movieId, @Valid @RequestBody MovieEditRequestDto movieEditRequestDto) {
     return movieService.editMovie(movieId, movieEditRequestDto);
@@ -99,6 +105,7 @@ public class MovieController {
     @ApiResponse(responseCode = "204", description = "Movie deleted successfully"),
     @ApiResponse(responseCode = "404", description = "Movie not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
   @DeleteMapping("/{movieId}")
   public void deleteMovieById(@PathVariable Long movieId) {
@@ -133,9 +140,13 @@ public class MovieController {
     @ApiResponse(responseCode = "400", description = "Discussion creation failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "404", description = "Movie not found or user not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @PostMapping("/{movieId}/discussions")
   public ResponseEntity<DiscussionResponseDto> createDiscussionByMovieId(@PathVariable Long movieId, @Valid @RequestBody DiscussionRequestDto discussionRequestDto) {
-    DiscussionResponseDto createdDiscussion = discussionService.createDiscussion(movieId, discussionRequestDto);
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    User user = (User) authentication.getPrincipal();
+
+    DiscussionResponseDto createdDiscussion = discussionService.createDiscussion(movieId, discussionRequestDto, user.getId());
     URI location = ServletUriComponentsBuilder
       .fromCurrentRequest()
       .path("/{id}")
@@ -150,19 +161,25 @@ public class MovieController {
     @ApiResponse(responseCode = "400", description = "Discussion edit failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "404", description = "Discussion not found or movie not or discussion does not belong to the movie or the user", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @PatchMapping("/{movieId}/discussions/{discussionId}")
   public DiscussionResponseDto editDiscussionByMovieIdAndDiscussionId(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @RequestBody DiscussionEditRequestDto discussionEditRequestDto) {
-    return discussionService.editDiscussion(movieId, discussionId, discussionEditRequestDto);
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    User user = (User) authentication.getPrincipal();
+    return discussionService.editDiscussion(movieId, discussionId, discussionEditRequestDto, user.getId());
   }
 
   @Operation(summary = "Delete a discussion by movie and discussion id", description = "Delete a discussion by movie and discussion id", responses = {
     @ApiResponse(responseCode = "204", description = "Discussion deleted successfully"),
     @ApiResponse(responseCode = "404", description = "Discussion not found or movie not found of discussion does not belong to the movie", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
   @DeleteMapping("/{movieId}/discussions/{discussionId}")
   public void deleteDiscussionById(@PathVariable Long movieId, @PathVariable Long discussionId) {
-    discussionService.deleteDiscussionByMovieAndDiscussionId(movieId, discussionId);
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    User user = (User) authentication.getPrincipal();
+    discussionService.deleteDiscussionByMovieAndDiscussionId(movieId, discussionId, user.getId(), user.getRole());
   }
 
   /**
@@ -186,15 +203,18 @@ public class MovieController {
     return commentService.getCommentByMovieIdAndDiscussionIdAndCommentId(movieId, discussionId, commentId);
   }
 
-
   @Operation(summary = "Create a new comment", description = "Create a new comment", responses = {
     @ApiResponse(responseCode = "201", description = "Comment created successfully"),
     @ApiResponse(responseCode = "400", description = "Comment creation failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "404", description = "Movie not found or Discussion not found or User not found or discussion does not belong to the movie", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @PostMapping("/{movieId}/discussions/{discussionId}/comments")
   public ResponseEntity<CommentResponseDto> createCommentMovieIdAndDiscussionId(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @RequestBody CommentRequestDto commentRequestDto) {
-    CommentResponseDto createdComment = commentService.createComment(movieId, discussionId, commentRequestDto);
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    User user = (User) authentication.getPrincipal();
+
+    CommentResponseDto createdComment = commentService.createComment(movieId, discussionId, commentRequestDto, user.getId());
     URI location = ServletUriComponentsBuilder
       .fromCurrentRequest()
       .path("/{id}")
@@ -208,9 +228,12 @@ public class MovieController {
     @ApiResponse(responseCode = "400", description = "Comment edit failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "404", description = "Movie not found, or discussion not found, or comment not found, or discussion does not belong to the movie, or comment does not belong to the discussion", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @PatchMapping("/{movieId}/discussions/{discussionId}/comments/{commentId}")
   public CommentResponseDto editCommentByMovieIdAndDiscussionIdAndCommentId(@Valid @PathVariable Long movieId, @Valid @PathVariable Long discussionId, @Valid @PathVariable Long commentId, @Valid @RequestBody CommentEditRequestDto commentEditRequestDto) {
-    return commentService.editComment(movieId, discussionId, commentId, commentEditRequestDto);
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    User user = (User) authentication.getPrincipal();
+    return commentService.editComment(movieId, discussionId, commentId, commentEditRequestDto, user.getId());
   }
 
   @Operation(summary = "Delete a comment by movie, discussion and comment id", description = "Delete a comment by movie, discussion and comment id", responses = {
@@ -220,9 +243,13 @@ public class MovieController {
       description = "Movie not found, or discussion not found, or comment not found, or discussion does not belong to the movie, or comment does not belong to the discussion",
       content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
   @DeleteMapping("/{movieId}/discussions/{discussionId}/comments/{commentId}")
   public void deleteCommentByMovieIdAndDiscussionIdAndCommentId(@PathVariable Long movieId, @PathVariable Long discussionId, @PathVariable Long commentId) {
-    commentService.deleteComment(movieId, discussionId, commentId);
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    User user = (User) authentication.getPrincipal();
+
+    commentService.deleteComment(movieId, discussionId, commentId, user.getId(), user.getRole());
   }
 }

@@ -4,7 +4,7 @@ import com.stpp.movies.dto.discussion.DiscussionEditRequestDto;
 import com.stpp.movies.dto.discussion.DiscussionRequestDto;
 import com.stpp.movies.dto.discussion.DiscussionResponseDto;
 import com.stpp.movies.entities.Discussion;
-import com.stpp.movies.entities.User;
+import com.stpp.movies.enumerators.Role;
 import com.stpp.movies.exceptions.NotFoundException;
 import com.stpp.movies.repositories.DiscussionRepository;
 import com.stpp.movies.repositories.MovieRepository;
@@ -12,6 +12,7 @@ import com.stpp.movies.repositories.UserRepository;
 import com.stpp.movies.services.comment.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -79,31 +80,7 @@ public class DiscussionService {
       .toList();
   }
 
-  public DiscussionResponseDto editDiscussion(@Valid Long movieId, @Valid Long discussionId, @Valid DiscussionEditRequestDto discussionEditRequestDto) {
-    if (!movieRepository.existsById(movieId)) {
-      throw new NotFoundException("Movie with ID " + movieId + " not found");
-    }
-    User user = userRepository.findById(discussionEditRequestDto.getUserId())
-      .orElseThrow(() -> new NotFoundException("User with ID " + discussionEditRequestDto.getUserId() + " not found"));
-
-    return discussionRepository.findById(discussionId)
-      .filter(discussion -> discussion.getMovie().getId().equals(movieId))
-      .filter(discussion -> discussion.getUser().getId().equals(user.getId()))
-      .map(discussion -> {
-        MAPPER.discussionEditRequestDtoToDiscussion(discussionEditRequestDto, discussion);
-        return MAPPER.discussionToResponseDto(discussion);
-      })
-      .orElseThrow(() -> new NotFoundException("Discussion with ID " + discussionId + " not found or does not belong to movie with ID " + movieId + " or user with ID " + discussionEditRequestDto.getUserId()));
-  }
-
-  public void deleteDiscussionById(Long id) {
-    if (!discussionRepository.existsById(id)) {
-      throw new NotFoundException("Discussion with ID " + id + " not found");
-    }
-    discussionRepository.deleteById(id);
-  }
-
-  public void deleteDiscussionByMovieAndDiscussionId(Long movieId, Long discussionId) {
+  public DiscussionResponseDto editDiscussion(@Valid Long movieId, @Valid Long discussionId, @Valid DiscussionEditRequestDto discussionEditRequestDto, Long userId) {
     if (!movieRepository.existsById(movieId)) {
       throw new NotFoundException("Movie with ID " + movieId + " not found");
     }
@@ -114,18 +91,51 @@ public class DiscussionService {
     if (!discussion.getMovie().getId().equals(movieId)) {
       throw new NotFoundException("Discussion with ID " + discussionId + " does not belong to movie with ID " + movieId);
     }
-    discussionRepository.deleteById(discussionId);
+
+    if (!discussion.getUser().getId().equals(userId)) {
+      throw new AccessDeniedException("User is not authorized to edit this discussion");
+    }
+
+    MAPPER.discussionEditRequestDtoToDiscussion(discussionEditRequestDto, discussion);
+    discussion = discussionRepository.save(discussion);
+    return MAPPER.discussionToResponseDto(discussion);
   }
 
-  public DiscussionResponseDto createDiscussion(Long movieId, DiscussionRequestDto discussionRequestDto) {
+  public void deleteDiscussionById(Long id) {
+    if (!discussionRepository.existsById(id)) {
+      throw new NotFoundException("Discussion with ID " + id + " not found");
+    }
+    discussionRepository.deleteById(id);
+  }
+
+  public void deleteDiscussionByMovieAndDiscussionId(Long movieId, Long discussionId, Long userId, Role userRole) {
     if (!movieRepository.existsById(movieId)) {
       throw new NotFoundException("Movie with ID " + movieId + " not found");
     }
-    if (!userRepository.existsById(discussionRequestDto.getUserId())) {
-      throw new NotFoundException("User with ID " + discussionRequestDto.getUserId() + " not found");
+
+    Discussion discussion = discussionRepository.findById(discussionId)
+      .orElseThrow(() -> new NotFoundException("Discussion with ID " + discussionId + " not found"));
+
+    if (!discussion.getMovie().getId().equals(movieId)) {
+      throw new NotFoundException("Discussion with ID " + discussionId + " does not belong to movie with ID " + movieId);
     }
 
-    Discussion discussion = MAPPER.discussionRequestDtoToDiscussion(discussionRequestDto, movieId);
+    if (!discussion.getUser().getId().equals(userId) && !userRole.equals(Role.ADMIN)) {
+      throw new AccessDeniedException("User is not authorized to delete this discussion");
+    }
+
+    discussionRepository.deleteById(discussionId);
+  }
+
+  public DiscussionResponseDto createDiscussion(Long movieId, DiscussionRequestDto discussionRequestDto, Long userId) {
+    if (!movieRepository.existsById(movieId)) {
+      throw new NotFoundException("Movie with ID " + movieId + " not found");
+    }
+    if (!userRepository.existsById(userId)) {
+      throw new NotFoundException("User not found");
+    }
+
+    Discussion discussion = MAPPER.discussionRequestDtoToDiscussion(discussionRequestDto, movieId, userId);
     discussion = discussionRepository.save(discussion);
     return MAPPER.discussionToResponseDto(discussion);
   }

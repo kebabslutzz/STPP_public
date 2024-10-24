@@ -16,5 +16,6 @@ public class CommentResponseDto {
   private String content;
   private Long discussionId;
   private Long userId;
+  private String username;
   private OffsetDateTime dateModified;
 }
