@@ -9,6 +9,7 @@ import NotFoundPage from '../../pages/NotFoundPage';
 import RegisterPage from '../../pages/RegisterPage';
 import LoginPage from '../../pages/LoginPage';
 import Logout from '../register-login/Logout';
+import ProtectedRoute from './ProtectedRoute';
 
 const UsersPage = React.lazy(() => import('../../pages/UsersPage'));
 const MoviesPage = React.lazy(() => import('../../pages/MoviesPage'));
@@ -25,9 +26,11 @@ const router = createBrowserRouter([
 			{
 				path: ROUTE_PATHS.USERS,
 				element: (
-					<Suspense fallback={<Loader />}>
-						<UsersPage />
-					</Suspense>
+					<ProtectedRoute>
+						<Suspense fallback={<Loader />}>
+							<UsersPage />
+						</Suspense>
+					</ProtectedRoute>
 				),
 				children: [
 					{

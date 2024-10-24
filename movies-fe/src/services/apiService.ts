@@ -25,6 +25,7 @@ type RequestParams = {
 export type ApiResponse<T> = {
 	data: T;
 	status: number;
+	headers: any;
 };
 
 const getErrorMessages = (error: AxiosError<ErrorResponseData>): string => {
@@ -69,6 +70,7 @@ const makeRequestAsync = async <T>({
 		return {
 			data: response.data,
 			status: response.status,
+			headers: response.headers,
 		};
 	} catch (error) {
 		return createErrorResponse(error as AxiosError<ErrorResponseData>);

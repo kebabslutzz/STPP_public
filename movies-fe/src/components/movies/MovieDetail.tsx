@@ -18,6 +18,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ForumIcon from '@mui/icons-material/Forum';
 import HideImageIcon from '@mui/icons-material/HideImage';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useAuth } from '../../context/AuthContext';
 
 interface MovieDetailProps {
 	movieId: number;
@@ -32,6 +33,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 	const [isDiscussionDialogOpen, setIsDiscussionDialogOpen] = useState(false);
 	const [openMovie, setOpenMovie] = useState<Movie | null>(null);
 	const navigate = useNavigate();
+	const { isAdmin, isLoggedIn, loggedInUserId } = useAuth();
 
 	const handleOpenDialog = () => {
 		setIsDialogOpen(true);
@@ -139,61 +141,63 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 	});
 
 	const onEditSubmit = async (newMovie: Movie, poster?: File) => {
-		try {
-			let posterId: number | null = newMovie.posterId ? newMovie.posterId : null;
+		if (isAdmin) {
+			try {
+				let posterId: number | null = newMovie.posterId ? newMovie.posterId : null;
 
-			// Step 1: Upload Poster if it exists
-			if (poster!) {
-				const formData = new FormData();
-				formData.append('file', poster);
-				let posterResponse: Response;
+				// Step 1: Upload Poster if it exists
+				if (poster!) {
+					const formData = new FormData();
+					formData.append('file', poster);
+					let posterResponse: Response;
 
-				if (newMovie.posterId) {
-					posterResponse = await fetch(ENDPOINTS.POSTER.UPDATE_POSTER(newMovie.posterId), {
-						method: HTTP_METHODS.PUT,
-						body: formData,
-					});
+					if (newMovie.posterId) {
+						posterResponse = await fetch(ENDPOINTS.POSTER.UPDATE_POSTER(newMovie.posterId), {
+							method: HTTP_METHODS.PUT,
+							body: formData,
+						});
 
-					if (!posterResponse.ok) {
-						throw new Error('Failed to upload poster');
+						if (!posterResponse.ok) {
+							throw new Error('Failed to upload poster');
+						}
+					} else {
+						posterResponse = await fetch(ENDPOINTS.POSTER.CREATE_POSTER, {
+							method: HTTP_METHODS.POST,
+							body: formData,
+						});
+
+						if (!posterResponse.ok) {
+							throw new Error('Failed to upload poster');
+						}
 					}
-				} else {
-					posterResponse = await fetch(ENDPOINTS.POSTER.CREATE_POSTER, {
-						method: HTTP_METHODS.POST,
-						body: formData,
-					});
 
-					if (!posterResponse.ok) {
-						throw new Error('Failed to upload poster');
-					}
+					const posterData = await posterResponse.json();
+					// newMovie!.posterId = posterData.id;
+					posterId = Number(posterData.id);
 				}
 
-				const posterData = await posterResponse.json();
-				// newMovie!.posterId = posterData.id;
-				posterId = Number(posterData.id);
-			}
+				// Step 2: Create Movie
+				const { id, ...newMovieWithoutId } = newMovie;
 
-			// Step 2: Create Movie
-			const { id, ...newMovieWithoutId } = newMovie;
+				const movieWithPoster: Movie = {
+					...newMovieWithoutId,
+					...(posterId ? { posterId } : {}),
+				};
+				const movieResponse = await updateMovieCommand.sendData(movieWithPoster);
+				if (movieResponse?.status === 200) {
+					setOpenMovie(movieWithPoster);
 
-			const movieWithPoster: Movie = {
-				...newMovieWithoutId,
-				...(posterId ? { posterId } : {}),
-			};
-			const movieResponse = await updateMovieCommand.sendData(movieWithPoster);
-			if (movieResponse?.status === 200) {
-				setOpenMovie(movieWithPoster);
-
-				console.log('current poster id:', newMovie.posterId);
-				console.log('new poster id:', movieWithPoster.posterId);
-				// Fetch the updated poster if it was changed
-				if (posterId != newMovie.posterId) {
-					getPosterData();
+					console.log('current poster id:', newMovie.posterId);
+					console.log('new poster id:', movieWithPoster.posterId);
+					// Fetch the updated poster if it was changed
+					if (posterId != newMovie.posterId) {
+						getPosterData();
+					}
 				}
+			} catch (error) {
+				setListOfErrors([String((error as Error).message)]);
+				console.error(listOfErrors);
 			}
-		} catch (error) {
-			setListOfErrors([String((error as Error).message)]);
-			console.error(listOfErrors);
 		}
 	};
 
@@ -215,12 +219,14 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 	});
 
 	const handleDiscussionSubmit = async (newDiscussion: Discussion) => {
-		newDiscussion.movieId = movieId;
-		newDiscussion.userId = 1; // Hardcoded user id for now
-		const discussionResponse = await createDiscussionCommand.sendData(newDiscussion);
-		if (discussionResponse?.status === 201 && 'data' in discussionResponse) {
-			let createdDiscussion = discussionResponse?.data as Discussion;
-			setDiscussionList((prev) => [createdDiscussion, ...prev]);
+		if (isLoggedIn) {
+			newDiscussion.movieId = movieId;
+			newDiscussion.userId = loggedInUserId;
+			const discussionResponse = await createDiscussionCommand.sendData(newDiscussion);
+			if (discussionResponse?.status === 201 && 'data' in discussionResponse) {
+				let createdDiscussion = discussionResponse?.data as Discussion;
+				setDiscussionList((prev) => [createdDiscussion, ...prev]);
+			}
 		}
 	};
 
@@ -277,25 +283,26 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 							<ListItemText>{openMovie?.description}</ListItemText>
 						</ListItem>
 						<Divider variant='middle' component='li' className='divider' />
-
-						<ListItem>
-							<Button
-								className='Button add-edit-button'
-								onClick={handleOpenDialog}
-								variant='text'
-								endIcon={<EditIcon />}
-							>
-								Edit Movie
-							</Button>
-							<Button
-								className='Button delete-button'
-								onClick={handleOpenDeleteDialog}
-								variant='text'
-								endIcon={<DeleteIcon />}
-							>
-								Delete Movie
-							</Button>
-						</ListItem>
+						{isAdmin && (
+							<ListItem>
+								<Button
+									className='Button add-edit-button'
+									onClick={handleOpenDialog}
+									variant='text'
+									endIcon={<EditIcon />}
+								>
+									Edit Movie
+								</Button>
+								<Button
+									className='Button delete-button'
+									onClick={handleOpenDeleteDialog}
+									variant='text'
+									endIcon={<DeleteIcon />}
+								>
+									Delete Movie
+								</Button>
+							</ListItem>
+						)}
 					</List>
 				</div>
 			</div>
@@ -306,14 +313,16 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 					) : (
 						<div className='most-recent-discussions'>Most recent discussions</div>
 					)}
-					<Button
-						onClick={handleOpenDiscussionDialog}
-						variant='text'
-						className='Button add-edit-button'
-						endIcon={<ForumIcon />}
-					>
-						Create Discussion
-					</Button>
+					{isLoggedIn && (
+						<Button
+							onClick={handleOpenDiscussionDialog}
+							variant='text'
+							className='Button add-edit-button'
+							endIcon={<ForumIcon />}
+						>
+							Create Discussion
+						</Button>
+					)}
 				</div>
 			</div>
 			<List component='nav' aria-label='discussions'>

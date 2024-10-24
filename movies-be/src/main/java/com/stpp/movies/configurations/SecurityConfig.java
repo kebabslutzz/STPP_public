@@ -73,6 +73,7 @@ public class SecurityConfig {
   private void configureCommonCORS(CorsConfiguration configuration) {
     configuration.setAllowedMethods(ALLOWED_METHODS);
     configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+    configuration.setExposedHeaders(List.of("Authorization"));
     configuration.setAllowCredentials(true);
   }
 

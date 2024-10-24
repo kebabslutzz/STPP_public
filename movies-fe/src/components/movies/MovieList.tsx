@@ -16,7 +16,8 @@ const MovieList: React.FC = () => {
 	const [movieList, setMovieList] = useState<Movie[]>([]);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [listOfErrors, setListOfErrors] = useState<string[]>([]);
-	const { claims } = useAuth();
+	// const { claims } = useAuth();
+	const { isAdmin } = useAuth();
 
 	const handleOpenDialog = () => {
 		setIsDialogOpen(true);
@@ -62,39 +63,41 @@ const MovieList: React.FC = () => {
 	});
 
 	const handleMovieCreationSubmission = async (newMovie: Movie, poster?: File) => {
-		try {
-			let posterId: number | null = null;
+		if (isAdmin) {
+			try {
+				let posterId: number | null = null;
 
-			if (poster!) {
-				const formData = new FormData();
-				formData.append('file', poster!);
+				if (poster!) {
+					const formData = new FormData();
+					formData.append('file', poster!);
 
-				const posterResponse = await fetch(ENDPOINTS.POSTER.CREATE_POSTER, {
-					method: HTTP_METHODS.POST,
-					body: formData,
-				});
+					const posterResponse = await fetch(ENDPOINTS.POSTER.CREATE_POSTER, {
+						method: HTTP_METHODS.POST,
+						body: formData,
+					});
 
-				if (!posterResponse.ok) {
-					throw new Error('Failed to upload poster');
+					if (!posterResponse.ok) {
+						throw new Error('Failed to upload poster');
+					}
+
+					const posterData = await posterResponse.json();
+					posterId = Number(posterData.id);
 				}
 
-				const posterData = await posterResponse.json();
-				posterId = Number(posterData.id);
+				// Step 2: Create Movie
+				const movieWithPoster: Movie = {
+					...newMovie,
+					...(posterId && { posterId }), // Conditionally include posterId
+				};
+				const movieResponse = await createMovieCommand.sendData(movieWithPoster);
+
+				// if (!movieResponse?.data.id) {
+				// 	throw new Error('Failed to create movie');
+				// }
+			} catch (error) {
+				setListOfErrors([String((error as Error).message)]);
+				console.log('Error creating movie', listOfErrors);
 			}
-
-			// Step 2: Create Movie
-			const movieWithPoster: Movie = {
-				...newMovie,
-				...(posterId && { posterId }), // Conditionally include posterId
-			};
-			const movieResponse = await createMovieCommand.sendData(movieWithPoster);
-
-			// if (!movieResponse?.data.id) {
-			// 	throw new Error('Failed to create movie');
-			// }
-		} catch (error) {
-			setListOfErrors([String((error as Error).message)]);
-			console.log('Error creating movie', listOfErrors);
 		}
 	};
 
@@ -103,7 +106,7 @@ const MovieList: React.FC = () => {
 			<div className='Header-row'>
 				<h1>Top Trending Movies Right Now!</h1>
 
-				{!isLoadingMovies && !movieErrors && (
+				{!isLoadingMovies && !movieErrors && isAdmin && (
 					<Button className='Button add-edit-button' onClick={handleOpenDialog} endIcon={<AddIcon />}>
 						Add Movie
 					</Button>

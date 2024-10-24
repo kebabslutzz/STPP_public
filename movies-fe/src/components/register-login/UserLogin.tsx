@@ -37,11 +37,18 @@ const UserLogin: React.FC = () => {
 	const handleUserLoginSubmit = async (user: User, setFieldError: (field: string, message: string) => void) => {
 		try {
 			const response = await loginUserCommand(user);
-			console.log('errors', loginUserErrors);
-			console.log('response:', response);
-			if (response?.status === 200 && 'data' in response) {
-				login(response.data.token);
+			// console.log('errors', loginUserErrors);
+			// console.log('response:', response);
+
+			if ('status' in response! && response.status === 200 && 'headers' in response && response.headers) {
+				const token = response.headers['authorization']; // Extract the token from the header
+				// console.log('token:', token);
+				const extractedToken = token.split(' ')[1]; // Assuming the format is 'Bearer <token>'
+				// console.log('Token:', extractedToken);
+				login(extractedToken);
 				navigate('/movies');
+			} else if ('message' in response!) {
+				console.error('Error response:', response.message);
 			}
 		} catch (error) {
 			console.error('Error logging in user:', error);

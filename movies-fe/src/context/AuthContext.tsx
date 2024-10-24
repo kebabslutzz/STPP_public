@@ -18,6 +18,7 @@ interface AuthContextType {
 	loggedInUserRole: string | undefined;
 	tokenExpirationTime: number | undefined;
 	tokenCreationTime: number | undefined;
+	isAdmin: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,6 +30,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 	const [loggedInUserRole, setLoggedInUserRole] = useState<string | undefined>(undefined);
 	const [tokenExpirationTime, setTokenExpirationTime] = useState<number | undefined>(undefined);
 	const [tokenCreationTime, setTokenCreationTime] = useState<number | undefined>(undefined);
+	const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
 	useEffect(() => {
 		const storedToken = localStorage.getItem('token');
@@ -39,6 +41,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 			setTokenCreationTime(decodedClaims.iat);
 			setTokenExpirationTime(decodedClaims.exp);
 			setClaims(decodedClaims);
+			setIsAdmin(decodedClaims.role === 'ADMIN');
 		}
 	}, []);
 
@@ -50,6 +53,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 		setLoggedInUserRole(decodedClaims.role);
 		setTokenCreationTime(decodedClaims.iat);
 		setTokenExpirationTime(decodedClaims.exp);
+		setIsAdmin(decodedClaims.role === 'ADMIN');
 		setClaims(decodedClaims);
 	};
 
@@ -79,6 +83,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 				loggedInUserRole,
 				tokenCreationTime,
 				tokenExpirationTime,
+				isAdmin,
 			}}
 		>
 			{children}

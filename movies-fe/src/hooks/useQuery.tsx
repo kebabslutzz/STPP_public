@@ -3,7 +3,6 @@ import apiService, { ApiResponse, Query, ErrorResponse } from '../services/apiSe
 import { HTTP_METHODS } from '../constants/httpsMethods';
 import queryService from '../services/queryService';
 import { useAuth } from '../context/AuthContext';
-import { get } from 'http';
 
 type UseQueryArguments<T> = {
 	url: string;

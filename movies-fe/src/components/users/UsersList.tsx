@@ -11,6 +11,7 @@ import DeleteConfirmationDialog from '../dialog/DeleteConfirmationDialog';
 import Loader from '../shared/Loader';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ErrorDisplay from '../shared/ErrorDisplay';
+import { useAuth } from '../../context/AuthContext';
 
 const UsersList: React.FC = () => {
 	const [users, setUsers] = useState<User[]>([]);
@@ -18,6 +19,7 @@ const UsersList: React.FC = () => {
 	const [isUserSubmitFormOpen, setUserSubmitFormOpen] = useState(false);
 	const [userToDeleteId, setUserToDeleteId] = useState<number | null>(null);
 	const [deleteUserFormOpen, setDeleteUserFormOpen] = useState(false);
+	const { isAdmin } = useAuth();
 
 	const {
 		data: fetchedUsers,
@@ -117,7 +119,7 @@ const UsersList: React.FC = () => {
 			<div className='Header-row'>
 				<h1>User List</h1>
 
-				{!isUsersLoading && !usersErrors && (
+				{!isUsersLoading && !usersErrors && isAdmin && (
 					<Button className='Button add-edit-button' onClick={handleUserCreateClick} endIcon={<PersonAddIcon />}>
 						Add user
 					</Button>

@@ -5,6 +5,7 @@ import Comment from '../../interfaces/Comment';
 import DeleteConfirmationDialog from '../dialog/DeleteConfirmationDialog';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { useAuth } from '../../context/AuthContext';
 
 interface CommentListItemProps {
 	comment: Comment;
@@ -14,6 +15,7 @@ interface CommentListItemProps {
 
 const CommentListItem: React.FC<CommentListItemProps> = ({ comment, onDelete, onUpdate }) => {
 	const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+	const { isAdmin, loggedInUserId } = useAuth();
 
 	const formatDate = (date: Date | string) => {
 		const dateObj = new Date(date);
@@ -59,14 +61,16 @@ const CommentListItem: React.FC<CommentListItemProps> = ({ comment, onDelete, on
 				</Grid>
 				<Grid item xs={10}>
 					<Typography variant='body1' className='comment-content-box'>{`${comment.content}`}</Typography>
-					<Box className='button-container'>
-						<Button onClick={handleDeleteDialogOpen} className='Button delete-button' endIcon={<DeleteIcon />}>
-							Delete
-						</Button>
-						<Button onClick={handleEditComment} className='Button add-edit-button' endIcon={<EditIcon />}>
-							Edit
-						</Button>
-					</Box>
+					{(isAdmin || loggedInUserId === comment.userId) && (
+						<Box className='button-container'>
+							<Button onClick={handleDeleteDialogOpen} className='Button delete-button' endIcon={<DeleteIcon />}>
+								Delete
+							</Button>
+							<Button onClick={handleEditComment} className='Button add-edit-button' endIcon={<EditIcon />}>
+								Edit
+							</Button>
+						</Box>
+					)}
 				</Grid>
 			</Grid>
 			<DeleteConfirmationDialog

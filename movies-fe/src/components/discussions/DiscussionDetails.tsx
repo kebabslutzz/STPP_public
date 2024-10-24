@@ -14,6 +14,7 @@ import CommentListItem from '../comment/CommentListItem';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCommentIcon from '@mui/icons-material/AddComment';
+import { useAuth } from '../../context/AuthContext';
 
 const DiscussionDetail: React.FC = () => {
 	const [comments, setComments] = useState<Comment[]>([]);
@@ -25,6 +26,7 @@ const DiscussionDetail: React.FC = () => {
 	const [commentToUpdate, setCommentToUpdate] = useState<Comment | null>(null);
 	const { movieId, discussionId } = useParams<{ movieId: string; discussionId: string }>();
 	const navigate = useNavigate();
+	const { isAdmin, isLoggedIn, loggedInUserId } = useAuth();
 
 	const {
 		data: fetchedDiscussion,
@@ -101,7 +103,7 @@ const DiscussionDetail: React.FC = () => {
 	});
 
 	const handleDiscussionSubmit = async (newDiscussion: Discussion) => {
-		newDiscussion.userId = 1; // Hardcoded user id for now
+		newDiscussion.userId = loggedInUserId; // Hardcoded user id for now
 		const discussionResponse = await editDiscussionCommand.sendData(newDiscussion);
 		if (discussionResponse?.status === 200) {
 			setDiscussion(newDiscussion);
@@ -115,7 +117,7 @@ const DiscussionDetail: React.FC = () => {
 
 	const handleAddComment = async (newComment: Comment) => {
 		if (commentToUpdate == null) {
-			newComment.userId = 1; // Hardcoded user id for now
+			newComment.userId = loggedInUserId; // Hardcoded user id for now
 			setCommentBoxIsVisible(false);
 			// const updatedComments = [...comments, newComment];
 			// setComments(updatedComments);
@@ -200,17 +202,23 @@ const DiscussionDetail: React.FC = () => {
 		<Container className='PageContainer'>
 			<div className='DiscussionDetail'>
 				<div className='discussion-header'>{discussion && <h1>{discussion.title}</h1>}</div>
-				<div className='discussion-buttons'>
-					<Button onClick={handleOpenDiscussionDialog} className='Button add-edit-button' endIcon={<EditIcon />}>
-						Edit Discussion
-					</Button>
-					<Button onClick={handleOpenDeleteDialog} className='Button delete-button' endIcon={<DeleteIcon />}>
-						Delete Discussion
-					</Button>
-					<Button onClick={handleNewReplyClick} className='Button add-edit-button' endIcon={<AddCommentIcon />}>
-						New Reply
-					</Button>
-				</div>
+				{isLoggedIn && (
+					<div className='discussion-buttons'>
+						{(isAdmin || loggedInUserId === discussion?.userId) && (
+							<>
+								<Button onClick={handleOpenDiscussionDialog} className='Button add-edit-button' endIcon={<EditIcon />}>
+									Edit Discussion
+								</Button>
+								<Button onClick={handleOpenDeleteDialog} className='Button delete-button' endIcon={<DeleteIcon />}>
+									Delete Discussion
+								</Button>
+							</>
+						)}
+						<Button onClick={handleNewReplyClick} className='Button add-edit-button' endIcon={<AddCommentIcon />}>
+							New Reply
+						</Button>
+					</div>
+				)}
 				<List component='nav' aria-label='discussions'>
 					{comments && comments.length > 0 && (
 						<>

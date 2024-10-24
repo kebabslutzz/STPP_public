@@ -119,8 +119,7 @@ public class UserController {
     userResponseDto.setToken(null);
     return ResponseEntity.ok()
       .header("Authorization", "Bearer " + token)
-      .body(authenticationService.login(userLoginDto));
-//    return authenticationService.login(userLoginDto);
+      .body(userResponseDto);
   }
 
   @GetMapping("/me")
