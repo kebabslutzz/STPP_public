@@ -18,6 +18,7 @@ const MovieList: React.FC = () => {
 	const [listOfErrors, setListOfErrors] = useState<string[]>([]);
 	// const { claims } = useAuth();
 	const { isAdmin } = useAuth();
+	const token = useAuth().getToken();
 
 	const handleOpenDialog = () => {
 		setIsDialogOpen(true);
@@ -74,6 +75,7 @@ const MovieList: React.FC = () => {
 					const posterResponse = await fetch(ENDPOINTS.POSTER.CREATE_POSTER, {
 						method: HTTP_METHODS.POST,
 						body: formData,
+						headers: { Authorization: `Bearer ${token}` },
 					});
 
 					if (!posterResponse.ok) {

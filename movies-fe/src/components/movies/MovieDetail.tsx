@@ -34,6 +34,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 	const [openMovie, setOpenMovie] = useState<Movie | null>(null);
 	const navigate = useNavigate();
 	const { isAdmin, isLoggedIn, loggedInUserId } = useAuth();
+	const token = useAuth().getToken();
 
 	const handleOpenDialog = () => {
 		setIsDialogOpen(true);
@@ -155,6 +156,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 						posterResponse = await fetch(ENDPOINTS.POSTER.UPDATE_POSTER(newMovie.posterId), {
 							method: HTTP_METHODS.PUT,
 							body: formData,
+							headers: { Authorization: `Bearer ${token}` },
 						});
 
 						if (!posterResponse.ok) {
@@ -164,6 +166,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 						posterResponse = await fetch(ENDPOINTS.POSTER.CREATE_POSTER, {
 							method: HTTP_METHODS.POST,
 							body: formData,
+							headers: { Authorization: `Bearer ${token}` },
 						});
 
 						if (!posterResponse.ok) {
