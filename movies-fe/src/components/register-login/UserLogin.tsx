@@ -14,6 +14,7 @@ import { useAuth } from '../../context/AuthContext';
 
 interface LoginResponse {
 	token: string;
+	username: string;
 }
 
 const UserLogin: React.FC = () => {
@@ -45,7 +46,9 @@ const UserLogin: React.FC = () => {
 				// console.log('token:', token);
 				const extractedToken = token.split(' ')[1]; // Assuming the format is 'Bearer <token>'
 				// console.log('Token:', extractedToken);
-				login(extractedToken);
+				console.log('response:', response);
+				const username = response.data?.username;
+				login(extractedToken, username);
 				navigate('/movies');
 			} else if ('message' in response!) {
 				console.error('Error response:', response.message);

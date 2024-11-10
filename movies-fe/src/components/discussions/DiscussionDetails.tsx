@@ -26,7 +26,7 @@ const DiscussionDetail: React.FC = () => {
 	const [commentToUpdate, setCommentToUpdate] = useState<Comment | null>(null);
 	const { movieId, discussionId } = useParams<{ movieId: string; discussionId: string }>();
 	const navigate = useNavigate();
-	const { isAdmin, isLoggedIn, loggedInUserId } = useAuth();
+	const { isAdmin, isLoggedIn, loggedInUserId, username } = useAuth();
 
 	const {
 		data: fetchedDiscussion,
@@ -117,20 +117,21 @@ const DiscussionDetail: React.FC = () => {
 
 	const handleAddComment = async (newComment: Comment) => {
 		if (commentToUpdate == null) {
-			newComment.userId = loggedInUserId; // Hardcoded user id for now
+			// newComment.userId = loggedInUserId; // Hardcoded user id for now
 			setCommentBoxIsVisible(false);
 			// const updatedComments = [...comments, newComment];
 			// setComments(updatedComments);
 			const commentResponse = await createCommentCommand.sendData(newComment);
 			if (commentResponse?.status === 201 && 'data' in commentResponse) {
 				let createdComment = commentResponse?.data as Comment;
-				setComments((prev) => [createdComment, ...prev]);
+				createdComment.username = username;
+				setComments((prev) => [...prev, createdComment]);
 				// getCommentsData();
 			}
 		} else {
 			commentToUpdate.content = newComment.content;
-			console.log('Update comment');
-			console.log('comment:', commentToUpdate);
+			// console.log('Update comment');
+			// console.log('comment:', commentToUpdate);
 			setCommentBoxIsVisible(false);
 			const commentUpdateResponse = await updateCommentCommand.sendData(commentToUpdate);
 			setCommentToUpdate(null);
@@ -154,7 +155,7 @@ const DiscussionDetail: React.FC = () => {
 	});
 
 	const handleDeleteDiscussion = async () => {
-		console.log('Delete discussion');
+		// console.log('Delete discussion');
 		await deleteDiscussion();
 	};
 	const {
@@ -180,8 +181,8 @@ const DiscussionDetail: React.FC = () => {
 	}, [selectedCommentId]);
 
 	const handleCommentDelete = async (comment: Comment) => {
-		console.log('Delete comment');
-		console.log('comment:', comment);
+		// console.log('Delete comment');
+		// console.log('comment:', comment);
 		setSelectedCommentId(comment.id ?? null);
 	};
 

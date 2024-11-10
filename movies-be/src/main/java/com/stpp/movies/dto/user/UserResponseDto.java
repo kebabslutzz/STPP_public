@@ -1,6 +1,7 @@
 package com.stpp.movies.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.stpp.movies.enumerators.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,9 @@ public class UserResponseDto {
 
   @JsonInclude(JsonInclude.Include.NON_NULL)
   private String token;
+
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private Role role;
 
   private OffsetDateTime dateCreated;
   private OffsetDateTime dateModified;

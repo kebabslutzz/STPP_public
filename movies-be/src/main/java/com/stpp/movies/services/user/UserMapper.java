@@ -20,23 +20,38 @@ public interface UserMapper {
   @Mapping(target = "email", source = "email")
   @Mapping(target = "dateCreated", source = "dateCreated")
   @Mapping(target = "dateModified", source = "dateModified")
+  @Mapping(target = "role", ignore = true)
   UserResponseDto userToResponseDto(User user);
+
+  @Named("userToResponseDtoWithRoles")
+  @Mapping(target = "id", source = "id")
+  @Mapping(target = "username", source = "user", qualifiedByName = "mapRealUsername")
+  @Mapping(target = "email", source = "email")
+  @Mapping(target = "dateCreated", source = "dateCreated")
+  @Mapping(target = "dateModified", source = "dateModified")
+  @Mapping(target = "role", source = "role")
+  UserResponseDto userToResponseDtoWithRoles(User user);
 
   @Named("requestDtoToUser")
   @Mapping(target = "username", source = "username")
   @Mapping(target = "email", source = "email")
   @Mapping(target = "password", source = "password")
-  @Mapping(target = "role", source = "role")
-  @Mapping(target = "status", source = "status")
+  @Mapping(target = "role", expression = "java(com.stpp.movies.enumerators.Role.USER)")
   User requestDtoToUser(UserRequestDto userRequestDto);
+
+  @Named("userEditRequestDtoToUser")
+  @Mapping(target = "username", source = "username")
+  @Mapping(target = "email", source = "email")
+  @Mapping(target = "role", source = "role")
+  @Mapping(target = "password", ignore = true)
+  void userEditRequestDtoToUserAdmin(UserEditRequestDto userRequestDto, @MappingTarget User user);
 
   @Named("userEditRequestDtoToUser")
   @Mapping(target = "username", source = "username")
   @Mapping(target = "email", source = "email")
   @Mapping(target = "password", source = "password")
   @Mapping(target = "role", source = "role")
-  @Mapping(target = "status", source = "status")
-  void userEditRequestDtoToUser(UserEditRequestDto userRequestDto, @MappingTarget User user);
+  void userEditRequestDtoToUserUser(UserEditRequestDto userRequestDto, @MappingTarget User user);
 
   @Named("mapRealUsername")
   default String mapRealUsername(User user) {

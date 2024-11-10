@@ -52,8 +52,12 @@ public class Discussion {
   private Movie movie;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "user_id", nullable = false, updatable = false)
+  @JoinColumn(name = "user_id", nullable = false)
   private User user;
+  
+  public void setUser(User user) {
+    this.user = user;
+  }
 
   @PrePersist
   public void prePersist() {

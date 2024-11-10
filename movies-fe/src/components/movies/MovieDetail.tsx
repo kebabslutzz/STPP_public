@@ -33,7 +33,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 	const [isDiscussionDialogOpen, setIsDiscussionDialogOpen] = useState(false);
 	const [openMovie, setOpenMovie] = useState<Movie | null>(null);
 	const navigate = useNavigate();
-	const { isAdmin, isLoggedIn, loggedInUserId } = useAuth();
+	const { isAdmin, isLoggedIn, username } = useAuth();
 	const token = useAuth().getToken();
 
 	const handleOpenDialog = () => {
@@ -190,8 +190,8 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 				if (movieResponse?.status === 200) {
 					setOpenMovie(movieWithPoster);
 
-					console.log('current poster id:', newMovie.posterId);
-					console.log('new poster id:', movieWithPoster.posterId);
+					// console.log('current poster id:', newMovie.posterId);
+					// console.log('new poster id:', movieWithPoster.posterId);
 					// Fetch the updated poster if it was changed
 					if (posterId != newMovie.posterId) {
 						getPosterData();
@@ -228,6 +228,7 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 			const discussionResponse = await createDiscussionCommand.sendData(newDiscussion);
 			if (discussionResponse?.status === 201 && 'data' in discussionResponse) {
 				let createdDiscussion = discussionResponse?.data as Discussion;
+				createdDiscussion.username = username;
 				setDiscussionList((prev) => [createdDiscussion, ...prev]);
 			}
 		}

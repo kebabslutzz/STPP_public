@@ -46,7 +46,7 @@ const UsersList: React.FC = () => {
 	const handleDeleteDialogFormOpen = (id: number) => {
 		setDeleteUserFormOpen(true);
 		setUserToDeleteId(id);
-		console.log('Delete user with id: ', id);
+		// console.log('Delete user with id: ', id);
 	};
 
 	const handleDeleteDialogFormClose = () => {
@@ -91,16 +91,15 @@ const UsersList: React.FC = () => {
 	});
 
 	const handleUserSubmission = async (user: User) => {
+		// console.log('User submission:', user);
 		if (userToUpdate) {
 			const newUser: User = {
 				...userToUpdate,
 				email: user.email,
 				role: user.role,
-				status: user.status,
 				username: user.username,
-				password: user.password,
 			};
-			newUser.password = 'password'; // TEMPORARY SOLUTION
+			newUser.password = 'password'; // TEMPORARY SOLUTION SO NO ERROR OCCURS SHOULD NOT BE UPDATED IN BE
 			const updateUserResponse = await updateUserCommand.sendData(newUser);
 			if (updateUserResponse?.status === 200) {
 				setUsers((prevUsers) => prevUsers.map((u) => (u.id === newUser.id ? newUser : u)));
@@ -112,6 +111,7 @@ const UsersList: React.FC = () => {
 				setUsers((prevUsers) => [createUserResponse.data, ...prevUsers]);
 			}
 		}
+		handleUserSubmitFormClose();
 	};
 
 	return (
@@ -134,6 +134,7 @@ const UsersList: React.FC = () => {
 				onClose={handleUserSubmitFormClose}
 				onSubmit={handleUserSubmission}
 				user={userToUpdate || undefined}
+				canEditRole={isAdmin}
 			/>
 			<DeleteConfirmationDialog
 				open={deleteUserFormOpen}

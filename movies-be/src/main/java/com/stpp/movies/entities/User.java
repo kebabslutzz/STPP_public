@@ -1,7 +1,7 @@
 package com.stpp.movies.entities;
 
 import com.stpp.movies.enumerators.Role;
-import com.stpp.movies.enumerators.Status;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,7 +9,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -52,9 +54,11 @@ public class User implements UserDetails {
   @Column(nullable = false)
   private Role role;
 
-  @Enumerated(value = EnumType.STRING)
-  @Column(nullable = false)
-  private Status status;
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Discussion> discussions;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Comment> comments;
 
   @Column(nullable = false, updatable = false)
   private OffsetDateTime dateCreated;
@@ -72,6 +76,20 @@ public class User implements UserDetails {
   @PreUpdate
   public void preUpdate() {
     this.setDateModified(OffsetDateTime.now());
+  }
+
+  @PreRemove
+  public void preRemove() {
+    User placeholderUser = new User();
+    placeholderUser.setId(0L); // Assuming the placeholder user has ID 0
+
+    for (Discussion discussion : discussions) {
+      discussion.setUser(placeholderUser);
+    }
+
+    for (Comment comment : comments) {
+      comment.setUser(placeholderUser);
+    }
   }
 
   @Override

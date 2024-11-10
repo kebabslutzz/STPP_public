@@ -1,7 +1,6 @@
 package com.stpp.movies.dto.user;
 
 import com.stpp.movies.enumerators.Role;
-import com.stpp.movies.enumerators.Status;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
@@ -24,8 +23,8 @@ public class UserEditRequestDto {
   @Size(min = 1, max = 256, message = "Username must be between {min} and {max} characters")
   private String username;
 
-  @NotBlank(message = "Password should not be blank")
-  @NotEmpty(message = "Password should not be empty")
+  //  @NotBlank(message = "Password should not be blank")
+//  @NotEmpty(message = "Password should not be empty")
   @Size(min = 8, max = 64, message = "Password must be between {min} and {max} characters")
   private String password;
 
@@ -37,8 +36,4 @@ public class UserEditRequestDto {
   @NotNull(message = "Role should not be null")
   @Enumerated(EnumType.STRING)
   private Role role;
-
-  @NotNull(message = "Status should not be null")
-  @Enumerated(EnumType.STRING)
-  private Status status;
 }

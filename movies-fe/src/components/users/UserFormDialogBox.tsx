@@ -2,22 +2,23 @@ import React from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, MenuItem } from '@mui/material';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import User from '../../interfaces/User';
-import userValidationSchema from '../../validation/userValidation';
-import { STATUS } from '../../constants/userStatuses';
+import userValidationAdminSchema from '../../validation/userValidationAdmin';
 import { ROLES } from '../../constants/userRoles';
 import CancelIcon from '@mui/icons-material/Cancel';
-import EditIcon from '@mui/icons-material/Edit';
 import SendIcon from '@mui/icons-material/Send';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { useAuth } from '../../context/AuthContext';
 
 interface UserFormDialogBoxProps {
 	open: boolean;
 	onClose: () => void;
 	onSubmit: (user: User) => void;
 	user?: User;
+	canEditRole?: boolean;
 }
 
-const UserFormDialogBox: React.FC<UserFormDialogBoxProps> = ({ open, onClose, onSubmit, user }) => {
+const UserFormDialogBox: React.FC<UserFormDialogBoxProps> = ({ open, onClose, onSubmit, user, canEditRole }) => {
+	const { loggedInUserRole } = useAuth();
+
 	return (
 		<Dialog className='Dialog' open={open} onClose={onClose}>
 			<DialogTitle sx={{ color: '#008080' }}>{user ? 'Edit User' : 'Add User'}</DialogTitle>
@@ -26,22 +27,20 @@ const UserFormDialogBox: React.FC<UserFormDialogBoxProps> = ({ open, onClose, on
 					initialValues={{
 						username: user?.username || '',
 						email: user?.email || '',
-						role: user?.role || '',
-						status: user?.status || '',
+						role: user?.role || loggedInUserRole, // Default role if not provided
 					}}
-					validationSchema={userValidationSchema}
+					validationSchema={userValidationAdminSchema}
 					onSubmit={(values, { setSubmitting }) => {
-						console.log('Ateinas i UserForm');
+						console.log('Submitting form with values:', values);
 						const newUser: User = {
 							...user,
 							username: values.username,
 							email: values.email,
 							role: values.role,
-							status: values.status,
 						};
 						onSubmit(newUser);
-						onClose();
 						setSubmitting(false);
+						onClose();
 					}}
 				>
 					{({ isSubmitting, errors, touched }) => (
@@ -79,22 +78,6 @@ const UserFormDialogBox: React.FC<UserFormDialogBoxProps> = ({ open, onClose, on
 								{Object.values(ROLES).map((role) => (
 									<MenuItem key={role} value={role}>
 										{role}
-									</MenuItem>
-								))}
-							</Field>
-							<Field
-								as={TextField}
-								select
-								margin='dense'
-								label='Status'
-								fullWidth
-								name='status'
-								error={touched.status && !!errors.status}
-								helperText={<ErrorMessage name='status' component='div' />}
-							>
-								{Object.values(STATUS).map((status) => (
-									<MenuItem key={status} value={status}>
-										{status}
 									</MenuItem>
 								))}
 							</Field>

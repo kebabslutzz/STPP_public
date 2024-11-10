@@ -1,13 +1,8 @@
 package com.stpp.movies.dto.user;
 
-import com.stpp.movies.enumerators.Role;
-import com.stpp.movies.enumerators.Status;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,12 +28,4 @@ public class UserRequestDto {
   @NotEmpty(message = "Email should not be empty")
   @NotBlank(message = "Email should not be blank")
   private String email;
-
-  @NotNull(message = "Role should not be null")
-  @Enumerated(EnumType.STRING)
-  private Role role;
-
-  @NotNull(message = "Status should not be null")
-  @Enumerated(EnumType.STRING)
-  private Status status;
 }

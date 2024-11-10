@@ -10,7 +10,7 @@ interface CustomJwtPayload extends JwtPayload {
 
 interface AuthContextType {
 	isLoggedIn: boolean;
-	login: (token: string) => void;
+	login: (token: string, username: string) => void;
 	logout: () => void;
 	claims: CustomJwtPayload | null;
 	getToken: () => string | undefined;
@@ -19,6 +19,7 @@ interface AuthContextType {
 	tokenExpirationTime: number | undefined;
 	tokenCreationTime: number | undefined;
 	isAdmin: boolean;
+	username: string | undefined;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,6 +32,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 	const [tokenExpirationTime, setTokenExpirationTime] = useState<number | undefined>(undefined);
 	const [tokenCreationTime, setTokenCreationTime] = useState<number | undefined>(undefined);
 	const [isAdmin, setIsAdmin] = useState<boolean>(false);
+	const [username, setUsername] = useState<string | undefined>(undefined);
 
 	useEffect(() => {
 		const storedToken = localStorage.getItem('token');
@@ -45,7 +47,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 		}
 	}, []);
 
-	const login = (token: string) => {
+	const login = (token: string, username: string) => {
 		localStorage.setItem('token', token);
 		setIsLoggedIn(true);
 		const decodedClaims = jwtDecode<CustomJwtPayload>(token);
@@ -55,6 +57,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 		setTokenExpirationTime(decodedClaims.exp);
 		setIsAdmin(decodedClaims.role === 'ADMIN');
 		setClaims(decodedClaims);
+		setUsername(username);
 	};
 
 	const logout = () => {
@@ -66,6 +69,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 		setTokenExpirationTime(undefined);
 		setIsAdmin(false);
 		setClaims(null);
+		setUsername(undefined);
 	};
 
 	const getToken = () => {
@@ -85,6 +89,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 				tokenCreationTime,
 				tokenExpirationTime,
 				isAdmin,
+				username,
 			}}
 		>
 			{children}

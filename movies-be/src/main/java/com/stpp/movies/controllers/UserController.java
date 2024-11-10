@@ -86,10 +86,13 @@ public class UserController {
     @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
 
   })
-  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @PutMapping("/{userId}")
   public UserResponseDto editUser(@Valid @PathVariable Long userId, @Valid @RequestBody UserEditRequestDto userRequestDto) {
-    return userService.editUser(userId, userRequestDto);
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    User user = (User) authentication.getPrincipal();
+
+    return userService.editUser(userId, userRequestDto, user);
   }
 
   @Operation(summary = "Delete a user by ID", description = "Deletes a user from database based on the user ID.", operationId = "5", responses = {

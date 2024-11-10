@@ -32,7 +32,6 @@ const UsersTable: React.FC<UserListProps> = ({ users, onDelete, onEdit }) => {
 						<TableCell>User Name</TableCell>
 						<TableCell>User Email</TableCell>
 						<TableCell>User Role</TableCell>
-						<TableCell>User Status</TableCell>
 						<TableCell>Created</TableCell>
 						<TableCell>Modified</TableCell>
 						<TableCell>Action</TableCell>
@@ -45,7 +44,6 @@ const UsersTable: React.FC<UserListProps> = ({ users, onDelete, onEdit }) => {
 							<TableCell>{user.username}</TableCell>
 							<TableCell>{user.email}</TableCell>
 							<TableCell>{user.role}</TableCell>
-							<TableCell>{user.status}</TableCell>
 							<TableCell>{new Date(user.dateCreated!).toDateString()}</TableCell>
 							<TableCell>{new Date(user.dateModified!).toDateString()}</TableCell>
 							{isAdmin && (

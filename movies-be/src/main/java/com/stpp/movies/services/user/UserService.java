@@ -3,9 +3,13 @@ package com.stpp.movies.services.user;
 import com.stpp.movies.dto.user.UserEditRequestDto;
 import com.stpp.movies.dto.user.UserRequestDto;
 import com.stpp.movies.dto.user.UserResponseDto;
+import com.stpp.movies.entities.Comment;
+import com.stpp.movies.entities.Discussion;
 import com.stpp.movies.entities.User;
 import com.stpp.movies.exceptions.ConflictException;
 import com.stpp.movies.exceptions.NotFoundException;
+import com.stpp.movies.repositories.CommentRepository;
+import com.stpp.movies.repositories.DiscussionRepository;
 import com.stpp.movies.repositories.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,8 @@ public class UserService {
   private final UserRepository userRepository;
   private static final UserMapper MAPPER = UserMapper.INSTANCE;
   private final PasswordEncoder passwordEncoder;
+  private final DiscussionRepository discussionRepository;
+  private final CommentRepository commentRepository;
 
   public UserResponseDto getUserById(Long id) {
     return userRepository.findById(id)
@@ -35,7 +41,7 @@ public class UserService {
     return userRepository
       .findAll()
       .stream()
-      .map(MAPPER::userToResponseDto)
+      .map(MAPPER::userToResponseDtoWithRoles)
       .toList();
   }
 
@@ -54,17 +60,48 @@ public class UserService {
     return MAPPER.userToResponseDto(user);
   }
 
-  public void deleteUserById(Long id) {
-    if (!userRepository.existsById(id)) {
-      throw new NotFoundException("User with ID " + id + " not found");
+//  public void deleteUserById(Long id) {
+//    if (!userRepository.existsById(id)) {
+//      throw new NotFoundException("User with ID " + id + " not found");
+//    }
+//    userRepository.deleteById(id);
+//  }
+
+  public void deleteUserById(Long userId) {
+    User userDeleted = userRepository.findById(0L)
+      .orElseThrow(() -> new NotFoundException("Special user 'user_deleted' not found"));
+
+    // Reassign discussions
+    List<Discussion> discussions = discussionRepository.findByUserId(userId);
+    for (Discussion discussion : discussions) {
+      discussion.setUser(userDeleted);
+      discussionRepository.save(discussion);
     }
-    userRepository.deleteById(id);
+
+    // Reassign comments
+    List<Comment> comments = commentRepository.findByUserId(userId);
+    for (Comment comment : comments) {
+      comment.setUser(userDeleted);
+      commentRepository.save(comment);
+    }
+
+    // Delete the user
+    userRepository.deleteById(userId);
   }
 
-  public UserResponseDto editUser(Long userId, UserEditRequestDto userRequestDto) {
+  public UserResponseDto editUser(Long userId, UserEditRequestDto userRequestDto, User loggedInUser) {
     var user = userRepository.findById(userId)
       .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
-    MAPPER.userEditRequestDtoToUser(userRequestDto, user);
+
+    if (userId.equals(loggedInUser.getId())) {
+      if (userRequestDto.getPassword() != null && !userRequestDto.getPassword().isEmpty()) {
+        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
+      }
+      MAPPER.userEditRequestDtoToUserUser(userRequestDto, user);
+    } else {
+      MAPPER.userEditRequestDtoToUserAdmin(userRequestDto, user);
+    }
+
     user = userRepository.save(user);
     return MAPPER.userToResponseDto(user);
   }

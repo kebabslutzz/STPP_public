@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+  <changeSet id="remove-guest-role" author="kebabslutzz">
+    <!-- Drop the existing check constraint -->
+    <sql>
+      ALTER TABLE users DROP CONSTRAINT users_role_check;
+    </sql>
+
+    <!-- Add the new check constraint without the GUEST role -->
+    <sql>
+      ALTER TABLE users
+        ADD CONSTRAINT users_role_check CHECK (role IN ('USER', 'ADMIN'));
+    </sql>
+
+    <rollback>
+      <!-- Rollback to the original check constraint including the GUEST role -->
+      <sql>
+        ALTER TABLE users DROP CONSTRAINT users_role_check;
+      </sql>
+      <sql>
+        ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('USER', 'GUEST', 'ADMIN'));
+      </sql>
+    </rollback>
+  </changeSet>
+
+</databaseChangeLog>

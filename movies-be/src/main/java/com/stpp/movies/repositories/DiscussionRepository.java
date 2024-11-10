@@ -11,4 +11,6 @@ public interface DiscussionRepository extends JpaRepository<Discussion, Long> {
   List<Discussion> findAllByMovieId(Long movieId);
 
   List<Discussion> findAllByOrderByMovieAsc();
+
+  List<Discussion> findByUserId(Long userId);
 }

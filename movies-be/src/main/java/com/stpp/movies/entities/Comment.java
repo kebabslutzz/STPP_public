@@ -46,8 +46,12 @@ public class Comment {
   private Discussion discussion;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "user_id", nullable = false, updatable = false)
+  @JoinColumn(name = "user_id", nullable = false)
   private User user;
+  
+  public void setUser(User user) {
+    this.user = user;
+  }
 
   @PrePersist
   public void prePersist() {
