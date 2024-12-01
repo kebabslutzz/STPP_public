@@ -32,7 +32,8 @@ public class FileUploadController {
 
   @Operation(summary = "Get a poster", description = "Get a poster for a movie", responses = {
     @ApiResponse(responseCode = "200", description = "OK"),
-    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @GetMapping("/{fileId}")
   public FileResponseDto getPoster(@PathVariable Long fileId) {
@@ -40,7 +41,10 @@ public class FileUploadController {
   }
 
   @Operation(summary = "Upload a poster", description = "Upload a poster for a movie", responses = {
-    @ApiResponse(responseCode = "201", description = "Created")
+    @ApiResponse(responseCode = "201", description = "Created"),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @ResponseStatus(HttpStatus.CREATED)
@@ -51,7 +55,10 @@ public class FileUploadController {
 
   @Operation(summary = "Update a poster", description = "Update a poster for a movie", responses = {
     @ApiResponse(responseCode = "200", description = "OK"),
-    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @PutMapping(value = "/{fileId}", consumes = "multipart/form-data")

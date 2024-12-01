@@ -31,7 +31,8 @@ public class CommentController {
 
   @Operation(summary = "Get a comment by id", description = "Get a comment by id", responses = {
     @ApiResponse(responseCode = "200", description = "Comment found"),
-    @ApiResponse(responseCode = "404", description = "Comment not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "404", description = "Comment not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @GetMapping("/{commentId}")
   public CommentResponseDto getCommentById(@PathVariable Long commentId) {
@@ -39,7 +40,8 @@ public class CommentController {
   }
 
   @Operation(summary = "Get all comments", description = "Get all comments", responses = {
-    @ApiResponse(responseCode = "200", description = "Comments found")
+    @ApiResponse(responseCode = "200", description = "Comments found"),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @GetMapping
   public List<CommentResponseDto> getAllComments() {
@@ -48,7 +50,8 @@ public class CommentController {
 
   @Operation(summary = "Delete a comment by id", description = "Delete a comment by id", responses = {
     @ApiResponse(responseCode = "204", description = "No Content"),
-    @ApiResponse(responseCode = "404", description = "Comment not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "404", description = "Comment not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
   @DeleteMapping("/{commentId}")

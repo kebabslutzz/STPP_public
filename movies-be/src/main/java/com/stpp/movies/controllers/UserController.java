@@ -46,9 +46,13 @@ public class UserController {
   private final AuthenticationService authenticationService;
 
   @Operation(summary = "Get all users", description = "Fetches all users from the database.", operationId = "1", responses = {
-    @ApiResponse(responseCode = "200", description = "List of users returned successfully")
+    @ApiResponse(responseCode = "200", description = "List of users returned successfully"),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//  @SecurityRequirement(name = "bearerAuth")
   @GetMapping
   public List<UserResponseDto> getAllUsers() {
     return userService.getAllUsers();
@@ -56,7 +60,10 @@ public class UserController {
 
   @Operation(summary = "Get a user by ID", description = "Fetches a user from the database based on the user ID.", operationId = "2", responses = {
     @ApiResponse(responseCode = "200", description = "User found and returned successfully"),
-    @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @GetMapping("/{userId}")
@@ -66,7 +73,8 @@ public class UserController {
 
   @Operation(summary = "Create a new user", description = "Create and return a new user", operationId = "3", responses = {
     @ApiResponse(responseCode = "201", description = "User created successfully and returned"),
-    @ApiResponse(responseCode = "400", description = "User creation failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "400", description = "User creation failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
   })
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping
@@ -84,6 +92,9 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "User found and edited successfully"),
     @ApiResponse(responseCode = "400", description = "User edit failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
 
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
@@ -97,7 +108,10 @@ public class UserController {
 
   @Operation(summary = "Delete a user by ID", description = "Deletes a user from database based on the user ID.", operationId = "5", responses = {
     @ApiResponse(responseCode = "204", description = "User found and deleted successfully"),
-    @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @DeleteMapping("/{userId}")
@@ -106,12 +120,23 @@ public class UserController {
     userService.deleteUserById(userId);
   }
 
+  @Operation(summary = "Register a user", description = "Registers a user by creating it", operationId = "6", responses = {
+    @ApiResponse(responseCode = "201", description = "User registered/created successfully and returned"),
+    @ApiResponse(responseCode = "400", description = "User registration/creation failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "409", description = "User already exists", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+  })
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/signup")
   public UserResponseDto registerUser(@Valid @RequestBody UserRequestDto userRequestDto) {
     return authenticationService.register(userRequestDto);
   }
 
+  @Operation(summary = "Login to the account", description = "Logins a user based on an email", operationId = "7", responses = {
+    @ApiResponse(responseCode = "200", description = "User found and returned successfully"),
+    @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+  })
   @PostMapping("/login")
   public ResponseEntity<UserResponseDto> loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
     UserResponseDto userResponseDto = authenticationService.login(userLoginDto);
@@ -122,6 +147,13 @@ public class UserController {
       .body(userResponseDto);
   }
 
+  @Operation(summary = "Get my info", description = "Same as get user by id, but it gets currently logged in user's info", operationId = "9", responses = {
+    @ApiResponse(responseCode = "200", description = "User found and returned successfully"),
+    @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+  })
   @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @GetMapping("/me")
   public UserResponseDto getMe() {

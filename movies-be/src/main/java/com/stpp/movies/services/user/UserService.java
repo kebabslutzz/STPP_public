@@ -86,6 +86,9 @@ public class UserService {
     }
 
     // Delete the user
+    if (!userRepository.existsById(userId)) {
+      throw new NotFoundException("User with ID " + userId + " not found");
+    }
     userRepository.deleteById(userId);
   }
 

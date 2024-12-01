@@ -35,7 +35,8 @@ public class DiscussionController {
 
   @Operation(summary = "Get a discussion by id", description = "Get a discussion by id", responses = {
     @ApiResponse(responseCode = "200", description = "Discussion found"),
-    @ApiResponse(responseCode = "404", description = "Discussion not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "404", description = "Discussion not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @GetMapping("/{discussionId}")
   public DiscussionResponseDto getDiscussionById(@Valid @PathVariable Long discussionId) {
@@ -43,7 +44,8 @@ public class DiscussionController {
   }
 
   @Operation(summary = "Get all discussions", description = "Get all discussions", responses = {
-    @ApiResponse(responseCode = "200", description = "Discussions found")
+    @ApiResponse(responseCode = "200", description = "Discussions found"),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @GetMapping
   public List<DiscussionResponseDto> getAllDiscussions() {
@@ -52,7 +54,8 @@ public class DiscussionController {
 
   @Operation(summary = "Get all comments by discussion id", description = "Get all comments by discussion id", responses = {
     @ApiResponse(responseCode = "200", description = "Comments found"),
-    @ApiResponse(responseCode = "404", description = "Discussion not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "404", description = "Discussion not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @GetMapping("/{discussionId}/comments")
   public List<CommentResponseDto> getAllCommentsByDiscussionId(@Valid @PathVariable Long discussionId) {
@@ -61,7 +64,8 @@ public class DiscussionController {
 
   @Operation(summary = "Delete a discussion by id", description = "Delete a discussion by id", responses = {
     @ApiResponse(responseCode = "204", description = "Discussion deleted"),
-    @ApiResponse(responseCode = "404", description = "Discussion not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "404", description = "Discussion not Found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
   @DeleteMapping("/{discussionId}")
