@@ -62,6 +62,9 @@ public class SecurityConfig {
         .requestMatchers(HttpMethod.PATCH, "/api/v1/movies/*/discussions/*/comments/*").authenticated()
         .requestMatchers(HttpMethod.DELETE, "/api/v1/movies/*/discussions/*/comments/*").authenticated()
 
+        // Movie poster ger
+        .requestMatchers(HttpMethod.GET, "/api/v1/files/**").permitAll()
+
         // Public authentication endpoints
         .requestMatchers(HttpMethod.POST, "/api/v1/users/login", "/api/v1/users/signup").permitAll()
         .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
