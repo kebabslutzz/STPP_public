@@ -28,9 +28,9 @@ public class SecurityConfig {
   private final AuthenticationProvider authenticationProvider;
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-  private static final String ALLOWED_ORIGIN = System.getProperty("ALLOWED_ORIGIN", "http://localhost:3000");
-  //  private static final List<String> ALLOWED_ORIGIN = List.of("http://localhost:3000", "http://react-stpp-movies.s3-website.eu-north-1.amazonaws.com");
-  //  private static final String ALLOWED_ORIGIN = System.getProperty("ALLOWED_ORIGIN", "http://react-stpp-movies.s3-website.eu-north-1.amazonaws.com");
+  //  private static final String ALLOWED_ORIGIN = System.getProperty("ALLOWED_ORIGIN", "http://localhost:3000");
+  //    private static final List<String> ALLOWED_ORIGIN = List.of("http://localhost:3000", "http://react-stpp-movies.s3-website.eu-north-1.amazonaws.com");
+  private static final String ALLOWED_ORIGIN = System.getProperty("ALLOWED_ORIGIN", "http://react-stpp-movies.s3-website.eu-north-1.amazonaws.com");
   private static final List<String> ALLOWED_METHODS = List.of("GET", "POST", "PATCH", "DELETE", "PUT");
 
   @Bean
