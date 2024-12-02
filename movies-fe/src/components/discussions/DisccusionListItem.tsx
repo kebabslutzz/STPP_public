@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Discussion from '../../interfaces/Discussion';
 import ROUTE_PATHS from '../../constants/routePaths';
 import Movie from '../../interfaces/Movie';
-import { Box, Typography, Grid } from '@mui/material';
+import { Box, Typography, Grid, Container, Divider } from '@mui/material';
 import './DiscussionListItem.css';
 
 interface DiscussionListItemProps {
@@ -28,32 +28,21 @@ const DiscussionListItem: React.FC<DiscussionListItemProps> = ({ discussion, mov
 	};
 
 	return (
-		<Box onClick={handleItemClick} className='DiscussionListItem' sx={{ flexGrow: 1 }}>
-			<Grid container spacing={2}>
-				<Grid item xs={8} md={10}>
-					<Box className='content-box'>
-						<Typography variant='body1'>{discussion.title}</Typography>
-					</Box>
-				</Grid>
-				<Grid item xs={2} md={1}>
-					<Box className='comments-box'>
-						<Typography variant='body1'>{discussion.commentCount} comments</Typography>
-					</Box>
-				</Grid>
-				<Grid item xs={2} md={1}>
-					<Box className='user-date-box'>
-						<Typography variant='body2'>
-							by{' '}
-							<Link to={`/users/${discussion.userId}`} onClick={handleUserLinkClick}>
-								{discussion.username}
-							</Link>
-						</Typography>
-						<Typography variant='body2'>
-							{discussion.dateCreated ? formatDate(discussion.dateCreated) : 'N/A'}
-						</Typography>
-					</Box>
-				</Grid>
-			</Grid>
+		<Box onClick={handleItemClick} className='DiscussionListItemContainer'>
+			<Container className='DiscussionListItemTitle'>{discussion.title}</Container>
+			<Divider flexItem className='vertical-horizontal-divider' />
+			<Box className='DiscussionListItemUserComments'>
+				<Container className='DiscussionListItemComments'>{discussion.commentCount} comments</Container>
+				<Divider flexItem className='vertical-divider' />
+				<Container className='DiscussionListItemUserDate'>
+					by{' '}
+					<Link to={`/users/${discussion.userId}`} onClick={handleUserLinkClick}>
+						{discussion.username}
+					</Link>
+					<br />
+					{discussion.dateCreated ? formatDate(discussion.dateCreated) : 'N/A'}
+				</Container>
+			</Box>
 		</Box>
 	);
 };

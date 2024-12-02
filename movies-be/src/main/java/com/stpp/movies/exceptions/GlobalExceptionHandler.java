@@ -71,12 +71,12 @@ public class GlobalExceptionHandler {
       .build();
   }
 
-  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
   @ExceptionHandler(AccessDeniedException.class)
   public ErrorResponseDto handleAccessDeniedException(AccessDeniedException ex) {
     return ErrorResponseDto.builder()
       .message("Access Denied")
-      .status(HttpStatus.UNAUTHORIZED.value())
+      .status(HttpStatus.FORBIDDEN.value())
       .build();
   }
 

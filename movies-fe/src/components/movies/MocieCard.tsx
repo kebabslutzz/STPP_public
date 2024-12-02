@@ -59,7 +59,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ id, title, description, posterId 
 					<p>{description}</p>
 				</div>
 			</div>
-			<h2 className='MovieTitle'>{title}</h2>
+			<h2 className='MovieCardTitle'>{title}</h2>
 		</div>
 	);
 };

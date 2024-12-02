@@ -109,7 +109,7 @@ const MovieList: React.FC = () => {
 				<h1>Top Trending Movies Right Now!</h1>
 
 				{!isLoadingMovies && !movieErrors && isAdmin && (
-					<Button className='Button add-edit-button' onClick={handleOpenDialog} endIcon={<AddIcon />}>
+					<Button className='Button add-edit-button' onClick={handleOpenDialog} variant='text' endIcon={<AddIcon />}>
 						Add Movie
 					</Button>
 				)}

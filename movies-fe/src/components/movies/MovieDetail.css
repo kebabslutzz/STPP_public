@@ -1,25 +1,34 @@
-.Movie-title {
-	color: #ffffff;
+.MovieTitle {
 	text-align: center;
 	font-weight: bold !important;
 	font-size: 2.75rem !important;
-	font-family: var(--font-family);
+	word-wrap: break-word; /* Allow the text to wrap */
+	white-space: normal; /* Ensure the text takes as many lines as needed */
+	overflow-wrap: break-word;
 }
 
-.MovieDetail {
-	display: flex;
-	align-items: flex-start;
+/* @media (max-width: 600px) {
+	.MovieTitle {
+		font-size: 1.75rem !important;
+	}
+} */
+
+.MovieDetailBox {
 	padding: 20px;
-	color: #ffffff !important;
 
-	background-color: var(--background-color);
-	color: var(--text-color);
-	border-radius: 8px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
-.MoviePosterContainer {
-	flex: 0 0 auto;
+@media (min-width: 800px) {
+	.MovieDetailBox {
+		flex-direction: row;
+		padding: 0px;
+	}
+}
+
+.MoviePosterBox {
 	margin-right: 20px;
 }
 
@@ -32,25 +41,21 @@
 	object-fit: cover;
 }
 
-.MovieInfo strong {
-	font-weight: bold;
-}
-
-.MovieDetailContainer {
+.NoImageTextDetails {
 	display: flex;
-	flex-direction: column;
-	max-width: 1475px; /* Adjust this value as needed */
-	margin: 0 auto;
+	justify-content: center;
+	align-items: center;
+	height: 420px;
+	border-radius: 8px;
+	background-color: #f0f0f0;
+	color: #008080;
+	font-weight: bold;
+	margin: 10px;
+	font-size: 1.2em;
 	padding: 10px;
-	color: #ffffff;
 }
 
-.MovieDetail .MovieInfo h1 {
-	text-align: center;
-	font-size: 2.5em; /* Increase the font size */
-	margin-bottom: 20px; /* Add some space below the title */
-}
-
+/* Discussion list below movie list css */
 .discussion-header {
 	display: flex;
 	justify-content: space-between; /* Align items to the left and right */
@@ -70,17 +75,4 @@
 .starIcon {
 	color: #008080;
 	margin-bottom: -5px;
-}
-
-.NoImageTextDetails {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 300px;
-	border-radius: 8px;
-	background-color: #f0f0f0;
-	color: #008080;
-	font-weight: bold;
-	margin: 10px;
-	font-size: 1.2em;
 }

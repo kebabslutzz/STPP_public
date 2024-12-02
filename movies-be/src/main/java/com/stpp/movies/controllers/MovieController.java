@@ -79,8 +79,8 @@ public class MovieController {
     @ApiResponse(responseCode = "201", description = "Movie created successfully"),
     @ApiResponse(responseCode = "400", description = "Movie creation failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @PostMapping
@@ -99,8 +99,8 @@ public class MovieController {
     @ApiResponse(responseCode = "400", description = "Movie edit failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "404", description = "Movie not found or poster not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @PutMapping("/{movieId}")
@@ -112,8 +112,8 @@ public class MovieController {
     @ApiResponse(responseCode = "204", description = "Movie deleted successfully"),
     @ApiResponse(responseCode = "404", description = "Movie not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -152,8 +152,8 @@ public class MovieController {
     @ApiResponse(responseCode = "400", description = "Discussion creation failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "404", description = "Movie not found or user not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @PostMapping("/{movieId}/discussions")
@@ -176,8 +176,8 @@ public class MovieController {
     @ApiResponse(responseCode = "400", description = "Discussion edit failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "404", description = "Discussion not found or movie not or discussion does not belong to the movie or the user", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @PatchMapping("/{movieId}/discussions/{discussionId}")
@@ -191,8 +191,8 @@ public class MovieController {
     @ApiResponse(responseCode = "204", description = "Discussion deleted successfully"),
     @ApiResponse(responseCode = "404", description = "Discussion not found or movie not found of discussion does not belong to the movie", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -230,8 +230,8 @@ public class MovieController {
     @ApiResponse(responseCode = "400", description = "Comment creation failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "404", description = "Movie not found or Discussion not found or User not found or discussion does not belong to the movie", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @PostMapping("/{movieId}/discussions/{discussionId}/comments")
@@ -253,8 +253,8 @@ public class MovieController {
     @ApiResponse(responseCode = "400", description = "Comment edit failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "404", description = "Movie not found, or discussion not found, or comment not found, or discussion does not belong to the movie, or comment does not belong to the discussion", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @PatchMapping("/{movieId}/discussions/{discussionId}/comments/{commentId}")
@@ -271,8 +271,8 @@ public class MovieController {
       description = "Movie not found, or discussion not found, or comment not found, or discussion does not belong to the movie, or comment does not belong to the discussion",
       content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @ResponseStatus(value = HttpStatus.NO_CONTENT)

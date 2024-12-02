@@ -46,7 +46,7 @@ const UserLogin: React.FC = () => {
 				// console.log('token:', token);
 				const extractedToken = token.split(' ')[1]; // Assuming the format is 'Bearer <token>'
 				// console.log('Token:', extractedToken);
-				console.log('response:', response);
+				// console.log('response:', response);
 				const username = response.data?.username;
 				login(extractedToken, username);
 				navigate('/movies');
@@ -70,7 +70,7 @@ const UserLogin: React.FC = () => {
 							email: values.email,
 							password: values.password,
 						};
-						console.log('user', user);
+						// console.log('user', user);
 						handleUserLoginSubmit(user, setFieldError);
 						setSubmitting(false); // Ensure to set submitting to false after submission
 					}}

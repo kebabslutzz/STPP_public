@@ -39,14 +39,35 @@ public class SecurityConfig {
       .cors(cors -> cors.configurationSource(corsConfigurationSource()))
       .csrf(AbstractHttpConfigurer::disable)
       .authorizeRequests(authorizeRequests -> authorizeRequests
-        .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
-        .requestMatchers(HttpMethod.POST, "/api/v1/**").permitAll()
-        .requestMatchers(HttpMethod.PUT, "/api/v1/**").permitAll()
-        .requestMatchers(HttpMethod.PATCH, "/api/v1/**").permitAll()
-        .requestMatchers(HttpMethod.DELETE, "/api/v1/**").permitAll()
+        // Public endpoints (read operations)
+        .requestMatchers(HttpMethod.GET, "/api/v1/movies/**").permitAll()
+        .requestMatchers(HttpMethod.GET, "/api/v1/movies/*/discussions").permitAll()
+        .requestMatchers(HttpMethod.GET, "/api/v1/movies/*/discussions/*/comments").permitAll()
+
+        // Authentication required endpoints
+        // Movie creation and editing
+        .requestMatchers(HttpMethod.POST, "/api/v1/movies").authenticated()
+        .requestMatchers(HttpMethod.PUT, "/api/v1/movies/**").authenticated()
+        .requestMatchers(HttpMethod.PATCH, "/api/v1/movies/**").authenticated()
+
+        // Discussion creation, editing, deletion
+        .requestMatchers(HttpMethod.POST, "/api/v1/movies/*/discussions").authenticated()
+        .requestMatchers(HttpMethod.PUT, "/api/v1/movies/*/discussions/*").authenticated()
+        .requestMatchers(HttpMethod.PATCH, "/api/v1/movies/*/discussions/*").authenticated()
+        .requestMatchers(HttpMethod.DELETE, "/api/v1/movies/*/discussions/*").authenticated()
+
+        // Comment creation, editing, deletion
+        .requestMatchers(HttpMethod.POST, "/api/v1/movies/*/discussions/*/comments").authenticated()
+        .requestMatchers(HttpMethod.PUT, "/api/v1/movies/*/discussions/*/comments/*").authenticated()
+        .requestMatchers(HttpMethod.PATCH, "/api/v1/movies/*/discussions/*/comments/*").authenticated()
+        .requestMatchers(HttpMethod.DELETE, "/api/v1/movies/*/discussions/*/comments/*").authenticated()
+
+        // Public authentication endpoints
+        .requestMatchers(HttpMethod.POST, "/api/v1/users/login", "/api/v1/users/signup").permitAll()
         .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-        .anyRequest()
-        .authenticated()
+
+        // Any other request requires authentication
+        .anyRequest().authenticated()
       )
       .sessionManagement(sessionManagement -> sessionManagement
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -90,6 +111,6 @@ public class SecurityConfig {
 
   @Bean
   public AuthenticationEntryPoint restAuthenticationEntryPoint() {
-    return new HttpStatusEntryPoint(HttpStatus.NOT_FOUND);
+    return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
   }
 }

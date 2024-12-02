@@ -31,24 +31,6 @@ a {
 	text-decoration: none;
 }
 
-/* h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	color: var(--text-color);
-} */
-
-/* button {
-	background-color: var(--primary-color);
-	color: #ffffff;
-	border: none;
-	border-radius: 4px;
-	padding: 10px 20px;
-	cursor: pointer;
-} */
-
 button.secondary {
 	background-color: var(--secondary-color);
 }
@@ -60,18 +42,18 @@ button.secondary {
 	--link-color: #bb86fc;
 }
 
-.Header-row {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 20px;
-	color: #ffffff !important;
-}
-
 .PageContainer {
-	max-width: 1475px; /* Adjust this value as needed */
+	max-width: 1475px;
 	margin: 0 auto;
 	padding: 20px;
+}
+
+@media (max-width: 800px) {
+	.PageContainer {
+		max-width: 600px;
+		padding: 0px;
+		margin: 0px;
+	}
 }
 
 .Button {
@@ -79,9 +61,10 @@ button.secondary {
 	margin: 0 5px !important;
 	cursor: pointer !important;
 	font-family: var(--font-family) !important;
-
-	/* padding: 10px 20px !important; */
+	padding: 0px 20px !important;
 	height: 30px !important;
+	width: auto !important;
+	white-space: nowrap !important;
 }
 
 .Button.add-edit-button {
@@ -90,7 +73,6 @@ button.secondary {
 }
 
 .Button.delete-button {
-	/* margin: 0 10px !important; */
 	border: 2px solid #008080 !important;
 	color: #ffffff !important;
 	background: none !important;

@@ -6,6 +6,7 @@ import com.stpp.movies.dto.user.UserResponseDto;
 import com.stpp.movies.entities.Comment;
 import com.stpp.movies.entities.Discussion;
 import com.stpp.movies.entities.User;
+import com.stpp.movies.enumerators.Role;
 import com.stpp.movies.exceptions.ConflictException;
 import com.stpp.movies.exceptions.NotFoundException;
 import com.stpp.movies.repositories.CommentRepository;
@@ -13,6 +14,7 @@ import com.stpp.movies.repositories.DiscussionRepository;
 import com.stpp.movies.repositories.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,6 +97,10 @@ public class UserService {
   public UserResponseDto editUser(Long userId, UserEditRequestDto userRequestDto, User loggedInUser) {
     var user = userRepository.findById(userId)
       .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
+
+    if (!loggedInUser.getId().equals(userId) && !loggedInUser.getRole().equals(Role.ADMIN)) {
+      throw new AccessDeniedException("You are not allowed to edit this user");
+    }
 
     if (userId.equals(loggedInUser.getId())) {
       if (userRequestDto.getPassword() != null && !userRequestDto.getPassword().isEmpty()) {

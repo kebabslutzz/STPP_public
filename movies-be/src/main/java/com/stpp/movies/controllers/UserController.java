@@ -48,8 +48,8 @@ public class UserController {
   @Operation(summary = "Get all users", description = "Fetches all users from the database.", operationId = "1", responses = {
     @ApiResponse(responseCode = "200", description = "List of users returned successfully"),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
 //  @SecurityRequirement(name = "bearerAuth")
@@ -62,8 +62,8 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "User found and returned successfully"),
     @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @GetMapping("/{userId}")
@@ -93,8 +93,8 @@ public class UserController {
     @ApiResponse(responseCode = "400", description = "User edit failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
 
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
@@ -110,8 +110,8 @@ public class UserController {
     @ApiResponse(responseCode = "204", description = "User found and deleted successfully"),
     @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   @DeleteMapping("/{userId}")
@@ -134,7 +134,8 @@ public class UserController {
 
   @Operation(summary = "Login to the account", description = "Logins a user based on an email", operationId = "7", responses = {
     @ApiResponse(responseCode = "200", description = "User found and returned successfully"),
-    @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "400", description = "User login failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+//    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PostMapping("/login")
@@ -149,10 +150,9 @@ public class UserController {
 
   @Operation(summary = "Get my info", description = "Same as get user by id, but it gets currently logged in user's info", operationId = "9", responses = {
     @ApiResponse(responseCode = "200", description = "User found and returned successfully"),
-    @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @GetMapping("/me")

@@ -6,19 +6,17 @@ import Discussion from '../../interfaces/Discussion';
 import useQuery from '../../hooks/useQuery';
 import { ENDPOINTS } from '../../constants/endpoints';
 import { HTTP_METHODS } from '../../constants/httpsMethods';
-import { Button, Container, List, ListItem, ListItemText, Divider, Typography } from '@mui/material';
-import StarIcon from '@mui/icons-material/Star';
+import { Button, Container, List, Typography, Box } from '@mui/material';
 import DiscussionListItem from '../discussions/DisccusionListItem';
 import Poster from '../../interfaces/Poster';
 import MovieFormDialogBox from './component/MovieFormDialogBox';
 import DeleteConfirmationDialog from '../dialog/DeleteConfirmationDialog';
 import { useNavigate } from 'react-router-dom';
 import DiscussionFormDialogBox from '../discussions/DiscussionFormDialogBox';
-import EditIcon from '@mui/icons-material/Edit';
 import ForumIcon from '@mui/icons-material/Forum';
 import HideImageIcon from '@mui/icons-material/HideImage';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useAuth } from '../../context/AuthContext';
+import MovieInfoList from './MovieInfoList';
 
 interface MovieDetailProps {
 	movieId: number;
@@ -175,7 +173,6 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 					}
 
 					const posterData = await posterResponse.json();
-					// newMovie!.posterId = posterData.id;
 					posterId = Number(posterData.id);
 				}
 
@@ -189,10 +186,6 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 				const movieResponse = await updateMovieCommand.sendData(movieWithPoster);
 				if (movieResponse?.status === 200) {
 					setOpenMovie(movieWithPoster);
-
-					// console.log('current poster id:', newMovie.posterId);
-					// console.log('new poster id:', movieWithPoster.posterId);
-					// Fetch the updated poster if it was changed
 					if (posterId != newMovie.posterId) {
 						getPosterData();
 					}
@@ -224,7 +217,6 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 	const handleDiscussionSubmit = async (newDiscussion: Discussion) => {
 		if (isLoggedIn) {
 			newDiscussion.movieId = movieId;
-			// newDiscussion.userId = loggedInUserId;
 			const discussionResponse = await createDiscussionCommand.sendData(newDiscussion);
 			if (discussionResponse?.status === 201 && 'data' in discussionResponse) {
 				let createdDiscussion = discussionResponse?.data as Discussion;
@@ -240,76 +232,30 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 	if (movieErrors) return <div>{movieErrors.join(', ')}</div>;
 
 	return (
-		<Container className='MovieDetailContainer' maxWidth={false}>
-			<Typography className='Movie-title'>{openMovie?.title}</Typography>
-			<div className='MovieDetail'>
+		<Container className='PageContainer' maxWidth={false}>
+			<Typography className='MovieTitle'>{openMovie?.title}</Typography>
+			<Box className='MovieDetailBox'>
 				{base64String ? (
-					<div className='MoviePosterContainer'>
+					<Box className='MoviePosterBox'>
 						<img src={base64String} alt={movie?.title} className='MoviePosterDetails' />
-					</div>
+					</Box>
 				) : (
-					<div className='NoImageTextDetails'>
-						<span>
+					<Box className='NoImageTextDetails'>
+						<Box>
 							Movie Poster Not Available
 							<HideImageIcon />
-						</span>
-					</div>
+						</Box>
+					</Box>
 				)}
-				<div>
-					<List>
-						<ListItem>
-							<ListItemText>
-								<strong>Director:</strong> {openMovie?.director}
-							</ListItemText>
-						</ListItem>
-						<Divider variant='middle' component='li' className='divider' />
-						<ListItem>
-							<ListItemText>
-								<strong>Genre:</strong> {openMovie?.genre}
-							</ListItemText>
-						</ListItem>
-						<Divider variant='middle' component='li' className='divider' />
-						<ListItem>
-							<ListItemText>
-								<strong>Rating:</strong> {openMovie?.rating}/10
-								<StarIcon className='starIcon' />
-							</ListItemText>
-						</ListItem>
-						<Divider variant='middle' component='li' className='divider' />
-						<ListItem>
-							<ListItemText>
-								<strong>Release Date:</strong> {new Date(openMovie?.releaseDate!).toDateString()}
-							</ListItemText>
-						</ListItem>
-						<Divider variant='middle' component='li' className='divider' />
-
-						<ListItem>
-							<ListItemText>{openMovie?.description}</ListItemText>
-						</ListItem>
-						<Divider variant='middle' component='li' className='divider' />
-						{isAdmin && (
-							<ListItem>
-								<Button
-									className='Button add-edit-button'
-									onClick={handleOpenDialog}
-									variant='text'
-									endIcon={<EditIcon />}
-								>
-									Edit Movie
-								</Button>
-								<Button
-									className='Button delete-button'
-									onClick={handleOpenDeleteDialog}
-									variant='text'
-									endIcon={<DeleteIcon />}
-								>
-									Delete Movie
-								</Button>
-							</ListItem>
-						)}
-					</List>
-				</div>
-			</div>
+				<Box>
+					<MovieInfoList
+						movie={openMovie!}
+						isAdmin={isAdmin}
+						onEdit={handleOpenDialog}
+						onDelete={handleOpenDeleteDialog}
+					/>
+				</Box>
+			</Box>
 			<div>
 				<div className='discussion-header'>
 					{!discussionList || discussionList.length === 0 ? (
@@ -329,15 +275,17 @@ const MovieDetail: React.FC<MovieDetailProps> = ({ movieId }) => {
 					)}
 				</div>
 			</div>
-			<List component='nav' aria-label='discussions'>
-				{discussionList && discussionList.length > 0 && (
-					<>
-						{discussionList.map((discussion) => (
-							<DiscussionListItem key={discussion.id} discussion={discussion} movie={openMovie!} />
-						))}
-					</>
-				)}
-			</List>
+			<Box>
+				<List component='nav' aria-label='discussions'>
+					{discussionList && discussionList.length > 0 && (
+						<>
+							{discussionList.map((discussion) => (
+								<DiscussionListItem key={discussion.id} discussion={discussion} movie={openMovie!} />
+							))}
+						</>
+					)}
+				</List>
+			</Box>
 			{isDialogOpen && (
 				<MovieFormDialogBox
 					movie={openMovie!}

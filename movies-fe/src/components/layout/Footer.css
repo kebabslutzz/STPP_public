@@ -53,3 +53,27 @@
 	flex: 1;
 	text-align: center;
 }
+
+@media (max-width: 768px) {
+	.footer {
+		min-height: 0px; /* Ensure the footer is at least 3 times bigger in height */
+	}
+
+	.footer::after {
+		height: 100%; /* Ensure the gradient covers the entire height of the footer */
+	}
+
+	.footer .footer-content {
+		flex-direction: column;
+		align-items: flex-start;
+		padding: 0 10px;
+	}
+
+	.footer-left,
+	.footer-center,
+	.footer-right {
+		padding: 10px 0;
+		text-align: center;
+		width: 100%;
+	}
+}

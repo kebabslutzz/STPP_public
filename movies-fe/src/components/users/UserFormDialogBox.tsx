@@ -31,7 +31,7 @@ const UserFormDialogBox: React.FC<UserFormDialogBoxProps> = ({ open, onClose, on
 					}}
 					validationSchema={userValidationAdminSchema}
 					onSubmit={(values, { setSubmitting }) => {
-						console.log('Submitting form with values:', values);
+						// console.log('Submitting form with values:', values);
 						const newUser: User = {
 							...user,
 							username: values.username,

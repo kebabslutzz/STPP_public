@@ -1,7 +1,7 @@
 import { CrisisAlert } from '@mui/icons-material';
 
 const BASE_URL = 'http://localhost:8080/api/v1';
-// const BASE_URL = 'http://13.49.183.94:8080/api/v1';
+// const BASE_URL = 'http://13.50.248.18:8080/api/v1';
 
 export const ENDPOINTS = {
 	USERS: {

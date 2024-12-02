@@ -1,11 +1,10 @@
-/* Header.css */
 .header {
 	width: 100%;
 	color: white;
 	padding: 10px 0;
 	text-align: center;
 	font-family: Arial, sans-serif;
-	opacity: 0;
+	position: relative;
 	transition: opacity 0.69s ease-in-out;
 }
 .header.visible {
@@ -16,7 +15,7 @@
 }
 .header h1 {
 	margin: 0;
-	font-size: 2.5em;
+	font-size: 2.5em !important;
 }
 .header .header-content {
 	display: flex;
@@ -29,7 +28,7 @@
 .header nav a {
 	color: #ffffff;
 	text-decoration: none;
-	font-size: 1.2em;
+	font-size: 1.2em !important;
 }
 .header nav a:hover {
 	text-decoration: underline;
@@ -44,14 +43,59 @@
 	background: linear-gradient(to top, rgba(0, 128, 128, 0), rgba(0, 128, 128, 1));
 }
 .custom-button {
-	border-radius: 20px;
-	color: #ffffff; /* Ensure the button text color is #ffffff */
-	background-color: transparent;
-	border: 1px solid transparent; /* Initially transparent outline */
-	text-decoration: none; /* Remove underline */
-	z-index: 20; /* Ensure the buttons are on top of everything */
+	border-radius: 20px !important;
+	margin-left: 10px !important;
+	margin-left: 10px !important;
+	color: #ffffff !important; /* Ensure the button text color is #ffffff */
+	background-color: transparent !important; /* Ensure the button background color is transparent */
+	border: 1px solid transparent !important; /* Initially transparent outline */
+	text-decoration: none !important; /* Remove underline */
+	z-index: 20 !important; /* Ensure the buttons are on top of everything */
 }
-.custom-button:hover {
-	border-color: #ffffff; /* Outline color same as text color */
-	text-decoration: none; /* Ensure underline is removed on hover */
+
+.specialButton {
+	margin-right: -10px !important;
+}
+
+.burger-menu {
+	display: none;
+	cursor: pointer;
+	position: absolute;
+	right: 20px;
+	z-index: 1000;
+}
+
+.burger-menu svg {
+	font-size: 2rem !important;
+	color: white;
+}
+
+/* Media query for small screens */
+@media (max-width: 768px) {
+	.nav-links {
+		display: none;
+	}
+
+	.burger-menu {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 48px;
+		height: 48px;
+		padding: 8px;
+		border-radius: 50%;
+		transition: background-color 0.3s;
+	}
+
+	.burger-menu:hover {
+		background-color: rgba(255, 255, 255, 0.1);
+	}
+	.header::after {
+		height: 100px;
+	}
+
+	.header-content {
+		justify-content: flex-start;
+		min-height: 64px;
+	}
 }
