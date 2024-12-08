@@ -1,10 +1,10 @@
 /* src/components/comment/CommentBox.css */
 .CommentBox {
 	position: fixed;
-	bottom: 10%;
+	bottom: 15%;
 	left: 50%;
 	transform: translateX(-50%);
-	width: 430px !important;
+	width: 530px !important;
 	height: auto;
 	background: white;
 	padding: 10px;
@@ -12,7 +12,7 @@
 	flex-direction: column;
 	justify-content: space-between;
 	align-items: center;
-	z-index: 1000;
+	z-index: 2000;
 	border-radius: 10px;
 	background-color: #ffffff;
 }
@@ -41,7 +41,10 @@
 
 @media (max-width: 768px) {
 	.CommentBox {
-		width: 95% !important;
+		border-radius: 0%;
+		width: 90% !important;
+		height: auto;
+		bottom: 0%;
 		left: 0;
 		right: 0;
 		transform: none;

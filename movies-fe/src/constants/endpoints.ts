@@ -1,7 +1,7 @@
 import { CrisisAlert } from '@mui/icons-material';
 
 const BASE_URL = 'http://localhost:8080/api/v1';
-// const BASE_URL = 'http://13.50.248.18:8080/api/v1';
+// const BASE_URL = 'http://13.48.86.147:8080/api/v1';
 
 export const ENDPOINTS = {
 	USERS: {
@@ -13,6 +13,7 @@ export const ENDPOINTS = {
 		LOGIN: `${BASE_URL}/users/login`,
 		DELETE_USER: (id: number) => `${BASE_URL}/users/${id}`,
 		UPDATE_USER: (id: number) => `${BASE_URL}/users/${id}`,
+		UPDATE_USER_ROLE: (id: number) => `${BASE_URL}/users/${id}/role`,
 	},
 	MOVIES: {
 		GET_ALL_MOVIES: `${BASE_URL}/movies`,

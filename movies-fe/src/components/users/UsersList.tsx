@@ -13,6 +13,10 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ErrorDisplay from '../shared/ErrorDisplay';
 import { useAuth } from '../../context/AuthContext';
 
+interface UserRoleEditRequestDTO {
+	role: string;
+}
+
 const UsersList: React.FC = () => {
 	const [users, setUsers] = useState<User[]>([]);
 	const [userToUpdate, setUserToUpdate] = useState<User | null>(null);
@@ -20,6 +24,7 @@ const UsersList: React.FC = () => {
 	const [userToDeleteId, setUserToDeleteId] = useState<number | null>(null);
 	const [deleteUserFormOpen, setDeleteUserFormOpen] = useState(false);
 	const { isAdmin } = useAuth();
+	// const [updateRoleQuery, setUpdateRoleQuery] = useState<ReturnType<typeof useQuery<User>> | null>(null);
 
 	const {
 		data: fetchedUsers,
@@ -80,50 +85,44 @@ const UsersList: React.FC = () => {
 		setUserSubmitFormOpen(true);
 	};
 
-	const updateUserCommand = useQuery<User>({
-		url: ENDPOINTS.USERS.UPDATE_USER(userToUpdate?.id!),
+	// ... other state
+	const userIdRef = React.useRef<number | null>(null);
+
+	useEffect(() => {
+		if (userToUpdate?.id) {
+			userIdRef.current = userToUpdate.id;
+		}
+	}, [userToUpdate]);
+
+	const updateRoleCommand = useQuery<UserRoleEditRequestDTO>({
+		url: userIdRef.current ? ENDPOINTS.USERS.UPDATE_USER_ROLE(userIdRef.current) : ENDPOINTS.USERS.GET_ALL_USERS,
 		httpMethod: HTTP_METHODS.PUT,
 	});
 
-	const createUserCommand = useQuery<User>({
-		url: ENDPOINTS.USERS.CREATE_USER,
-		httpMethod: HTTP_METHODS.POST,
-	});
-
-	const handleUserSubmission = async (user: User) => {
-		// console.log('User submission:', user);
-		if (userToUpdate) {
-			const newUser: User = {
-				...userToUpdate,
-				email: user.email,
-				role: user.role,
-				username: user.username,
-			};
-			newUser.password = 'password'; // TEMPORARY SOLUTION SO NO ERROR OCCURS SHOULD NOT BE UPDATED IN BE
-			const updateUserResponse = await updateUserCommand.sendData(newUser);
-			if (updateUserResponse?.status === 200) {
-				setUsers((prevUsers) => prevUsers.map((u) => (u.id === newUser.id ? newUser : u)));
-			}
-		} else {
-			user.password = 'password'; // TEMPORARY SOLUTION
-			const createUserResponse = await createUserCommand.sendData(user);
-			if (createUserResponse?.status === 201 && 'data' in createUserResponse) {
-				setUsers((prevUsers) => [createUserResponse.data, ...prevUsers]);
-			}
+	const handleUserSubmission = async (role: string) => {
+		if (!userToUpdate?.id) {
+			console.error('User ID is missing');
+			return;
 		}
-		handleUserSubmitFormClose();
+
+		const roleUpdateDto: UserRoleEditRequestDTO = {
+			role: role,
+		};
+
+		const response = await updateRoleCommand.sendData(roleUpdateDto);
+
+		if (response && 'data' in response) {
+			setUsers((prevUsers) => prevUsers.map((u) => (u.id === userToUpdate.id ? { ...u, role } : u)));
+			handleUserSubmitFormClose();
+		} else {
+			console.error('Failed to update user role:', response?.message);
+		}
 	};
 
 	return (
 		<Container className='PageContainer' maxWidth={false}>
 			<div className='Header-row'>
 				<h1>User List</h1>
-
-				{!isUsersLoading && !usersErrors && isAdmin && (
-					<Button className='Button add-edit-button' onClick={handleUserCreateClick} endIcon={<PersonAddIcon />}>
-						Add user
-					</Button>
-				)}
 			</div>
 			{isUsersLoading && <Loader errors={usersErrors} textNeeded />}
 			{usersErrors && !isUsersLoading && <ErrorDisplay errors={usersErrors} />}
@@ -133,8 +132,7 @@ const UsersList: React.FC = () => {
 				open={isUserSubmitFormOpen}
 				onClose={handleUserSubmitFormClose}
 				onSubmit={handleUserSubmission}
-				user={userToUpdate || undefined}
-				canEditRole={isAdmin}
+				currentRole={userToUpdate?.role}
 			/>
 			<DeleteConfirmationDialog
 				open={deleteUserFormOpen}

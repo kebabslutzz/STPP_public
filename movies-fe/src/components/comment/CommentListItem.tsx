@@ -55,22 +55,27 @@ const CommentListItem: React.FC<CommentListItemProps> = ({ comment, onDelete, on
 	};
 
 	return (
-		<Box className='CommentListItem' sx={{ flexGrow: 1 }}>
-			<Grid container spacing={1}>
-				<Grid item xs={12} className='top-side'>
-					{/* {`${formatDate(comment?.dateModified!) ?? 'N/A'}`} */}
-					{`${comment.dateModified ? formatDate(comment.dateModified) : 'N/A'}`}
-				</Grid>
-				<Grid item xs={2} className='grid-item'>
-					<Typography variant='body1' className='user-box'>
-						by{' '}
-						<Link to={`/users/${comment.userId}`} onClick={handleUserLinkClick}>
-							{comment.username}
-						</Link>
-					</Typography>
-				</Grid>
-				<Grid item xs={10}>
-					<Typography variant='body1' className='comment-content-box'>{`${comment.content}`}</Typography>
+		<Box className='CommentListItem'>
+			<Box className='date-row'>
+				<span>{`${comment.dateModified ? formatDate(comment.dateModified) : 'N/A'}`}</span>
+				<Typography variant='body1' className='mobile-user-section'>
+					by{' '}
+					<Link to={`/users/${comment.userId}`} onClick={handleUserLinkClick}>
+						{comment.username}
+					</Link>
+				</Typography>
+			</Box>
+			<Divider sx={{ my: 1, backgroundColor: 'white' }} />
+			<Box className='content-row'>
+				<Typography variant='body1' className='user-section'>
+					by{' '}
+					<Link to={`/users/${comment.userId}`} onClick={handleUserLinkClick}>
+						{comment.username}
+					</Link>
+				</Typography>
+				<Divider orientation='vertical' flexItem sx={{ backgroundColor: 'white' }} />
+				<Box className='comment-section'>
+					<Typography variant='body1'>{comment.content}</Typography>
 					{(isAdmin || loggedInUserId === comment.userId) && (
 						<Box className='button-container'>
 							<Button onClick={handleDeleteDialogOpen} className='Button delete-button' endIcon={<DeleteIcon />}>
@@ -83,14 +88,8 @@ const CommentListItem: React.FC<CommentListItemProps> = ({ comment, onDelete, on
 							)}
 						</Box>
 					)}
-				</Grid>
-			</Grid>
-			<DeleteConfirmationDialog
-				open={deleteDialogOpen}
-				onClose={handleDeleteDialogClose}
-				onConfirm={handleDeleteComment}
-				text='Are you sure you want to delete this comment?'
-			/>
+				</Box>
+			</Box>
 		</Box>
 	);
 };

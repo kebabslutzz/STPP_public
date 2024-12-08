@@ -30,10 +30,10 @@ const DiscussionListItem: React.FC<DiscussionListItemProps> = ({ discussion, mov
 	return (
 		<Box onClick={handleItemClick} className='DiscussionListItemContainer'>
 			<Container className='DiscussionListItemTitle'>{discussion.title}</Container>
-			<Divider flexItem className='vertical-horizontal-divider' />
+			<Divider className='first-divider' flexItem orientation='vertical' sx={{ my: 1, backgroundColor: 'white' }} />
 			<Box className='DiscussionListItemUserComments'>
 				<Container className='DiscussionListItemComments'>{discussion.commentCount} comments</Container>
-				<Divider flexItem className='vertical-divider' />
+				<Divider orientation='vertical' flexItem sx={{ my: 1, backgroundColor: 'white' }} />
 				<Container className='DiscussionListItemUserDate'>
 					by{' '}
 					<Link to={`/users/${discussion.userId}`} onClick={handleUserLinkClick}>

@@ -7,6 +7,7 @@ import { Button, Container, List, ListItem, ListItemText, Typography } from '@mu
 import { useAuth } from '../../context/AuthContext';
 import EditIcon from '@mui/icons-material/Edit';
 import UserForm from '../register-login/UserForm';
+import { useNavigate } from 'react-router-dom';
 
 interface UserProfileProps {
 	userId: number;
@@ -16,6 +17,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
 	const [user, setUser] = React.useState<User>({});
 	const [openEditDialog, setOpenEditDialog] = React.useState(false);
 	const { loggedInUserId, loggedInUserRole } = useAuth();
+	const navigate = useNavigate();
 
 	const {
 		data: userData,
@@ -84,6 +86,10 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
 		);
 	}
 
+	const handleEditClick = () => {
+		navigate(`/users/${userId}/edit`);
+	};
+
 	return (
 		<Container className='PageContainer'>
 			<h2>User Information</h2>
@@ -105,13 +111,13 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
 				</ListItem>
 			</List>
 			{loggedInUserId === userId && (
-				<Button className='Button add-edit-button' endIcon={<EditIcon />} onClick={handleUserFormDialogBoxOpen}>
+				<Button className='Button add-edit-button' endIcon={<EditIcon />} onClick={handleEditClick}>
 					Edit Profile
 				</Button>
 			)}
-			{openEditDialog && (
+			{/* {openEditDialog && (
 				<UserForm initialValues={user} onSubmit={handleUserEditSubmit} submitButtonText='Update Profile' />
-			)}
+			)} */}
 		</Container>
 	);
 };

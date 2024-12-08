@@ -3,10 +3,10 @@ package com.stpp.movies.services.user;
 import com.stpp.movies.dto.user.UserEditRequestDto;
 import com.stpp.movies.dto.user.UserRequestDto;
 import com.stpp.movies.dto.user.UserResponseDto;
+import com.stpp.movies.dto.user.UserRoleEditRequestDTO;
 import com.stpp.movies.entities.Comment;
 import com.stpp.movies.entities.Discussion;
 import com.stpp.movies.entities.User;
-import com.stpp.movies.enumerators.Role;
 import com.stpp.movies.exceptions.ConflictException;
 import com.stpp.movies.exceptions.NotFoundException;
 import com.stpp.movies.repositories.CommentRepository;
@@ -62,13 +62,6 @@ public class UserService {
     return MAPPER.userToResponseDto(user);
   }
 
-//  public void deleteUserById(Long id) {
-//    if (!userRepository.existsById(id)) {
-//      throw new NotFoundException("User with ID " + id + " not found");
-//    }
-//    userRepository.deleteById(id);
-//  }
-
   public void deleteUserById(Long userId) {
     User userDeleted = userRepository.findById(0L)
       .orElseThrow(() -> new NotFoundException("Special user 'user_deleted' not found"));
@@ -98,18 +91,14 @@ public class UserService {
     var user = userRepository.findById(userId)
       .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
 
-    if (!loggedInUser.getId().equals(userId) && !loggedInUser.getRole().equals(Role.ADMIN)) {
+    if (!loggedInUser.getId().equals(userId)) {
       throw new AccessDeniedException("You are not allowed to edit this user");
     }
 
-    if (userId.equals(loggedInUser.getId())) {
-      if (userRequestDto.getPassword() != null && !userRequestDto.getPassword().isEmpty()) {
-        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
-      }
-      MAPPER.userEditRequestDtoToUserUser(userRequestDto, user);
-    } else {
-      MAPPER.userEditRequestDtoToUserAdmin(userRequestDto, user);
+    if (userRequestDto.getPassword() != null && !userRequestDto.getPassword().isEmpty()) {
+      user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
     }
+    MAPPER.userEditRequestDtoToUserUser(userRequestDto, user);
 
     user = userRepository.save(user);
     return MAPPER.userToResponseDto(user);
@@ -118,5 +107,14 @@ public class UserService {
   public User getUserByEmail(String email) {
     return userRepository.findByEmail(email)
       .orElseThrow(() -> new NotFoundException("User with email " + email + " not found"));
+  }
+
+  public UserResponseDto editUserRole(Long userId, UserRoleEditRequestDTO userRoleEditRequestDTO) {
+    var user = userRepository.findById(userId)
+      .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
+
+    user.setRole(userRoleEditRequestDTO.getRole());
+    user = userRepository.save(user);
+    return MAPPER.userToResponseDtoWithRoles(user);
   }
 }

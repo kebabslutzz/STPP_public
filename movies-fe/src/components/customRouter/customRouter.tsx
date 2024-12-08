@@ -11,6 +11,8 @@ import LoginPage from '../../pages/LoginPage';
 import Logout from '../register-login/Logout';
 import ProtectedRoute from './ProtectedRoute';
 import ProfilePage from '../../pages/ProfilePage';
+import EditPage from '../../pages/EditPage';
+import ProtectedUserRoute from './ProtectedUserRoutes';
 
 const UsersPage = React.lazy(() => import('../../pages/UsersPage'));
 const MoviesPage = React.lazy(() => import('../../pages/MoviesPage'));
@@ -92,6 +94,16 @@ const router = createBrowserRouter([
 				element: (
 					<Suspense fallback={<Loader />}>
 						<Logout />
+					</Suspense>
+				),
+			},
+			{
+				path: `${ROUTE_PATHS.USERS}/:id/edit`,
+				element: (
+					<Suspense fallback={<Loader />}>
+						<ProtectedUserRoute>
+							<EditPage />
+						</ProtectedUserRoute>
 					</Suspense>
 				),
 			},

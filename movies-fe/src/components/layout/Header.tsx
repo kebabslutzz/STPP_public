@@ -9,11 +9,12 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useAuth } from '../../context/AuthContext';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 
 const Header: React.FC = () => {
 	const [isVisible, setIsVisible] = useState(true);
 	const [drawerOpen, setDrawerOpen] = useState(false);
-	const { isLoggedIn, loggedInUserRole } = useAuth();
+	const { isLoggedIn, loggedInUserRole, loggedInUserId } = useAuth();
 
 	const handleScroll = () => {
 		const scrollTop = window.scrollY;
@@ -51,12 +52,20 @@ const Header: React.FC = () => {
 							</ListItemButton>
 						)}
 						{isLoggedIn ? (
-							<ListItemButton component={Link} to='/logout' onClick={() => setDrawerOpen(false)}>
-								<ListItemIcon>
-									<LogoutIcon />
-								</ListItemIcon>
-								<ListItemText primary='Logout' />
-							</ListItemButton>
+							<>
+								<ListItemButton component={Link} to='/logout' onClick={() => setDrawerOpen(false)}>
+									<ListItemIcon>
+										<LogoutIcon />
+									</ListItemIcon>
+									<ListItemText primary='Logout' />
+								</ListItemButton>
+								<ListItemButton component={Link} to={`/users/${loggedInUserId}`} onClick={() => setDrawerOpen(false)}>
+									<ListItemIcon>
+										<AccountBoxIcon />
+									</ListItemIcon>
+									<ListItemText primary='Profile' />
+								</ListItemButton>
+							</>
 						) : (
 							<>
 								<ListItemButton component={Link} to='/register' onClick={() => setDrawerOpen(false)}>
@@ -87,9 +96,19 @@ const Header: React.FC = () => {
 						Movies
 					</Button> */}
 					{isLoggedIn ? (
-						<Button component={Link} to='/logout' startIcon={<LogoutIcon />} className='custom-button'>
-							Logout
-						</Button>
+						<>
+							<Button component={Link} to='/logout' startIcon={<LogoutIcon />} className='custom-button'>
+								Logout
+							</Button>
+							<Button
+								component={Link}
+								to={`/users/${loggedInUserId}`}
+								startIcon={<AccountBoxIcon />}
+								className='custom-button'
+							>
+								Profile
+							</Button>
+						</>
 					) : (
 						<>
 							<Button component={Link} to='/register' startIcon={<PersonAddIcon />} className='custom-button'>

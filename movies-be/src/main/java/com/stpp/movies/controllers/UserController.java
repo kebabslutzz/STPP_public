@@ -5,6 +5,7 @@ import com.stpp.movies.dto.user.UserEditRequestDto;
 import com.stpp.movies.dto.user.UserLoginDto;
 import com.stpp.movies.dto.user.UserRequestDto;
 import com.stpp.movies.dto.user.UserResponseDto;
+import com.stpp.movies.dto.user.UserRoleEditRequestDTO;
 import com.stpp.movies.entities.User;
 import com.stpp.movies.services.jwt.AuthenticationService;
 import com.stpp.movies.services.user.UserService;
@@ -46,7 +47,7 @@ public class UserController {
   private final AuthenticationService authenticationService;
 
   @Operation(summary = "Get all users", description = "Fetches all users from the database.", operationId = "1", responses = {
-    @ApiResponse(responseCode = "200", description = "List of users returned successfully"),
+    @ApiResponse(responseCode = "200", description = "List of users returned successfully", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
@@ -59,7 +60,7 @@ public class UserController {
   }
 
   @Operation(summary = "Get a user by ID", description = "Fetches a user from the database based on the user ID.", operationId = "2", responses = {
-    @ApiResponse(responseCode = "200", description = "User found and returned successfully"),
+    @ApiResponse(responseCode = "200", description = "User found and returned successfully", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
     @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
@@ -89,13 +90,13 @@ public class UserController {
   }
 
   @Operation(summary = "Edit a user by ID", description = "Edits a user in the database based on the user ID.", operationId = "4", responses = {
-    @ApiResponse(responseCode = "200", description = "User found and edited successfully"),
+    @ApiResponse(responseCode = "200", description = "User found and edited successfully", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
     @ApiResponse(responseCode = "400", description = "User edit failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
-
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "409", description = "Email or user name is taken", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   @PutMapping("/{userId}")
@@ -121,7 +122,7 @@ public class UserController {
   }
 
   @Operation(summary = "Register a user", description = "Registers a user by creating it", operationId = "6", responses = {
-    @ApiResponse(responseCode = "201", description = "User registered/created successfully and returned"),
+    @ApiResponse(responseCode = "201", description = "User registered/created successfully and returned", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
     @ApiResponse(responseCode = "400", description = "User registration/creation failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "409", description = "User already exists", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
@@ -133,10 +134,11 @@ public class UserController {
   }
 
   @Operation(summary = "Login to the account", description = "Logins a user based on an email", operationId = "7", responses = {
-    @ApiResponse(responseCode = "200", description = "User found and returned successfully"),
+    @ApiResponse(responseCode = "200", description = "User found and returned successfully", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
     @ApiResponse(responseCode = "400", description = "User login failed due to invalid request body", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-//    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
-    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @PostMapping("/login")
   public ResponseEntity<UserResponseDto> loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
@@ -161,5 +163,18 @@ public class UserController {
 
     User user = (User) authentication.getPrincipal();
     return userService.getUserById(user.getId());
+  }
+
+  @Operation(summary = "Edit user role", description = "Admin method to edit user role", operationId = "10", responses = {
+    @ApiResponse(responseCode = "200", description = "User found, edited and returned successfully", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+  })
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+  @PutMapping("/{userId}/role")
+  public UserResponseDto editUserRole(@PathVariable Long userId, @Valid @RequestBody UserRoleEditRequestDTO userRoleEditRequestDTO) {
+    return userService.editUserRole(userId, userRoleEditRequestDTO);
   }
 }

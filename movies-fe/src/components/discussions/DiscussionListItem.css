@@ -101,3 +101,30 @@
 		width: 100%;
 	}
 }
+
+/* Add to DiscussionListItem.css */
+.first-divider {
+	align-self: stretch;
+}
+
+.second-divider {
+	align-self: stretch;
+}
+
+@media (max-width: 600px) {
+	.first-divider {
+		margin-left: 10px !important;
+		margin-right: 10px !important;
+		/* width: 99%; */
+		/* align-self: auto !important; */
+		/* margin-left: 1px !important; */
+		/* margin-right: 1px !important; */
+		height: 1px !important;
+		transform: rotate(0deg) !important;
+	}
+
+	/* Keep second divider vertical */
+	.second-divider {
+		height: auto !important;
+	}
+}

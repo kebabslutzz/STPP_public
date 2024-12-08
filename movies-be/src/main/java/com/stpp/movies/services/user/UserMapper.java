@@ -42,15 +42,15 @@ public interface UserMapper {
   @Named("userEditRequestDtoToUser")
   @Mapping(target = "username", source = "username")
   @Mapping(target = "email", source = "email")
-  @Mapping(target = "role", source = "role")
+  @Mapping(target = "role", ignore = true)
   @Mapping(target = "password", ignore = true)
   void userEditRequestDtoToUserAdmin(UserEditRequestDto userRequestDto, @MappingTarget User user);
 
   @Named("userEditRequestDtoToUser")
   @Mapping(target = "username", source = "username")
   @Mapping(target = "email", source = "email")
-  @Mapping(target = "password", source = "password")
-  @Mapping(target = "role", source = "role")
+  @Mapping(target = "password", ignore = true)
+  @Mapping(target = "role", ignore = true)
   void userEditRequestDtoToUserUser(UserEditRequestDto userRequestDto, @MappingTarget User user);
 
   @Named("mapRealUsername")

@@ -1,70 +1,42 @@
+// UserFormDialogBox.tsx
 import React from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, MenuItem } from '@mui/material';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 import User from '../../interfaces/User';
-import userValidationAdminSchema from '../../validation/userValidationAdmin';
 import { ROLES } from '../../constants/userRoles';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SendIcon from '@mui/icons-material/Send';
-import { useAuth } from '../../context/AuthContext';
+
+const roleValidationSchema = Yup.object().shape({
+	role: Yup.string().required('Role is required'),
+});
 
 interface UserFormDialogBoxProps {
 	open: boolean;
 	onClose: () => void;
-	onSubmit: (user: User) => void;
-	user?: User;
-	canEditRole?: boolean;
+	onSubmit: (role: string) => void;
+	currentRole?: string;
 }
 
-const UserFormDialogBox: React.FC<UserFormDialogBoxProps> = ({ open, onClose, onSubmit, user, canEditRole }) => {
-	const { loggedInUserRole } = useAuth();
-
+const UserFormDialogBox: React.FC<UserFormDialogBoxProps> = ({ open, onClose, onSubmit, currentRole }) => {
 	return (
 		<Dialog className='Dialog' open={open} onClose={onClose}>
-			<DialogTitle sx={{ color: '#008080' }}>{user ? 'Edit User' : 'Add User'}</DialogTitle>
+			<DialogTitle sx={{ color: '#008080' }}>Update User Role</DialogTitle>
 			<DialogContent>
 				<Formik
 					initialValues={{
-						username: user?.username || '',
-						email: user?.email || '',
-						role: user?.role || loggedInUserRole, // Default role if not provided
+						role: currentRole || '',
 					}}
-					validationSchema={userValidationAdminSchema}
+					validationSchema={roleValidationSchema}
 					onSubmit={(values, { setSubmitting }) => {
-						// console.log('Submitting form with values:', values);
-						const newUser: User = {
-							...user,
-							username: values.username,
-							email: values.email,
-							role: values.role,
-						};
-						onSubmit(newUser);
+						onSubmit(values.role);
 						setSubmitting(false);
 						onClose();
 					}}
 				>
 					{({ isSubmitting, errors, touched }) => (
 						<Form>
-							<Field
-								as={TextField}
-								margin='dense'
-								label='Username'
-								type='text'
-								fullWidth
-								name='username'
-								error={touched.username && !!errors.username}
-								helperText={<ErrorMessage name='username' component='div' />}
-							/>
-							<Field
-								as={TextField}
-								margin='dense'
-								label='Email'
-								type='email'
-								fullWidth
-								name='email'
-								error={touched.email && !!errors.email}
-								helperText={<ErrorMessage name='email' component='div' />}
-							/>
 							<Field
 								as={TextField}
 								select
@@ -86,7 +58,7 @@ const UserFormDialogBox: React.FC<UserFormDialogBoxProps> = ({ open, onClose, on
 									Cancel
 								</Button>
 								<Button type='submit' className='Button add-edit-button' disabled={isSubmitting} endIcon={<SendIcon />}>
-									Submit
+									Update Role
 								</Button>
 							</DialogActions>
 						</Form>

@@ -6,6 +6,7 @@ export const ROUTE_PATHS = {
 	REGISTER: '/register',
 	LOGIN: '/login',
 	LOGOUT: '/logout',
+	EDIT_PROFILE: '/edit',
 };
 
 export default ROUTE_PATHS;

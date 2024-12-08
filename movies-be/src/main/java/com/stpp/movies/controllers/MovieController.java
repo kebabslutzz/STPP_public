@@ -59,6 +59,7 @@ public class MovieController {
 
   @Operation(summary = "Get all movies", description = "Get all movies", responses = {
     @ApiResponse(responseCode = "200", description = "Movies found"),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @GetMapping
   public List<MovieResponseDto> getAllMovies() {
@@ -122,14 +123,12 @@ public class MovieController {
     movieService.deleteMovieById(movieId);
   }
 
-
   /**
    * ************ DISCUSSION CRUDS *************
    **/
 
   @Operation(summary = "Get all discussions by movie id", description = "Get all discussions by movie id", responses = {
     @ApiResponse(responseCode = "200", description = "Discussions found"),
-    @ApiResponse(responseCode = "404", description = "Movie not found", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @GetMapping("/{movieId}/discussions")
@@ -219,6 +218,7 @@ public class MovieController {
   @Operation(summary = "Get a comment by movie, discussion and comment id", description = "Get a comment by movie, discussion and comment id", responses = {
     @ApiResponse(responseCode = "200", description = "Comment found"),
     @ApiResponse(responseCode = "404", description = "Movie not found, or discussion not found, or comment not found, or discussion does not belong to the movie, or comment does not belong to the discussion", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
   })
   @GetMapping("/{movieId}/discussions/{discussionId}/comments/{commentId}")
   public CommentResponseDto getCommentByMovieIdAnDiscussionIdAndCommentId(@PathVariable Long movieId, @PathVariable Long discussionId, @PathVariable Long commentId) {
@@ -266,10 +266,7 @@ public class MovieController {
 
   @Operation(summary = "Delete a comment by movie, discussion and comment id", description = "Delete a comment by movie, discussion and comment id", responses = {
     @ApiResponse(responseCode = "204", description = "Comment deleted successfully"),
-    @ApiResponse(
-      responseCode = "404",
-      description = "Movie not found, or discussion not found, or comment not found, or discussion does not belong to the movie, or comment does not belong to the discussion",
-      content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+    @ApiResponse(responseCode = "404", description = "Movie not found, or discussion not found, or comment not found, or discussion does not belong to the movie, or comment does not belong to the discussion", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "401", description = "Unauthorized, you are not know to the system", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
     @ApiResponse(responseCode = "403", description = "Forbidden, you cannot access this", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
