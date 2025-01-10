@@ -1,0 +1,7 @@
+/* Layout.module.css */
+.FlexAround {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	overflow-x: hidden; /* Prevent horizontal scrolling */
+}

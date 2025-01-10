@@ -1,0 +1,72 @@
+/* CommentListItem.css */
+.CommentListItem {
+	border: 1px solid #ffffff;
+	border-radius: 10px;
+	padding: 15px;
+	margin: 10px 0;
+}
+
+.date-row {
+	font-size: 0.9rem;
+	color: #ffffff;
+}
+
+.content-row {
+	display: flex;
+	align-items: flex-start;
+	gap: 20px;
+	margin-top: 10px;
+}
+
+.user-section {
+	min-width: 120px;
+	flex-shrink: 0;
+}
+
+.comment-section {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.button-container {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 10px;
+}
+
+@media (max-width: 800px) {
+	.date-row {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.content-row .user-section {
+		display: none;
+	}
+
+	.content-row .vertical-divider {
+		display: none;
+	}
+
+	.content-row {
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.comment-section {
+		width: 100%;
+	}
+}
+
+.mobile-user-section {
+	display: none;
+}
+
+@media (max-width: 800px) {
+	.mobile-user-section {
+		display: block;
+	}
+}

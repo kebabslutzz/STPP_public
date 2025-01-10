@@ -1,0 +1,27 @@
+.Table {
+	color: #dddbcb !important;
+	background-color: transparent; /* Remove the background color */
+}
+
+.TableCell {
+	font-weight: bold !important;
+	color: #dddbcb !important;
+}
+
+.TableHead {
+	color: #dddbcb !important;
+	font-weight: bold !important;
+}
+
+.TableRow,
+.TableRow * {
+	font-weight: bold !important;
+	color: #dddbcb !important;
+}
+
+.TableContainer,
+.TableContainer * {
+	color: #dddbcb !important;
+	font-family: var(--font-family) !important;
+	font-size: 1rem;
+}

@@ -1,0 +1,41 @@
+.MovieItem {
+	margin-bottom: 20px;
+}
+
+.MoviePoster {
+	width: 100%;
+	height: auto;
+	max-width: 300px;
+	max-height: 400px;
+	object-fit: cover;
+}
+
+.Header-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	color: #ffffff !important;
+}
+
+@media (max-width: 767px) {
+	.Header-row {
+		flex-direction: column;
+		align-items: center;
+		gap: 20px;
+		text-align: center;
+		width: 100%;
+	}
+
+	.Header-row h1 {
+		font-size: 1.8em;
+		text-align: center;
+	}
+}
+
+.MovieList {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 20px;
+}

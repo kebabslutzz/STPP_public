@@ -1,0 +1,53 @@
+/* src/components/comment/CommentBox.css */
+.CommentBox {
+	position: fixed;
+	bottom: 15%;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 530px !important;
+	height: auto;
+	background: white;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	z-index: 2000;
+	border-radius: 10px;
+	background-color: #ffffff;
+}
+
+.CommentBox .MuiTextField-root {
+	flex: 1;
+	margin-bottom: 10px;
+	width: 100%;
+}
+
+.CommentBox .ButtonContainer {
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+}
+
+.CommentBox .MuiButton-root {
+	flex-shrink: 0;
+}
+
+.TextField {
+	height: 150px; /* Adjust the height as needed */
+	width: 100%;
+	box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+}
+
+@media (max-width: 768px) {
+	.CommentBox {
+		border-radius: 0%;
+		width: 90% !important;
+		height: auto;
+		bottom: 0%;
+		left: 0;
+		right: 0;
+		transform: none;
+		padding: 10px 20px; /* Adjust padding to ensure it looks good on smaller screens */
+	}
+}

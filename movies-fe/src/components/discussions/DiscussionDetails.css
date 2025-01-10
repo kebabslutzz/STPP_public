@@ -1,0 +1,14 @@
+.DiscussionDetailContainer {
+	display: flex;
+	flex-direction: column;
+	max-width: 1475px; /* Adjust this value as needed */
+	margin: 0 auto;
+	padding: 20px;
+	color: #ffffff;
+}
+
+.discussion-buttons {
+	padding: 10px 20px !important;
+	margin: 0 10px !important;
+	gap: 10px; /* Add some space between the buttons */
+}

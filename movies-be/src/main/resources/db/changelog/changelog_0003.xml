@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+  <changeSet id="0003-add-cascade-delete" author="kebabslutzz">
+    <dropForeignKeyConstraint baseTableName="movie_discussions" constraintName="fkqxlix6hv92rew0cafxp0x5s5h"/>
+    <addForeignKeyConstraint baseTableName="movie_discussions"
+                             baseColumnNames="user_id"
+                             constraintName="fkqxlix6hv92rew0cafxp0x5s5h"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+
+    <dropForeignKeyConstraint baseTableName="discussion_comments" constraintName="fkminsnmxrons7rxyiuskcftc5g"/>
+    <addForeignKeyConstraint baseTableName="discussion_comments" baseColumnNames="user_id"
+                             constraintName="fkminsnmxrons7rxyiuskcftc5g"
+                             referencedTableName="users" referencedColumnNames="id"/>
+  </changeSet>
+
+</databaseChangeLog>

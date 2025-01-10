@@ -1,0 +1,79 @@
+/* Footer.css */
+.footer {
+	width: 100%;
+	color: white;
+	padding: 20px 0;
+	text-align: center;
+	font-family: Arial, sans-serif;
+	position: relative;
+	transition: opacity 0.69s ease-in-out;
+	opacity: 0;
+}
+.footer.visible {
+	opacity: 1;
+}
+.footer.hidden {
+	opacity: 0;
+}
+.footer .footer-content {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 20px;
+	color: #ffffff;
+	font-size: 1.2em;
+}
+.footer nav {
+	margin: 0 15px;
+}
+.footer::after {
+	content: '';
+	position: absolute;
+	bottom: 0px;
+	left: 0;
+	width: 100%;
+	height: 90px;
+	background: linear-gradient(to bottom, rgba(0, 128, 128, 0), rgba(0, 128, 128, 1));
+}
+
+.footer-left {
+	z-index: 1000;
+	padding-left: 50px;
+	flex: 1;
+	text-align: left;
+}
+.footer-right {
+	z-index: 1000;
+	padding-right: 50px;
+	flex: 1;
+	text-align: right;
+}
+.footer-center {
+	z-index: 1000;
+	flex: 1;
+	text-align: center;
+}
+
+@media (max-width: 768px) {
+	.footer {
+		min-height: 0px; /* Ensure the footer is at least 3 times bigger in height */
+	}
+
+	.footer::after {
+		height: 100%; /* Ensure the gradient covers the entire height of the footer */
+	}
+
+	.footer .footer-content {
+		flex-direction: column;
+		align-items: flex-start;
+		padding: 0 10px;
+	}
+
+	.footer-left,
+	.footer-center,
+	.footer-right {
+		padding: 10px 0;
+		text-align: center;
+		width: 100%;
+	}
+}
