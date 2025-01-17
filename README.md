@@ -157,6 +157,8 @@ Sistemos architektūra pavaizduota žemiau:
 
 # 3. API specifikacija
 
+Šioje dalyve yra pateikta API specifikacija, bei API panaudojimo pavyzdžiai.
+
 ### 3.1.Gauti visus sistemos naudotojus
 
 <img src="images/image-2.png" alt="alt text" />
